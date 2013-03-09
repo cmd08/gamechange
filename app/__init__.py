@@ -57,7 +57,6 @@ db.create_all()
 @app.before_request
 def csrf_protect():
     if request.method == "POST":
-        print "Testing CSRF. Local: "+session.get('_csrf_token')+" Remote: "+request.form.get('_csrf_token')
         token = session.pop('_csrf_token', None)
         if not token or token != request.form.get('_csrf_token'):
             abort(403)
