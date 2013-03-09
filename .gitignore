@@ -1,8 +1,11 @@
-.env*
-.DS_Store
-.Python
-
 bin/
 lib/
 db/
 include/
+
+conf
+*.pyc
+
+.env*
+.DS_Store
+.Python
