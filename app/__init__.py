@@ -1,21 +1,19 @@
 #TODO:
-#Global static file access (template variable, static.gamechange.info for prod.)
 #Fix the thankyou page
 #Finish unsubscribe
+#DB Migrations
+#full height pages
 from flask import Flask, render_template, jsonify, request, make_response, session, abort
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask_mail import Message, Mail
 from re import compile
 import random, string
-import conf
 from base64 import *
 
 app = Flask(__name__)
 app.config.from_envvar('FLASK_CONFIG')
 db = SQLAlchemy(app)
 mail = Mail(app)
-
-only_letters_and_spaces = compile("^[a-zA-Z ]+$")
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -28,8 +26,9 @@ class User(db.Model):
     def isValid(self):
         self.error = dict()
         valid = True
-        if User.query.filter_by(email=self.email):
-            pass
+        if not User.query.filter_by(email=self.email).first() == None :
+            self.error['email'] = "Oops! Looks like you've already signed up!"
+            valid = False
         if '@' not in self.email:
             self.error['email'] = "Please check your e-mail address is valid."
             valid = False
@@ -78,8 +77,7 @@ def hash(n):
 def send_email_to_user(user):
     msg = Message("Welcome to Game Change!", recipients=[user.email])
     msg.body = render_template('emails/signup.txt', email_key=urlsafe_b64encode(str(hash(user.id))), first_name=user.first_name, email_address=user.email)
-    #make this template bearable first...
-    #msg.html = render_template('emails/signup.html', email_key=urlsafe_b64encode(str(hash(user.id))), first_name=user.first_name, email_address=user.email)
+    msg.html = render_template('emails/signup.html', email_key=urlsafe_b64encode(str(hash(user.id))), first_name=user.first_name, email_address=user.email)
     mail.send(msg)
 
 @app.route("/")

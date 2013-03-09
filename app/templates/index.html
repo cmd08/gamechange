@@ -9,7 +9,7 @@
     <meta property="og:image" content="https://launchrock-assets.s3.amazonaws.com/facebook-files/B0W45G4F_1360786065036.png?_=0" />
 
     <meta name="viewport" content="width=1024">
-    <link rel="stylesheet" type="text/css" href="./static/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="{{config['STATIC_ROOT_URL']}}css/bootstrap.css">
     <link href='http://fonts.googleapis.com/css?family=Oxygen:400,300' rel='stylesheet' type='text/css'>
     <style type="text/css">
     body{
@@ -221,6 +221,15 @@
     </script>
   </head>
   <body>
+            <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+  </script>
     <div id="hiring">
       <a href="#">
         We're hiring!
@@ -228,16 +237,16 @@
     </div>  
     <div id="header">
       <div id="GC-world-wrapper"> 
-        <img id="GC-world" class="img-rotate" src="./static/img/world.png" alt="" />
+        <img id="GC-world" class="img-rotate" src="{{config['STATIC_ROOT_URL']}}img/world.png" alt="" />
       </div>
       <div id="GC-people-wrapper">
-        <img id="GC-people"  src="./static/img/people.jpg" alt="" />
+        <img id="GC-people"  src="{{config['STATIC_ROOT_URL']}}img/people.jpg" alt="" />
       </div>
     </div>
     <div class="container" id="main"> 
       <div class="row">
         <div class="span12">
-          <img src="./static/img/logo.png" alt="Game Change logo" id="logo" />
+          <img src="{{config['STATIC_ROOT_URL']}}img/logo.png" alt="Game Change logo" id="logo" />
         </div>
         <div id="span12">
           <div id="video-wrapper">
@@ -257,17 +266,17 @@
         <ul id="social-links" class="unstyled inline text-center">
           <li>
             <a href="http://facebook.com/gamechangegame" target="_blank">
-              <img src="./static/img/icons/facebook.png" />
+              <img src="{{config['STATIC_ROOT_URL']}}img/icons/facebook.png" />
             </a>
           </li>
           <li>
             <a href="http://twitter.com/gamechangegame" target="_blank">
-              <img src="./static/img/icons/twitter.png" />
+              <img src="{{config['STATIC_ROOT_URL']}}img/icons/twitter.png" />
             </a>
           </li>
           <li>
             <a href="http://youtube.com/gamechangegame" target="_blank">
-              <img src="./static/img/icons/youtube.png" />
+              <img src="{{config['STATIC_ROOT_URL']}}img/icons/youtube.png" />
             </a>
           </li>
         </ul>
@@ -292,7 +301,7 @@
                 <div class="inputs">
                   <p> Thank you for signing up. We'll be sending you an e-mail to confirm your e-mail address. 
                     It should be with you in the next few minutes. Make sure you check your spam or junk mail too!</p>
-                  <!--<p> Social Share </p>-->
+                  {% include "inc/social-links.html" %}
                 </div>
             </fieldset>
           </form>
