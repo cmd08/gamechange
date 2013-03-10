@@ -1,8 +1,4 @@
-#TODO:
-#Fix the thankyou page
-#Finish unsubscribe
-#DB Migrations
-#full height pages
+
 from flask import Flask, render_template, jsonify, request, make_response, session, abort
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask_mail import Message, Mail
@@ -14,6 +10,8 @@ app = Flask(__name__)
 app.config.from_envvar('FLASK_CONFIG')
 db = SQLAlchemy(app)
 mail = Mail(app)
+
+db.create_all()
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -51,8 +49,6 @@ class User(db.Model):
         
     def __repr__(self):
         return '<User %r>' % self.email
-
-db.create_all()
 
 @app.before_request
 def csrf_protect():
@@ -128,4 +124,4 @@ def email_unsubscribe(email):
     return "We have unsubscribed %s from our list", email
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=8001)
