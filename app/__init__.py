@@ -101,15 +101,32 @@ def signupFormSubmit():
         resp = make_response(jsonify(errors=user.error, _csrf_token=session.get('_csrf_token')), 400)
         return resp
 
+@app.route("/email/verify/", defaults={"id_hash": None})
 @app.route("/email/verify/<id_hash>")
 def email_verify(id_hash):
-    u = User.query.get(hash(int(urlsafe_b64decode(str(id_hash)))))
+    try:
+        id = hash(int(urlsafe_b64decode(str(id_hash))))
+    except (TypeError, ValueError):
+        #Error, invalid hash. Tell the user to try again.
+        return render_template('signup_unverified.html')
+
+    u = User.query.get(id)
     if u != None:
         u.verified = True
         db.session.commit()
         return render_template('signup_verified.html', first_name=u.first_name, last_name=u.last_name, email=u.email)
+
+    return render_template('signup_unverified.html')
+        
+
+@app.route("/email/verify/resend", methods=['POST'])
+def email_verify_resend():
+    u = User.query.filter_by(email=request.form.get('email')).first()
+    if u:
+        #found them - resend email
     else:
-        return render_template('signup_unverified.html')
+        #display signup form
+    pass
 
 @app.route("/email/unsubscribe/<email>")
 def email_unsubscribe(email):

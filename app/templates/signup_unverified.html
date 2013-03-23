@@ -271,13 +271,11 @@ color: #ddd;
             <fieldset id="resend">
               <legend>Oops!</legend>
                 <div class="inputs">
-                  <p> Sorry! We can't seem to find your email address in our database. Please click below to resend the verification email or sign up if you havent already done so! </p>
+                  <p> Sorry! We can't seem to find your email address in our database. You can either try copying the url from your e-mail again, or re-enter your e-mail address and we'll send the confirmation again. </p>
                   <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
                   <input name="email" type="text" placeholder="Email Address" class="wide">
-                  <input name="first_name" type="text" placeholder="First Name" class="slim pull-left">
-                  <input name="last_name" type="text" placeholder="Last Name" class="slim pull-right">
                   <div id="errors" class="error"></div>
-                  <button type="submit" class="btn btn-success wide">Resend</button>
+                  <button type="submit" class="btn btn-success wide">Find E-mail and Resend</button>
                 </div>
             </fieldset>
             <fieldset id="thanks" class="hide">
