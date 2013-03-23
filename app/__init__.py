@@ -107,20 +107,30 @@ def email_verify(id_hash):
     
     return render_template('signup_verified.html', first_name=u.first_name, last_name=u.last_name, email=u.email)
 
-@app.route("/email/unsubscribe/<email>")
+@app.route("/email/unsubscribe/", defaults={"email": None}, methods=['GET','POST'])
+@app.route("/email/unsubscribe/<email>", methods=['GET'])
 def email_unsubscribe(email):
-    if len(email) == 0:
+    show_form = True
+    if not (request.form.get('email') == None):
+        email = request.form.get('email')
+        
+    if email == None:
         #email address empty, so return here
+        msg = 'You need to enter your email address to unsubscribe'
         pass
+    else:
+        results = User.query.filter_by(email=email)
+        if results.count() != 1:
+            #email address not found, so return here
+            msg = 'The given email address was not in our system'
+            pass
+        else:
+            show_form = False
+            results.first().subscribed = False
+            db.session.commit()
+            msg = 'We\'ll  stop  pestering you at ' + email
 
-    results = User.query.filter_by(email=email)
-    if results.count() != 1:
-        #email address not found, so return here
-        pass
-
-    results.first().subscribed = False
-    db.session.commit()
-    return "We have unsubscribed %s from our list", email
+    return render_template('unsubscribe.html', msg=msg, show_form = show_form)
 
 if __name__ == "__main__":
     db.create_all()
