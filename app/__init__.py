@@ -128,9 +128,10 @@ def email_verify_resend():
     u = User.query.filter_by(email=request.form.get('email')).first()
     if u:
         #found them - resend email
+        pass
     else:
         #display signup form
-    pass
+        pass
 
 @app.route("/email/unsubscribe/<email>")
 def email_unsubscribe(email):
