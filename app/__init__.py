@@ -78,6 +78,12 @@ def send_email_to_user(user):
 def index():
     return render_template('index.html')
 
+'''
+@app.route("/aksat")
+def aksat():
+    return render_template('aksat.html')
+'''
+
 @app.route("/signup", methods=['POST'])
 def signupFormSubmit():
     first_name = request.form.get('first_name')
@@ -101,11 +107,9 @@ def email_verify(id_hash):
     if u != None:
         u.verified = True
         db.session.commit()
+        return render_template('signup_verified.html', first_name=u.first_name, last_name=u.last_name, email=u.email)
     else:
-        #TODO should render an error here really!
-        pass
-    
-    return render_template('signup_verified.html', first_name=u.first_name, last_name=u.last_name, email=u.email)
+        return render_template('signup_unverified.html')
 
 @app.route("/email/unsubscribe/<email>")
 def email_unsubscribe(email):
