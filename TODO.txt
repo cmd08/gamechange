@@ -1,8 +1,0 @@
-TODO
-#Finish unsubscribe
-#DB Migrations
-#Footer on short pages
-#Serve static content from a cookie-less domain
-#Cache static content
-#Compile JS to one file
-#Compile CSS to one file
