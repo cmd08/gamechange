@@ -24,7 +24,7 @@
       <div class="row">
         <div class="content-wrapper">
           <div class="content">
-            <form>
+            <form id="resend">
               <fieldset id="resend">
                 <legend>Oops!</legend>
                 <div class="inputs">
@@ -36,6 +36,17 @@
                   <button type="submit" class="btn btn-success wide">Find E-mail and Resend</button>
                 </div>
               </fieldset>
+              <fieldset id="thanks_resend" class="hide">
+                <legend>Thank you</legend>
+                  <div class="inputs">
+                    <p> We've resent your e-mail and it should be with you very soon. If you don't receive it within 12 hours
+                      or have any other problems please e-mail us <a href="mailto:info@gamechange.info">info@gamechange.info</a> and we'll investigate. Don't forget to
+                      check your junk or spam folder! </p>
+                      {% include "inc/social_share.html" %}
+                  </div>
+              </fieldset>
+            </form>
+            <form id="signup">
               <fieldset id="signup" class="hide">
                 <legend>Oops!</legend>
                   <div class="inputs">
@@ -47,15 +58,6 @@
                     <input name="last_name" type="text" placeholder="Last Name" class="slim pull-right">
                     <div class="error"></div>
                     <button type="submit" class="btn btn-success wide">Go!</button>
-                  </div>
-              </fieldset>
-              <fieldset id="thanks_resend" class="hide">
-                <legend>Thank you</legend>
-                  <div class="inputs">
-                    <p> We've resent your e-mail and it should be with you very soon. If you don't receive it within 12 hours
-                      or have any other problems please e-mail us <a href="mailto:info@gamechange.info">info@gamechange.info</a> and we'll investigate. Don't forget to
-                      check your junk or spam folder! </p>
-                      {% include "inc/social_share.html" %}
                   </div>
               </fieldset>
               <fieldset id="thanks_signup" class="hide">
@@ -88,7 +90,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type='text/javascript'>
     $(function(){
-      $('form').submit(function(e){
+      $('form#resend').submit(function(e){
         e.preventDefault;
         $.ajax({
           method: 'POST',

@@ -121,7 +121,7 @@ def email_verify(id_hash):
         return render_template('signup_verified.html', first_name=u.first_name, last_name=u.last_name, email=u.email)
 
     return render_template('signup_unverified.html')
-        
+
 
 @app.route("/email/resend", methods=['POST'])
 def email_resend():
@@ -129,9 +129,11 @@ def email_resend():
     print request.form.get('email')
     print u
     if u:
-        return render_template('signup_resent.html');
+        send_email_to_user(u)
+        return jsonify(status="200", _csrf_token=session.get('_csrf_token'))
     else:
-        return render_template('signup_not_found.html');
+        return make_response(jsonify(_csrf_token=session.get('_csrf_token')), 400)
+
 
 @app.route("/email/unsubscribe/", defaults={"email": None}, methods=['GET','POST'])
 @app.route("/email/unsubscribe/<email>", methods=['GET'])
