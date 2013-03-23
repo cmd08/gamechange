@@ -1,0 +1,14 @@
+#general
+DEBUG = True
+#sessions
+SECRET_KEY = 'secret!'
+#mail
+MAIL_SERVER = 'in.mailjet.com'
+MAIL_USE_TLS = True
+MAIL_USERNAME = 'DEBUG'
+MAIL_PASSWORD = 'DEBUG'
+DEFAULT_MAIL_SENDER = 'info@gamechange.info'
+#sql
+SQLALCHEMY_DATABASE_URI = 'sqlite:////home/username/path/to/any/folder'
+#static assets
+STATIC_ROOT_URL = 'http://localhost:8001/static/'
