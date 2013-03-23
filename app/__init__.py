@@ -6,11 +6,13 @@ from re import compile
 import random, string
 from base64 import *
 
+from bananas import bananas
+
 app = Flask(__name__)
 app.config.from_envvar('FLASK_CONFIG')
 db = SQLAlchemy(app)
 mail = Mail(app)
-
+app.register_blueprint(bananas, url_prefix="/bananas")
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
