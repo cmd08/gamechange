@@ -3,7 +3,7 @@
     <meta property="og:type" content="company" />
     <meta property="og:site_name" content="Game Change" />
     <meta property="og:url" content="gamechange.info" />
-    <meta property="og:image" content="https://launchrock-assets.s3.amazonaws.com/facebook-files/B0W45G4F_1360786065036.png?_=0" />
+    <meta property="og:image" content="{{config['STATIC_ROOT_URL']}}img/small_logo.png" />
 
     <meta name="viewport" content="width=1024">
     <link rel="stylesheet" type="text/css" href="{{config['STATIC_ROOT_URL']}}css/bootstrap.css">
@@ -82,6 +82,7 @@
       position: relative;
       z-index: 10;
       width: 560px;
+      min-height: 150px;
       margin: 15px auto;
       padding: 10px 19px 18px;
     }
