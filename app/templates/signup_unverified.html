@@ -32,7 +32,7 @@
                   Alternatively, for a new link enter your address below and we'll send another confirmation. </p>
                   <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
                   <input name="email" type="text" placeholder="Email Address" class="wide">
-                  <div id="errors" class="error"></div>
+                  <div class="error"></div>
                   <button type="submit" class="btn btn-success wide">Find E-mail and Resend</button>
                 </div>
               </fieldset>
@@ -56,7 +56,7 @@
                     <input name="email" type="text" placeholder="Email Address" class="wide">
                     <input name="first_name" type="text" placeholder="First Name" class="slim pull-left">
                     <input name="last_name" type="text" placeholder="Last Name" class="slim pull-right">
-                    <div id="errors" class="error"></div>
+                    <div class="error"></div>
                     <button type="submit" class="btn btn-success wide">Go!</button>
                   </div>
               </fieldset>
@@ -95,17 +95,47 @@
         $.ajax({
           method: 'POST',
           url: '/email/resend', 
-          data: $('form').serialize(), 
+          data: $('form#resend').serialize(), 
           error: function(jqXHR, textStatus, errorThrown){
+            resp = JSON.parse(jqXHR.responseText);
             $('form#resend fieldset').hide();
             $('form#signup fieldset#signup').show();
+            $("input[name='_csrf_token']").val(resp._csrf_token);
           },
           success: function(){
-            $('div#errors').html('');
-            $('fieldset#signup input').removeClass('error');
-            $('form fieldset#signup').fadeOut({
+            resp = JSON.parse(jqXHR.responseText);
+            $('form#resend fieldset#resend').fadeOut({
               'done': function(){
-                $('form fieldset#thanks').fadeIn();
+                $('form#resend fieldset#thanks_resend').fadeIn();
+              },
+            });
+            $("form#signup input[name='_csrf_token']").val(resp._csrf_token);
+          }
+        });
+        return false;
+      });
+      $('form#signup').submit(function(e){
+        e.preventDefault;
+        $.ajax({
+          method: 'POST',
+          url: '/signup', 
+          data: $('form#signup').serialize(), 
+          error: function(jqXHR, textStatus, errorThrown){
+            resp = JSON.parse(jqXHR.responseText);
+            $('form#signup div.error').html('');
+            $('fieldset#signup input').removeClass('error');
+            for (e in resp['errors']){
+              $('form#signup div.error').append("<p>"+resp['errors'][e]+"</p>");
+              $("input[name='"+e+"']").addClass('error');
+            }
+            $("input[name='_csrf_token']").val(resp._csrf_token);
+          },
+          success: function(){
+            $('form#signup div.error').html('');
+            $('fieldset#signup input').removeClass('error');
+            $('form#signup fieldset#signup').fadeOut({
+              'done': function(){
+                $('form#signup fieldset#thanks_signup').fadeIn();
               },
             });
           }

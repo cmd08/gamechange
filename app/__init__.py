@@ -116,9 +116,11 @@ def email_verify(id_hash):
 
     return render_template('signup_unverified.html')
 
-@app.route("/email/resend/", methods=['POST'])
+@app.route("/email/resend", methods=['POST'])
 def email_resend():
     u = User.query.filter_by(email=request.form.get('email')).first()
+    print request.form.get('email')
+    print u
     if u:
         send_email_to_user(u)
         return jsonify(status="200", _csrf_token=session.get('_csrf_token'))
