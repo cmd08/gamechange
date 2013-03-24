@@ -23,52 +23,54 @@
       </div>
       <div class="row">
         <div class="content-wrapper">
-          <div class="content">
-            <form id="resend">
-              <fieldset id="resend">
-                <legend>Oops!</legend>
-                <div class="inputs">
-                  <p> It looks like your verification link is invalid. Perhaps you could try copying it again from your e-mail.
-                  Alternatively, for a new link enter your address below and we'll send another confirmation. </p>
-                  <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
-                  <input name="email" type="text" placeholder="Email Address" class="wide">
-                  <div class="error"></div>
-                  <button type="submit" class="btn btn-success wide">Find E-mail and Resend</button>
-                </div>
-              </fieldset>
-              <fieldset id="thanks_resend" class="hide">
-                <legend>Thank you</legend>
+          <div class="span12">
+            <div class="content">
+              <form id="resend">
+                <fieldset id="resend">
+                  <legend>Oops!</legend>
                   <div class="inputs">
-                    <p> We've resent your e-mail and it should be with you very soon. If you don't receive it within 12 hours
-                      or have any other problems please e-mail us <a href="mailto:info@gamechange.info">info@gamechange.info</a> and we'll investigate. Don't forget to
-                      check your junk or spam folder! </p>
-                      {% include "inc/social_share.html" %}
-                  </div>
-              </fieldset>
-            </form>
-            <form id="signup">
-              <fieldset id="signup" class="hide">
-                <legend>Oops!</legend>
-                  <div class="inputs">
-                    <p> It looks like your e-mail address isn't in our system. Please enter your details again below and we'll 
-                      send you a verification e-mail right away!</p>
+                    <p> It looks like your verification link is invalid. Perhaps you could try copying it again from your e-mail.
+                    Alternatively, for a new link enter your address below and we'll send another confirmation. </p>
                     <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
                     <input name="email" type="text" placeholder="Email Address" class="wide">
-                    <input name="first_name" type="text" placeholder="First Name" class="slim pull-left">
-                    <input name="last_name" type="text" placeholder="Last Name" class="slim pull-right">
                     <div class="error"></div>
-                    <button type="submit" class="btn btn-success wide">Go!</button>
+                    <button type="submit" class="btn btn-success wide">Find E-mail and Resend</button>
                   </div>
-              </fieldset>
-              <fieldset id="thanks_signup" class="hide">
-                <legend>Thank you</legend>
-                  <div class="inputs">
-                    <p> Thank you for signing up. We'll be sending you an e-mail to confirm your e-mail address. 
-                      It should be with you in the next few minutes. Make sure you check your spam or junk mail too!</p>
-                    {% include "inc/social_share.html" %}
-                  </div>
-              </fieldset>
-            </form>
+                </fieldset>
+                <fieldset id="thanks_resend" class="hide">
+                  <legend>Thank you</legend>
+                    <div class="inputs">
+                      <p> We've resent your e-mail and it should be with you very soon. If you don't receive it within 12 hours
+                        or have any other problems please e-mail us <a href="mailto:info@gamechange.info">info@gamechange.info</a> and we'll investigate. Don't forget to
+                        check your junk or spam folder! </p>
+                        {% include "inc/social_share.html" %}
+                    </div>
+                </fieldset>
+              </form>
+              <form id="signup">
+                <fieldset id="signup" class="hide">
+                  <legend>Oops!</legend>
+                    <div class="inputs">
+                      <p> It looks like your e-mail address isn't in our system. Please enter your details again below and we'll 
+                        send you a verification e-mail right away!</p>
+                      <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+                      <input name="email" type="text" placeholder="Email Address" class="wide">
+                      <input name="first_name" type="text" placeholder="First Name" class="slim pull-left">
+                      <input name="last_name" type="text" placeholder="Last Name" class="slim pull-right">
+                      <div class="error"></div>
+                      <button type="submit" class="btn btn-success wide">Go!</button>
+                    </div>
+                </fieldset>
+                <fieldset id="thanks_signup" class="hide">
+                  <legend>Thank you</legend>
+                    <div class="inputs">
+                      <p> Thank you for signing up. We'll be sending you an e-mail to confirm your e-mail address. 
+                        It should be with you in the next few minutes. Make sure you check your spam or junk mail too!</p>
+                      {% include "inc/social_share.html" %}
+                    </div>
+                </fieldset>
+              </form>
+            </div>
           </div>
         </div>
       </div>
