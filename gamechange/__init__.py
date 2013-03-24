@@ -23,9 +23,9 @@ mail = Mail(app)
 
 
 
-@login_manager.user_loader
-def load_user(userid):
-    return User.get(userid)
+# @login_manager.user_loader
+# def load_user(userid):
+#     return User.get(userid)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
