@@ -1,0 +1,79 @@
+
+@sky_blue_dark: #3a6fcf;
+@sky_blue_light: #a6d8fd;
+
+
+html {
+	height: 100%;
+}
+
+body {
+	background: ( (@sky_blue_light + @sky_blue_dark) / 2); /* for non-css3 browsers */
+
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='@sky_blue_dark', endColorstr='@sky_blue_light'); /* for IE */	
+	background: -webkit-radial-gradient(10% 30%, @sky_blue_dark, @sky_blue_light );
+	background: -moz-linear-gradient(top,  @sky_blue_dark,  @sky_blue_light); /* for firefox 3.6+ */
+}
+
+#content {
+	height: 100%;
+	width: 100%;
+}
+
+#land {
+	@land_height: 50%;
+	@sand_light: yellow;
+	@sand_dark: green;
+
+	background: ( (@sand_light + @sand_dark) / 2); /* for non-css3 browsers */
+
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='@sand_dark', endColorstr='@sand_light'); /* for IE */	
+	background: -webkit-radial-gradient(10% 30%, @sand_dark, @sand_light );
+	background: -moz-linear-gradient(top,  @sand_dark,  @sand_light); /* for firefox 3.6+ */
+
+
+	border-radius: 50%;
+	height: @land_height;
+	width: 96%;
+	position: fixed;
+	bottom: (0 - 2*(@land_height/3) );
+	margin: 0 2%;
+}
+
+@keyframes scroll
+{
+from {right: -20%;}
+to {right: 120%;}
+}
+
+@-moz-keyframes scroll /* Firefox */
+{
+from {right: -20%;}
+to {right: 120%;}
+}
+
+@-webkit-keyframes scroll /* Safari and Chrome */
+{
+from {right: -20%;}
+to {right: 120%;}
+}
+
+@-o-keyframes scroll /* Opera */
+{
+from {right: -20%;}
+to {right: 120%;}
+}
+
+#cloud {
+	height:50px;
+	width:100px;
+	background: white;
+	border-radius: 50%;
+	position: fixed;
+	top: 10%;
+	right: 120%;
+	animation: scroll 50s;
+	-moz-animation: scroll 50s; /* Firefox */
+	-webkit-animation: scroll 50s; /* Safari and Chrome */
+	-o-animation: scroll 50s; /* Opera */
+}
