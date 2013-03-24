@@ -97,12 +97,6 @@ def send_email_to_user(user):
 def index():
     return render_template('index.html')
 
-'''
-@app.route("/aksat")
-def aksat():
-    return render_template('aksat.html')
-'''
-
 @app.route("/signup", methods=['POST'])
 def signupFormSubmit():
     first_name = request.form.get('first_name')
@@ -175,5 +169,26 @@ def email_unsubscribe(email):
             results.first().subscribed = False
             db.session.commit()
             msg = 'We\'ll  stop  pestering you at ' + email
-
     return render_template('unsubscribe.html', msg=msg, show_form = show_form)
+
+#error handling!
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+@app.errorhandler(403)
+def page_not_found(e):
+    return render_template('403.html'), 403
+
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template('500.html'), 500
+
+@app.errorhandler(502)
+def page_not_found(e):
+    return render_template('502.html'), 502
+
+@app.errorhandler(503)
+def page_not_found(e):
+    return render_template('503.html'), 503
+
