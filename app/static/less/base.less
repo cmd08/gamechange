@@ -40,6 +40,19 @@ body {
 	margin: 0 2%;
 }
 
+
+
+#hut {
+	width: 20%;
+	position: fixed;
+	bottom:10%;
+	left: 40%;
+	img {
+		width:100%;
+	}
+}
+
+
 @keyframes scroll
 {
 from {right: -20%;}
@@ -64,11 +77,14 @@ from {right: -20%;}
 to {right: 120%;}
 }
 
-#cloud {
-	height:50px;
-	width:100px;
+
+@cloud-width: 100px;
+@cloud-height: ( @cloud-width / 2);
+.cloud {
+	height: @cloud-height;
+	width: @cloud-width;
 	background: white;
-	border-radius: 50%;
+	border-radius: (@cloud-height / 2);
 	position: fixed;
 	top: 10%;
 	right: 120%;
@@ -76,4 +92,52 @@ to {right: 120%;}
 	-moz-animation: scroll 50s; /* Firefox */
 	-webkit-animation: scroll 50s; /* Safari and Chrome */
 	-o-animation: scroll 50s; /* Opera */
+}
+
+
+.cloud-round {
+	width: @cloud-width;
+	border-radius: 50%; /* circle */
+	position: relative;
+	bottom: (0 - (@cloud-width / 10) );
+	
+	-webkit-box-shadow: 0 0 25px 8px rgba(0, 0, 0, 0.2);
+	-moz-box-shadow: 0 0 25px 8px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 0 25px 8px rgba(0, 0, 0, 0.2);
+	
+	-webkit-transition: 0.2s ease-in all;
+	-moz-transition: 0.2s ease-in all;
+	transition: 0.2s ease-in all;
+}
+
+.cloud-round:before, .cloud-round:after{
+	content: '';
+	position: absolute;
+	background: #fff;
+}
+
+.cloud-round:after{
+	height: (@cloud-width / 3);
+	width: (@cloud-width / 3);
+	border-radius: 50%; /* circle */
+	
+	top:  (0 - @cloud-height/2);
+	left: (@cloud-width / 5);
+	
+	box-shadow:
+		inset 3px 2px 2px rgba(230, 230, 230, 0.5),
+		0px -10px 15px rgba(255, 255, 255, 0.4);
+}
+
+.cloud-round:before {
+	height: (@cloud-width / 1.5);
+	width: (@cloud-width / 1.5);
+	border-radius: 50%; /* circle */
+	
+	top: (0 - @cloud-height);
+	left: (4 * @cloud-width / 10);
+	
+	box-shadow:
+		inset 2px 4px 2px rgba(230, 230, 230, 0.5),
+		0px -10px 15px rgba(255, 255, 255, 0.4);
 }

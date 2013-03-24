@@ -3,6 +3,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     {% block head %}
+    <title>{% block title %}{% endblock %} - My Webpage</title>
+
+    <script src="{{config['STATIC_ROOT_URL']}}js/jquery.js" type="text/javascript"></script>
     <link rel="stylesheet" type="text/css" href="{{config['STATIC_ROOT_URL']}}css/bootstrap.css">
     {% if config['DEBUG'] %}
     <link rel="stylesheet/less" type="text/css" href="{{config['STATIC_ROOT_URL']}}less/base.less" />
@@ -10,14 +13,19 @@
     {% else %}
     <link rel="stylesheet" href="{{config['STATIC_ROOT_URL']}}css/style.css" />
     {% endif %}
-    <title>{% block title %}{% endblock %} - My Webpage</title>
     {% endblock %}
 </head>
 <body>
-    <div id="land">
+    <div id="land"></div>
+
+    <div id="hut">
+        <img src="{{config['STATIC_ROOT_URL']}}img/shelterLv0.png"> <!--put jinga src here-->
     </div>
-    <div id="cloud">
+
+    <div class="cloud">
+        <span class="cloud-round"></span>
     </div>
+
     <div id="content">{% block content %}{% endblock %}</div>
     <div id="footer">
         {% block footer %}

@@ -1,14 +1,49 @@
 {% extends "bananas/base.html" %}
 {% block title %}Index{% endblock %}
 {% block head %}
+    {% if config['DEBUG'] %}
+    	<link rel="stylesheet/less" type="text/css" href="{{config['STATIC_ROOT_URL']}}less/index.less" />
+    {% endif %}
     {{ super() }}
-    <style type="text/css">
-        .important { color: #336699; }
-    </style>
 {% endblock %}
 {% block content %}
-    <h1>Index</h1>
-    <p class="important">
-      Welcome on my awesome homepage.
-    </p>
+
+	<div id="home">
+		<div id="content">
+			<div id="launch">
+				<div id="start">
+			    	<a href="">GO PLAY!</a>
+				</div>
+
+				<div id="logo">
+					logo
+				</div>
+			</div>
+
+			<div id="menu" class="hide">
+				<div id="banana-hunt">
+					<a href="">BANANA HUNT</a>
+				</div>
+				<div id="monkey-business">
+					<a href="">MONKEY BUSINESS</a>
+				</div>
+			</div>
+		</div>
+
+		<div id="tree">
+			<img src="{{config['STATIC_ROOT_URL']}}img/banana_tree.png"/>
+	    </div>
+		
+		<div id="monkey">
+			<img src="{{config['STATIC_ROOT_URL']}}img/monkey.png"/>
+	    </div>
+	</div>
+
+
+	<div id="bananarun" class="hide">
+	</div>
+
+	<script type="text/javascript">$('#start').click(function(e){ e.preventDefault(); $('#launch').hide(); $('#menu').fadeIn(); return false} )</script>
+
+
 {% endblock %}
