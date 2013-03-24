@@ -8,8 +8,9 @@
 						color: black;
 						position: fixed;
 						width: 30%;
-						bottom: 8%;
+						bottom: 4%;
 						left: 35%;
+						font-size: 32px;
 
 						&:hover { color: red };
 					}
@@ -30,10 +31,7 @@
 
 		#menu {
 			a{
-				text-align: center;
-				color: black;
-				&:hover { color: red };
-				position: fixed;
+				text-decoration: none;
 			}
 			img {
 				width: 100%;
@@ -62,6 +60,7 @@
 			    transform: rotate(@rotate) scale(@scale) skew(@skew) translate(@translate);
 			}
 		}
+
 	}
 	
 
@@ -91,6 +90,37 @@
 	}
 }
 
+#monkeybusiness {
+	-webkit-transform-style: preserve-3d;
+	-webkit-perspective: 862px;
+	-webkit-perspective-origin: 70% 34%;
+
+	#bamboo-frame-holder {
+		background-color: white;
+		width: 70%;
+		height: 51%;
+		top: 21%;
+		-webkit-transform: rotateY(25deg);
+		left: 24%;
+		display: block;
+		z-index: 1;
+		position: absolute;
+
+		.bamboo-text-wrap {
+			margin: 20px;
+		}
+	}
+	a{
+		text-align: center;
+		color: black;
+		&:hover { color: red };
+		position: fixed;
+	}
+	img {
+		width: 100%;
+		height: 100%;
+	}
+}
 
 
 #bananarun {
