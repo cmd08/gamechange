@@ -29,7 +29,12 @@
 			</div>
 
 			<div id="menu" class="hide">
-				<img src="{{config['STATIC_ROOT_URL']}}img/bamboo_frame.png"/>
+                <div id="rightarrow">
+                    <img src="{{config['STATIC_ROOT_URL']}}img/rightarrowstd.png"/>
+                </div>
+                <div id="leftarrow">
+                    <img src="{{config['STATIC_ROOT_URL']}}img/rightarrowstd.png"/>
+                </div>
 				<div id="banana-hunt">
 					<a href="">BANANA HUNT</a>
 				</div>
@@ -44,7 +49,7 @@
 	<div id="bananarun" class="hide">
 	</div>
 
-	<script type="text/javascript">$('#start').click(function(e){ e.preventDefault(); $('#launch').hide();$('#hut').hide();$('#tree').hide(); $('#menu').fadeIn();  return false} )</script>
+	<script type="text/javascript">$('#start').click(function(e){ e.preventDefault(); $('#launch').hide();$('#hut').hide();$('#menu').fadeIn();  return false} )</script>
 
 
 {% endblock %}
