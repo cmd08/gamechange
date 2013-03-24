@@ -9,6 +9,14 @@
 {% block content %}
 
 	<div id="home">
+		<div id="tree">
+			<img src="{{config['STATIC_ROOT_URL']}}img/banana_tree.png"/>
+	    </div>
+		
+		<div id="monkey">
+			<img src="{{config['STATIC_ROOT_URL']}}img/monkeyfull.png"/>
+	    </div>
+
 		<div id="content">
 			<div id="launch">
 				<div id="start">
@@ -21,6 +29,7 @@
 			</div>
 
 			<div id="menu" class="hide">
+				<img src="{{config['STATIC_ROOT_URL']}}img/bamboo_frame.png"/>
 				<div id="banana-hunt">
 					<a href="">BANANA HUNT</a>
 				</div>
@@ -29,21 +38,13 @@
 				</div>
 			</div>
 		</div>
-
-		<div id="tree">
-			<img src="{{config['STATIC_ROOT_URL']}}img/banana_tree.png"/>
-	    </div>
-		
-		<div id="monkey">
-			<img src="{{config['STATIC_ROOT_URL']}}img/monkey.png"/>
-	    </div>
 	</div>
 
 
 	<div id="bananarun" class="hide">
 	</div>
 
-	<script type="text/javascript">$('#start').click(function(e){ e.preventDefault(); $('#launch').hide(); $('#menu').fadeIn(); return false} )</script>
+	<script type="text/javascript">$('#start').click(function(e){ e.preventDefault(); $('#launch').hide();$('#hut').hide();$('#tree').hide(); $('#menu').fadeIn();  return false} )</script>
 
 
 {% endblock %}
