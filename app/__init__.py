@@ -92,12 +92,7 @@ def send_email_to_user(user):
 @app.route("/")
 def index():
     return render_template('index.html')
-
-'''
-@app.route("/aksat")
-def aksat():
-    return render_template('aksat.html')
-'''
+    
 
 @app.route("/signup", methods=['POST'])
 def signupFormSubmit():
