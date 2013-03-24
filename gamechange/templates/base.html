@@ -63,39 +63,9 @@
       </div>
     </div>
   </div>  
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script type='text/javascript'>
-    $(function(){
-      $('form').submit(function(e){
-        e.preventDefault;
-        $.ajax({
-          method: 'POST',
-          url: '/signup', 
-          data: $('form').serialize(), 
-          error: function(jqXHR, textStatus, errorThrown){
-            resp = JSON.parse(jqXHR.responseText);
-            $('div#errors').html('');
-            $('fieldset#signup input').removeClass('error');
-            for (e in resp['errors']){
-              $('div#errors').append("<p>"+resp['errors'][e]+"</p>");
-              $("input[name='"+e+"']").addClass('error');
-            }
-            $("input[name='_csrf_token']").val(resp._csrf_token);
-          },
-          success: function(){
-            $('div#errors').html('');
-            $('fieldset#signup input').removeClass('error');
-            $('form fieldset#signup').fadeOut({
-              'done': function(){
-                $('form fieldset#thanks').fadeIn();
-              },
-            });
-          }
-        });
-        return false;
-      });
-    });
-  </script>
+  {% block scripts %}
+  
+  {% endblock %}
   {% include "inc/ga.html" %}
   </body>
 </html>
