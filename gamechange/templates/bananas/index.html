@@ -19,23 +19,17 @@
 
 		<div id="content">
 			<div id="launch">
-				<div id="start">
+				<div id="start" class="risque">
 			    	<a href="">GO PLAY!</a>
 				</div>
 
 				<div id="logo">
-					logo
+					<h1>logo</h1>
 				</div>
 			</div>
 
 			<div id="menu" class="hide">
-				<img src="{{config['STATIC_ROOT_URL']}}img/bamboo_frame.png"/>
-				<div id="banana-hunt">
-					<a href="">BANANA HUNT</a>
-				</div>
-				<div id="monkey-business">
-					<a href="">MONKEY BUSINESS</a>
-				</div>
+				
 			</div>
 		</div>
 	</div>
@@ -44,7 +38,16 @@
 	<div id="bananarun" class="hide">
 	</div>
 
-	<script type="text/javascript">$('#start').click(function(e){ e.preventDefault(); $('#launch').hide();$('#hut').hide();$('#tree').hide(); $('#menu').fadeIn();  return false} )</script>
+	<div id="monkeybusiness" class="hide">
+		<img src="{{config['STATIC_ROOT_URL']}}img/bamboo_frame.png"/>
+		<div id="bamboo-frame-holder">
+			<div class="bamboo-text-wrap">
+				<p> Buy Some Bananas!!!!</p>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">$('#start').click(function(e){ e.preventDefault(); $('#launch').hide();$('#hut').hide();$('#tree').hide(); $('#monkeybusiness').fadeIn();  return false} )</script>
 
 
 {% endblock %}
