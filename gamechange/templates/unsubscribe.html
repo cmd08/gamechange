@@ -1,18 +1,5 @@
-<html>
-  <head>
-    <title>Game Change</title>    
-    {% include "inc/header.html" %}    
-  </head>
-  <body>
-    {% include "inc/fb_root.html" %}
-    <div id="header">
-      <div id="GC-world-wrapper"> 
-        <img id="GC-world" class="img-rotate" src="{{config['STATIC_ROOT_URL']}}img/world.png" alt="" />
-      </div>
-      <div id="GC-people-wrapper">
-        <img id="GC-people"  src="{{config['STATIC_ROOT_URL']}}img/people.jpg" alt="" />
-      </div>
-    </div>
+{% extends "base.html" %}
+{% block title %}Game Change: Email Unsubscribe{% endblock %}
     <div class="container" id="main"> 
       <div class="row">
         <div class="span12">
@@ -21,6 +8,7 @@
         <div class="span12">
           <div class="content-wrapper">
             <div class="content">
+              {% block top_content %}
               <legend>Sorry to see you go :-(</legend>  
               <p>{{msg}}</p>
               {% if show_form %}
@@ -35,6 +23,7 @@
               </fieldset>
               </form>
               {% endif %}
+              {% endblock %}
             </div>
           </div>
         </div>
