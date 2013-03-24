@@ -12,3 +12,6 @@ DEFAULT_MAIL_SENDER = 'info@gamechange.info'
 SQLALCHEMY_DATABASE_URI = 'sqlite:////home/username/path/to/any/folder'
 #static assets
 STATIC_ROOT_URL = 'http://localhost:8001/static/'
+#health graph api
+HEALTHGRAPH_CLIENT_ID = 'DEBUG'
+HEALTHGRAPH_CLIENT_SECRET = 'DEBUG'
