@@ -1,69 +1,6 @@
-<html>
-  <head>
-    <title>Game Change</title>
-    {% include "inc/header.html" %}    
-  </head>
-  <body>
-            <div id="fb-root"></div>
-  <script>(function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1";
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));
-  </script>
-    <div id="hiring">
-      <a href="#">
-        We're hiring!
-      </a>
-    </div>  
-    <div id="header">
-      <div id="GC-world-wrapper"> 
-        <img id="GC-world" class="img-rotate" src="{{config['STATIC_ROOT_URL']}}img/world.png" alt="" />
-      </div>
-      <div id="GC-people-wrapper">
-        <img id="GC-people"  src="{{config['STATIC_ROOT_URL']}}img/people.jpg" alt="" />
-      </div>
-    </div>
-    <div class="container" id="main"> 
-      <div class="row">
-        <div class="span12">
-          <img src="{{config['STATIC_ROOT_URL']}}img/logo.png" alt="Game Change logo" id="logo" />
-        </div>
-        <div class="span12">
-          <div id="video-wrapper">
-            <a name="video">
-            <iframe id="video" width="560" height="315" src="http://www.youtube.com/embed/bFHRgBijius?rel=0" frameborder="0" allowfullscreen>
-            </iframe>
-          </a>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="span6 offset3">
-          <p class="text-center">Game Change is a web based role playing game played in the real world, designed to help players achieve their lifestyle goals.</p>
-        </div>
-      </div>
-      <div class="row">
-        <ul id="social-links" class="unstyled inline text-center">
-          <li>
-            <a href="http://facebook.com/gamechangegame" target="_blank">
-              <img src="{{config['STATIC_ROOT_URL']}}img/icons/facebook.png" />
-            </a>
-          </li>
-          <li>
-            <a href="http://twitter.com/gamechangegame" target="_blank">
-              <img src="{{config['STATIC_ROOT_URL']}}img/icons/twitter.png" />
-            </a>
-          </li>
-          <li>
-            <a href="http://youtube.com/gamechangegame" target="_blank">
-              <img src="{{config['STATIC_ROOT_URL']}}img/icons/youtube.png" />
-            </a>
-          </li>
-        </ul>
-      </div>
+{% extends "base.html" %}
+
+{% block extra_box %}
       <div class="row">
         <div class="content-wrapper">
           <div class="content">
@@ -92,49 +29,41 @@
           </div>
         </div>
       </div>
-    </div>
-      <div id="mid">
-        <div class="container">
-          <div class="row" id="blog">
-            <div class="span12">
-              <div class="page-header">
-                <h1>Blog</h1>
-              </div>
-              <span class="pull-right post-date" style="clear: right;"> 24th March 2013 </span>
-              <span class="pull-right post-author" style="clear: right;"> Aksat Shah </span>
-              <h2>Prototyping Weekend!</h2> 
-              <p>Thanks for following us so far! The Game Change team have been working through the weekend to get an awesome protoype game ready! The game starts with you stranded on an island with no food and no shelter. But don't worry, its always possible to get help from the monkey by just doing some simple missions. Simply go on a Banana Hunt and you can earn some bananas to pay the monkey for materials to help build your shelter. The different missions are Monkey See, Monkey Do, where you do small tasks such as 5 push-ups or situps, Banana Run, which is a short run and Island Quiz, a quick quiz about health and fitness. Please check it out at <a href=http://gamechange.info/bananas>Game Change Go Bananas</a>.</p>
+{% endblock %}
 
-              <p>If you want to keep up to date with major developments then sign up for the Beta Testing above. You can also find us on <a href="http://twitter.com/gamechangegame" target="_blank">Twitter</a> or <a href="http://facebook.com/gamechangegame" target="_blank"> Facebook </a> where we'll be posting updates of our progress in funding and development.</p>
-
-              <div class="page-header">
-              </div>
-              <span class="pull-right post-date" style="clear: right;"> 19th February 2013 </span>
-              <span class="pull-right post-author" style="clear: right;"> Chris Darby </span>
-              <h2>Welcome to Game Change!</h2> 
-
-              <p>Congratulations for getting this far! We've just finished updating this website and will be bringing you more information about our project in the coming days and weeks. If you've not done so already, please check out the <a href="#video">video</a> at the top of the page.</p>
-
-              <p>If you want to keep up to date with major developments then sign up for the Beta Testing above. You can also find us on <a href="http://twitter.com/gamechangegame" target="_blank">Twitter</a> or <a href="http://facebook.com/gamechangegame" target="_blank"> Facebook </a> where we'll be posting updates of our progress in funding and development.</p>
-
+{% block mid %}
+    <div id="mid">
+      <div class="container">
+        <div class="row" id="blog">
+          <div class="span12">
+            <div class="page-header">
+              <h1>Blog</h1>
             </div>
+            <span class="pull-right post-date" style="clear: right;"> 24th March 2013 </span>
+            <span class="pull-right post-author" style="clear: right;"> Aksat Shah </span>
+            <h2>Prototyping Weekend!</h2> 
+            <p>Thanks for following us so far! The Game Change team have been working through the weekend to get an awesome protoype game ready! The game starts with you stranded on an island with no food and no shelter. But don't worry, its always possible to get help from the monkey by just doing some simple missions. Simply go on a Banana Hunt and you can earn some bananas to pay the monkey for materials to help build your shelter. The different missions are Monkey See, Monkey Do, where you do small tasks such as 5 push-ups or situps, Banana Run, which is a short run and Island Quiz, a quick quiz about health and fitness. Please check it out at <a href=http://gamechange.info/bananas>Game Change Go Bananas</a>.</p>
+
+            <p>If you want to keep up to date with major developments then sign up for the Beta Testing above. You can also find us on <a href="http://twitter.com/gamechangegame" target="_blank">Twitter</a> or <a href="http://facebook.com/gamechangegame" target="_blank"> Facebook </a> where we'll be posting updates of our progress in funding and development.</p>
+
+            <div class="page-header">
+            </div>
+            <span class="pull-right post-date" style="clear: right;"> 19th February 2013 </span>
+            <span class="pull-right post-author" style="clear: right;"> Chris Darby </span>
+            <h2>Welcome to Game Change!</h2> 
+
+            <p>Congratulations for getting this far! We've just finished updating this website and will be bringing you more information about our project in the coming days and weeks. If you've not done so already, please check out the <a href="#video">video</a> at the top of the page.</p>
+
+            <p>If you want to keep up to date with major developments then sign up for the Beta Testing above. You can also find us on <a href="http://twitter.com/gamechangegame" target="_blank">Twitter</a> or <a href="http://facebook.com/gamechangegame" target="_blank"> Facebook </a> where we'll be posting updates of our progress in funding and development.</p>
+
           </div>
         </div>
-        <div class="footer" id="footer"> 
-          <div class="container">
-            <div class="row">
-              <div class="span12">
-                <p class="pull-right">&copy; Game Change Game 2013</p>
-              </div>
-            </div>
-          </div>
-        </div>  
-
       </div>
-
     </div>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script type='text/javascript'>
+    {%endblock%}
+{% block scripts %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script type='text/javascript'>
     $(function(){
       $('form').submit(function(e){
         e.preventDefault;
@@ -165,7 +94,5 @@
         return false;
       });
     });
-    </script>
-    {% include "inc/ga.html" %}
-  </body>
-</html>
+  </script>
+{% endblock %}
