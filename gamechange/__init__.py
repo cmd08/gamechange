@@ -11,6 +11,7 @@ from base64 import *
 app = Flask(__name__)
 #import gamechange.admin
 #from gamechange.decorators import *
+import gamechange.error
 
 app.config.from_envvar('FLASK_CONFIG')
 db = SQLAlchemy(app)
