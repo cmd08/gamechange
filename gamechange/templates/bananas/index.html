@@ -14,8 +14,9 @@
 	    </div>
 		
 		<div id="monkey">
-			<img src="{{config['STATIC_ROOT_URL']}}img/monkey.png"/>
+			<img src="{{config['STATIC_ROOT_URL']}}img/monkeyfull.png"/>
 	    </div>
+	    
 		<div id="content">
 			<div id="launch">
 				<div id="start">
@@ -43,7 +44,7 @@
 	<div id="bananarun" class="hide">
 	</div>
 
-	<script type="text/javascript">$('#start').click(function(e){ e.preventDefault(); $('#launch').hide(); $('#menu').fadeIn(); return false} )</script>
+	<script type="text/javascript">$('#start').click(function(e){ e.preventDefault(); $('#launch').hide();$('#hut').hide();$('#tree').hide(); $('#menu').fadeIn();  return false} )</script>
 
 
 {% endblock %}
