@@ -10,6 +10,7 @@ from bananas import bananas
 
 app = Flask(__name__)
 import gamechange.admin
+import gamechange.error
 from gamechange.decorators import *
 
 app.config.from_envvar('FLASK_CONFIG')
@@ -170,25 +171,3 @@ def email_unsubscribe(email):
             db.session.commit()
             msg = 'We\'ll  stop  pestering you at ' + email
     return render_template('unsubscribe.html', msg=msg, show_form = show_form)
-
-#error handling!
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
-
-@app.errorhandler(403)
-def page_not_found(e):
-    return render_template('403.html'), 403
-
-@app.errorhandler(500)
-def page_not_found(e):
-    return render_template('500.html'), 500
-
-@app.errorhandler(502)
-def page_not_found(e):
-    return render_template('502.html'), 502
-
-@app.errorhandler(503)
-def page_not_found(e):
-    return render_template('503.html'), 503
-
