@@ -16,11 +16,13 @@ body {
 }
 
 #content {
+	z-index: 0;
 	height: 100%;
 	width: 100%;
 }
 
 #land {
+	z-index: -10;
 	@land_height: 50%;
 	@sand_light: yellow;
 	@sand_dark: green;
@@ -43,6 +45,7 @@ body {
 
 
 #hut {
+	z-index: -9;
 	width: 20%;
 	position: fixed;
 	bottom:10%;
@@ -81,6 +84,7 @@ to {right: 120%;}
 @cloud-width: 100px;
 @cloud-height: ( @cloud-width / 2);
 .cloud {
+	z-index: -100;
 	height: @cloud-height;
 	width: @cloud-width;
 	background: white;
@@ -90,7 +94,9 @@ to {right: 120%;}
 	right: 120%;
 	animation: scroll 50s;
 	-moz-animation: scroll 50s; /* Firefox */
+	-moz-animation-iteration-count: infinite;
 	-webkit-animation: scroll 50s; /* Safari and Chrome */
+	-webkit-animation-iteration-count: infinite;
 	-o-animation: scroll 50s; /* Opera */
 }
 

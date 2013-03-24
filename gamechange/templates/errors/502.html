@@ -1,0 +1,8 @@
+{% extends "errors/base_http_error.html" %}
+{% block title %}Game Change: Error 502{% endblock %}
+{% block legend %}Server Error (502){% endblock %}
+{% block content %}
+    <p>
+      Sorry, it seems we have an internal error with our gunicorn server. We've logged the error and are fixing it now. Please come back soon and we will have it sorted!
+    </p>
+{% endblock %}
