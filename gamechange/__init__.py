@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, jsonify, request, make_response, session, abort
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask_mail import Message, Mail
@@ -10,6 +9,9 @@ from base64 import *
 from bananas import bananas
 
 app = Flask(__name__)
+import gamechange.admin
+from gamechange.decorators import *
+
 app.config.from_envvar('FLASK_CONFIG')
 db = SQLAlchemy(app)
 mail = Mail(app)
@@ -17,7 +19,9 @@ mail = Mail(app)
 login_manager = LoginManager()
 login_manager.setup_app(app)
 
-app.register_blueprint(bananas, url_prefix="/bananas")
+app.register_blueprint(bananas, url_prefix="/bananas", config=app.config)
+
+
 
 @login_manager.user_loader
 def load_user(userid):
@@ -92,7 +96,12 @@ def send_email_to_user(user):
 @app.route("/")
 def index():
     return render_template('index.html')
-    
+
+'''
+@app.route("/aksat")
+def aksat():
+    return render_template('aksat.html')
+'''
 
 @app.route("/signup", methods=['POST'])
 def signupFormSubmit():
@@ -168,7 +177,3 @@ def email_unsubscribe(email):
             msg = 'We\'ll  stop  pestering you at ' + email
 
     return render_template('unsubscribe.html', msg=msg, show_form = show_form)
-
-if __name__ == "__main__":
-    db.create_all()
-    app.run(debug=True, port=8001)
