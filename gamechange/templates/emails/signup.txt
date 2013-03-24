@@ -1,0 +1,10 @@
+Hey {{first_name}}!
+
+Thanks for signing up to the Game Change beta test!
+
+As you know we're still in development but we'd like you to confirm your e-mail address now to save time later. To do this, please visit http://gamechange.info/email/verify/{{email_key}} by pasting the URL in to your browser.
+
+We promise not to spam you, and we won't be in touch until we have something you can actually play! You can keep up to date via our blog (http://gamechange.info/blog), or interact on Facebook (http://facebook.com/gamechangegame) and Twitter (http://twitter.com/gamechangegame).
+
+
+You are receiving this e-mail because you signed up to gamechange.info. If you didn't signup you can just ignore this message, or visit http://gamechange.info/email/unsubscribe/{{email_address}} to unsubscribe.

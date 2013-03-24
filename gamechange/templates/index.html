@@ -1,0 +1,161 @@
+<html>
+  <head>
+    <title>Game Change</title>
+    {% include "inc/header.html" %}    
+  </head>
+  <body>
+            <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+  </script>
+    <div id="hiring">
+      <a href="#">
+        We're hiring!
+      </a>
+    </div>  
+    <div id="header">
+      <div id="GC-world-wrapper"> 
+        <img id="GC-world" class="img-rotate" src="{{config['STATIC_ROOT_URL']}}img/world.png" alt="" />
+      </div>
+      <div id="GC-people-wrapper">
+        <img id="GC-people"  src="{{config['STATIC_ROOT_URL']}}img/people.jpg" alt="" />
+      </div>
+    </div>
+    <div class="container" id="main"> 
+      <div class="row">
+        <div class="span12">
+          <img src="{{config['STATIC_ROOT_URL']}}img/logo.png" alt="Game Change logo" id="logo" />
+        </div>
+        <div class="span12">
+          <div id="video-wrapper">
+            <a name="video">
+            <iframe id="video" width="560" height="315" src="http://www.youtube.com/embed/bFHRgBijius?rel=0" frameborder="0" allowfullscreen>
+            </iframe>
+          </a>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span6 offset3">
+          <p class="text-center">Game Change is a web based role playing game played in the real world, designed to help players achieve their lifestyle goals.</p>
+        </div>
+      </div>
+      <div class="row">
+        <ul id="social-links" class="unstyled inline text-center">
+          <li>
+            <a href="http://facebook.com/gamechangegame" target="_blank">
+              <img src="{{config['STATIC_ROOT_URL']}}img/icons/facebook.png" />
+            </a>
+          </li>
+          <li>
+            <a href="http://twitter.com/gamechangegame" target="_blank">
+              <img src="{{config['STATIC_ROOT_URL']}}img/icons/twitter.png" />
+            </a>
+          </li>
+          <li>
+            <a href="http://youtube.com/gamechangegame" target="_blank">
+              <img src="{{config['STATIC_ROOT_URL']}}img/icons/youtube.png" />
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="row">
+        <div class="content-wrapper">
+          <div class="content">
+            <form>
+              <fieldset id="signup">
+                <legend>Beta Sign Up</legend>
+                  <div class="inputs">
+                    <p> If you've seen our video and you like the idea, sign up for the beta test below. We hope to be launching a limited beta in the final quarter of 2013. Just tell us your e-mail address, your name and which of the goals below you'd most like to work towards.</p>
+                    <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+                    <input name="email" type="text" placeholder="Email Address" class="wide">
+                    <input name="first_name" type="text" placeholder="First Name" class="slim pull-left">
+                    <input name="last_name" type="text" placeholder="Last Name" class="slim pull-right">
+                    <div id="errors" class="error"></div>
+                    <button type="submit" class="btn btn-success wide">Go!</button>
+                  </div>
+              </fieldset>
+              <fieldset id="thanks" class="hide">
+                <legend>Thanks</legend>
+                  <div class="inputs">
+                    <p> Thank you for signing up. We'll be sending you an e-mail to confirm your e-mail address. 
+                      It should be with you in the next few minutes. Make sure you check your spam or junk mail too!</p>
+                    {% include "inc/social_share.html" %}
+                  </div>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+      <div id="mid">
+        <div class="container">
+          <div class="row" id="blog">
+            <div class="span12">
+              <div class="page-header">
+                <h1>Blog</h1>
+              </div>
+              <span class="pull-right post-date" style="clear: right;"> 19th February 2013 </span>
+              <span class="pull-right post-author" style="clear: right;"> Chris Darby </span>
+              <h2>Welcome to Game Change!</h2> 
+              
+              <p>Congratulations for getting this far! We've just finished updating this website and will be bringing you more information about our project in the coming days and weeks. If you've not done so already, please check out the <a href="#video">video</a> at the top of the page.</p>
+
+              <p>If you want to keep up to date with major developments then sign up for the Beta Testing above. You can also find us on <a href="http://twitter.com/gamechangegame" target="_blank">Twitter</a> or <a href="http://facebook.com/gamechangegame" target="_blank"> Facebook </a> where we'll be posting updates of our progress in funding and development.</p>
+            </div>
+          </div>
+        </div>
+        <div class="footer" id="footer"> 
+          <div class="container">
+            <div class="row">
+              <div class="span12">
+                <p class="pull-right">&copy; Game Change Game 2013</p>
+              </div>
+            </div>
+          </div>
+        </div>  
+
+      </div>
+
+    </div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type='text/javascript'>
+    $(function(){
+      $('form').submit(function(e){
+        e.preventDefault;
+        $.ajax({
+          method: 'POST',
+          url: '/signup', 
+          data: $('form').serialize(), 
+          error: function(jqXHR, textStatus, errorThrown){
+            resp = JSON.parse(jqXHR.responseText);
+            $('div#errors').html('');
+            $('fieldset#signup input').removeClass('error');
+            for (e in resp['errors']){
+              $('div#errors').append("<p>"+resp['errors'][e]+"</p>");
+              $("input[name='"+e+"']").addClass('error');
+            }
+            $("input[name='_csrf_token']").val(resp._csrf_token);
+          },
+          success: function(){
+            $('div#errors').html('');
+            $('fieldset#signup input').removeClass('error');
+            $('form fieldset#signup').fadeOut({
+              'done': function(){
+                $('form fieldset#thanks').fadeIn();
+              },
+            });
+          }
+        });
+        return false;
+      });
+    });
+    </script>
+    {% include "inc/ga.html" %}
+  </body>
+</html>
