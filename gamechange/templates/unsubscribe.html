@@ -1,54 +1,18 @@
-<html>
-  <head>
-    <title>Game Change</title>    
-    {% include "inc/header.html" %}    
-  </head>
-  <body>
-    {% include "inc/fb_root.html" %}
-    <div id="header">
-      <div id="GC-world-wrapper"> 
-        <img id="GC-world" class="img-rotate" src="{{config['STATIC_ROOT_URL']}}img/world.png" alt="" />
-      </div>
-      <div id="GC-people-wrapper">
-        <img id="GC-people"  src="{{config['STATIC_ROOT_URL']}}img/people.jpg" alt="" />
-      </div>
+{% extends "base.html" %}
+{% block title %}Game Change: Email Unsubscribe{% endblock %}
+{% block top_content %}
+  <legend>Sorry to see you go :-(</legend>  
+  <p>{{msg}}</p>
+  {% if show_form %}
+  <form class="unsubscribe" action='/email/unsubscribe/' method='POST'>
+  <fieldset id="email">
+    <div class="inputs">
+      <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+      <input name="email" type="text" placeholder="Email Address" class="wide">
+      <div id="errors" class="error"></div>
+      <button type="submit" class="btn btn-success wide">Go!</button>
     </div>
-    <div class="container" id="main"> 
-      <div class="row">
-        <div class="span12">
-          <img src="{{config['STATIC_ROOT_URL']}}img/logo.png" alt="Game Change logo" id="logo" />
-        </div>
-        <div class="span12">
-          <div class="content-wrapper">
-            <div class="content">
-              <legend>Sorry to see you go :-(</legend>  
-              <p>{{msg}}</p>
-              {% if show_form %}
-              <form class="unsubscribe" action='/email/unsubscribe/' method='POST'>
-              <fieldset id="email">
-                <div class="inputs">
-                  <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
-                  <input name="email" type="text" placeholder="Email Address" class="wide">
-                  <div id="errors" class="error"></div>
-                  <button type="submit" class="btn btn-success wide">Go!</button>
-                </div>
-              </fieldset>
-              </form>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="footer" id="footer"> 
-      <div class="container">
-        <div class="row">
-          <div class="span12">
-            <p class="pull-right">&copy; Game Change Game 2013</p>
-          </div>
-        </div>
-      </div>
-    </div>  
-    {% include "inc/ga.html" %}
-  </body>
-</html>
+  </fieldset>
+  </form>
+  {% endif %}
+{% endblock %}

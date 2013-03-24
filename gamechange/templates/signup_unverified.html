@@ -1,29 +1,5 @@
-<html>
-  <head>
-    <title>Game Change</title>
-    {% include "inc/header.html" %}   
-  </head>
-  <body>
-    {% include "inc/fb_root.html" %}
-    <div id="header">
-      <div id="GC-world-wrapper"> 
-        <img id="GC-world" class="img-rotate" src="{{config['STATIC_ROOT_URL']}}img/world.png" alt="" />
-      </div>
-      <div id="GC-people-wrapper">
-        <img id="GC-people"  src="{{config['STATIC_ROOT_URL']}}img/people.jpg" alt="" />
-      </div>
-    </div>
-    <div class="container" id="main"> 
-      <div class="row">
-        <div class="span12">
-          <a href="/">
-            <img src="{{config['STATIC_ROOT_URL']}}img/logo.png" alt="Game Change logo" id="logo" />
-          </a>
-        </div>
-      </div>
-      <div class="row">
-        <div class="content-wrapper">
-          <div class="content">
+{% extends "base.html" %}
+{% block top_content %}
             <form id="resend">
               <fieldset id="resend">
                 <legend>Oops!</legend>
@@ -69,24 +45,9 @@
                   </div>
               </fieldset>
             </form>
-          </div>
-        </div>
-      </div>
-      {% include "inc/social_links.html" %}
-    </div>
-    <div id="footer-wrapper">
-        <div class="footer" id="footer"> 
-          <div class="container">
-            <div class="row">
-              <div class="span12">
-                <p class="pull-right">&copy; Game Change Game 2013</p>
-              </div>
-            </div>
-          </div>
-        </div>  
-      </div>
-    </div>
-    </div>
+            {%endblock%}
+{% block scripts %}
+{{ super() }}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type='text/javascript'>
     $(function(){
@@ -155,6 +116,7 @@
       });
     });
     </script>
+{% endblock %}
     {% include "inc/ga.html" %}
   </body>
 </html>
