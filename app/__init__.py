@@ -2,6 +2,7 @@
 from flask import Flask, render_template, jsonify, request, make_response, session, abort
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask_mail import Message, Mail
+from flask_login import LoginManager
 from re import compile
 import random, string
 from base64 import *
@@ -12,7 +13,15 @@ app = Flask(__name__)
 app.config.from_envvar('FLASK_CONFIG')
 db = SQLAlchemy(app)
 mail = Mail(app)
+
+login_manager = LoginManager()
+login_manager.setup_app(app)
+
 app.register_blueprint(bananas, url_prefix="/bananas")
+
+@login_manager.user_loader
+def load_user(userid):
+    return User.get(userid)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -127,14 +136,17 @@ def email_verify(id_hash):
 
 @app.route("/email/resend", methods=['POST'])
 def email_resend():
+    error = dict()
+    email = request.form.get('email')
     u = User.query.filter_by(email=request.form.get('email')).first()
-    print request.form.get('email')
-    print u
+    if '@' not in email:
+        error['email'] = "Please check your e-mail address is valid."
+        return make_response(jsonify(errors=error, _csrf_token=session.get('_csrf_token')), 400)
     if u:
         send_email_to_user(u)
         return jsonify(status="200", _csrf_token=session.get('_csrf_token'))
     else:
-        return make_response(jsonify(_csrf_token=session.get('_csrf_token')), 400)
+        return make_response(jsonify(errors="User not found",_csrf_token=session.get('_csrf_token')), 404)
 
 
 @app.route("/email/unsubscribe/", defaults={"email": None}, methods=['GET','POST'])

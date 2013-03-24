@@ -98,12 +98,23 @@
           data: $('form#resend').serialize(), 
           error: function(jqXHR, textStatus, errorThrown){
             resp = JSON.parse(jqXHR.responseText);
-            $('form#resend fieldset').hide();
-            $('form#signup fieldset#signup').show();
+            $('form#resend div.error').html('');
+            $('fieldset#resend input').removeClass('error');
+            if (jqXHR.status === 404){
+              $('form#resend fieldset').hide();
+              $('form#signup fieldset#signup').show();
+            } else {
+              for (e in resp['errors']){
+                $('form#resend div.error').append("<p>"+resp['errors'][e]+"</p>");
+                $("form#resend input[name='"+e+"']").addClass('error');
+              }
+            }
             $("input[name='_csrf_token']").val(resp._csrf_token);
           },
-          success: function(){
+          success: function(data, text, jqXHR){
             resp = JSON.parse(jqXHR.responseText);
+            $('form#resend div.error').html('');
+            $('fieldset#resend input').removeClass('error');
             $('form#resend fieldset#resend').fadeOut({
               'done': function(){
                 $('form#resend fieldset#thanks_resend').fadeIn();
@@ -126,11 +137,11 @@
             $('fieldset#signup input').removeClass('error');
             for (e in resp['errors']){
               $('form#signup div.error').append("<p>"+resp['errors'][e]+"</p>");
-              $("input[name='"+e+"']").addClass('error');
+              $("form#signup input[name='"+e+"']").addClass('error');
             }
             $("input[name='_csrf_token']").val(resp._csrf_token);
           },
-          success: function(){
+          success: function(data, textStatus, jqXHR){
             $('form#signup div.error').html('');
             $('fieldset#signup input').removeClass('error');
             $('form#signup fieldset#signup').fadeOut({
