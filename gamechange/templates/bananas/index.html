@@ -20,7 +20,7 @@
 		<div id="content">
 			<div id="launch">
 				<div id="start" class="risque">
-			    	<a href="">GO PLAY!</a>
+			    <a href="">GO PLAY!</a>
 				</div>
 
 				<div id="logo">
@@ -29,12 +29,18 @@
 			</div>
 
 			<div id="menu" class="hide">
-                <div id="rightarrow">
-                    <a href="#"><img src="{{config['STATIC_ROOT_URL']}}img/rightarrowstd.png"/></a>
-                </div>
-                <div id="leftarrow">
-                    <a href="#"><img src="{{config['STATIC_ROOT_URL']}}img/rightarrowstd.png"/></a>
-                </div>
+        <div id="rightarrow">
+         	<div class="content">
+            <h1>MONKEY BUSINESS</h1>
+          </div>
+          <a href="#"><img src="{{config['STATIC_ROOT_URL']}}img/rightarrowstd.png"/></a>
+        </div>
+        <div id="leftarrow">
+          <div class="content">
+            <h1>BANANA HUNT</h1>
+          </div>
+          <a href="#"><img src="{{config['STATIC_ROOT_URL']}}img/rightarrowstd.png"/></a>
+        </div>
 			</div>
 		</div>
 	</div>
@@ -54,7 +60,10 @@
 	<script type="text/javascript">
 		$('#start').click(function(e){ e.preventDefault(); $('#launch').hide();$('#hut').hide();; $('#menu').fadeIn();  return false} );
 		$('#rightarrow').click(function(e){ e.preventDefault(); $('#menu').hide();$('#hut').hide();$('#tree').hide(); $('#monkeybusiness').fadeIn();  return false} );
-	
+/*    $(function() {
+    while( $('#rightarrow').height() > $('#rightarrow').height() ) {
+        $('#rightarrow').css('font-size', (parseInt($('#rightarrow').css('font-size')) - 1) + "px" );}
+      });*/
 	</script>
 
 
