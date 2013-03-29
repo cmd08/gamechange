@@ -9,6 +9,9 @@
     <link rel="stylesheet" type="text/css" href="{{config['STATIC_ROOT_URL']}}css/bootstrap.css">
     {% if config['DEBUG'] %}
     <link rel="stylesheet/less" type="text/css" href="{{config['STATIC_ROOT_URL']}}less/base.less" />
+    <script type="text/javascript">
+        less = {relativeUrls: true, rootpath: "http://localhost:8001/static/"};
+    </script>
     <script src="{{config['STATIC_ROOT_URL']}}js/less.js" type="text/javascript"></script>
     {% else %}
     <link rel="stylesheet" href="{{config['STATIC_ROOT_URL']}}css/style.css" />
