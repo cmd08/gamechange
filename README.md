@@ -4,6 +4,7 @@ gamechange
 Welcome to the Gamechange developers repository - to get yourself setup simply follow these instructions below:
 
 1) Install and setup the virtual environment. In a terminal type:
+	
 	a) sudo apt-get install python-virtualenv
 
 	b) mkdir ~/python
@@ -13,6 +14,7 @@ Welcome to the Gamechange developers repository - to get yourself setup simply f
 	d) virtualenv gamechange
 
 2) Obtain the correct repository for developers. In the same terminal type:
+	
 	a) cd gamechange
 
 	b) git init
@@ -26,6 +28,7 @@ Welcome to the Gamechange developers repository - to get yourself setup simply f
 	f) git remote set-url --push king DONT_DO_THAT!
 
 3) Setup dependencies. In the same terminal type:
+	
 	a) cp conf.default conf
 
 	b) export FLASK_CONFIG=/home/YOUUSERNAMEHERE/python/gamechange/conf
@@ -35,6 +38,7 @@ Welcome to the Gamechange developers repository - to get yourself setup simply f
 	d) pip install -r "pip.txt"
 
 4) Setup the database. In the same terminal type:
+	
 	a) sudo apt-get install mysql-server
 
 	b) FML FML FML FML FML
