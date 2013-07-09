@@ -25,3 +25,6 @@ def healthgraph_authorize():
 def login():
     print ""
 
+@bananas.route('/healthgraph/test')
+def healthgraph_test():
+	return jsonify()
