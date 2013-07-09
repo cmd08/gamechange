@@ -13,6 +13,13 @@ def show(page):
     except TemplateNotFound:
         abort(404)
 
+@bananas.route('/js/<page>')
+def js_show(page):
+	try:
+		return render_template('bananas/js/%s.html' % page)
+	except  TemplateNotFound:
+		abort(404)
+
 @bananas.route('/de-authorize')
 def deauthorize_healthgraph_api():
     return ""
