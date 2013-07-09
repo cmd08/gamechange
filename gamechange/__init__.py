@@ -6,7 +6,7 @@ from re import compile
 import random, string
 from base64 import *
 
-#from bananas import bananas
+from bananas import bananas
 
 app = Flask(__name__)
 #import gamechange.admin
@@ -20,7 +20,7 @@ mail = Mail(app)
 #login_manager = LoginManager()
 #login_manager.setup_app(app)
 
-#app.register_blueprint(bananas, url_prefix="/bananas", config=app.config)
+app.register_blueprint(bananas, url_prefix="/bananas", config=app.config)
 
 
 
