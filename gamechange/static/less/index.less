@@ -1,5 +1,6 @@
 
 #home {
+	font-size: 100%;
 	#content {
 		position: fixed;
 		width:100%;
@@ -46,14 +47,34 @@
 				position:fixed;
 				bottom: 42%;
 				left: 68%;
+				.content{
+					position:fixed;
+					bottom:47%;
+					left:37%;
+					h1, h2 {
+						font-family: 'Risque', cursive;
+						font-size: 3em;
+					}
+				}
 			}
 			#leftarrow{
-				.transform(180deg, 1.0, 0deg, 0px);
-				width:16%;
-				height:20%;
-				position:fixed;
-				bottom: 20%;
-				left: 18%;				
+				img {
+					.transform(180deg, 1.0, 0deg, 0px);
+					width:16%;
+					height:20%;
+					position:fixed;
+					bottom: 20%;
+					left: 18%;
+				}
+				.content{
+					position:fixed;
+					bottom:25%;
+					left:35%;
+					h1, h2 {
+						font-family: 'Risque', cursive;
+						font-size: 3em;
+					}
+				}			
 			}
 			.transform (@rotate: 90deg, @scale: 1, @skew: 1deg, @translate: 10px) {
 			    -webkit-transform: rotate(@rotate) scale(@scale) skew(@skew) translate(@translate);
