@@ -31,15 +31,13 @@ Welcome to the Gamechange developers repository - to get yourself setup simply f
 	
 	a) cp conf.default conf
 
-	b) export FLASK_CONFIG=/home/YOUUSERNAMEHERE/python/gamechange/conf
+	b) source bin/activate
 
-	c) source bin/activate
+	c) pip install -r "pip.txt"
 
-	d) pip install -r "pip.txt"
+	d) deactivate
 
-	e) deactivate
-
-	f) sudo apt-get install virtualenvwrapper
+	e) sudo apt-get install virtualenvwrapper
 
 	f) git clone git://github.com/kennethreitz/autoenv.git ~/.autoenv
 
