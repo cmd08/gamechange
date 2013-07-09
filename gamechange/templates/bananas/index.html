@@ -45,7 +45,7 @@
 		</div>
 	</div>
 
-	<div id="bananarun" class="hide">
+	<div id="bananarun" class="hide bamboo-frame">
 	</div>
 
 	<div id="monkeybusiness" class="hide bamboo-frame">
@@ -59,12 +59,22 @@
 	</div>
 
 	<script type="text/javascript">
-		$('#start').click(function(e){ e.preventDefault(); $('#launch').hide();$('#hut').hide();; $('#menu').fadeIn();  return false} );
-		$('#rightarrow').click(function(e){ e.preventDefault(); $('#menu').hide();$('#hut').hide();$('#tree').hide(); $('#monkeybusiness').fadeIn();  return false} );
-/*    $(function() {
-    while( $('#rightarrow').height() > $('#rightarrow').height() ) {
-        $('#rightarrow').css('font-size', (parseInt($('#rightarrow').css('font-size')) - 1) + "px" );}
-      });*/
+		$('#start').click(function(e){ 
+			e.preventDefault(); 
+			$('#launch').hide();
+			$('#hut').hide(); 
+			$('#menu').fadeIn();  
+			return false} );
+		$('#rightarrow').click(function(e){ 
+			e.preventDefault(); 
+			$('#menu').hide();
+			$('#hut').hide();
+			$('#tree').hide(); 
+			//Brings the monkey to the front of the display
+			//so that it is not behind the sign
+			$('#monkey').css('zIndex', 5);
+			$('#monkeybusiness').fadeIn();  
+			return false} );
 	</script>
 
 

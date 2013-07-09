@@ -9,24 +9,24 @@ from base64 import *
 from bananas import bananas
 
 app = Flask(__name__)
-import gamechange.admin
+#import gamechange.admin
+#from gamechange.decorators import *
 import gamechange.error
-from gamechange.decorators import *
 
 app.config.from_envvar('FLASK_CONFIG')
 db = SQLAlchemy(app)
 mail = Mail(app)
 
-login_manager = LoginManager()
-login_manager.setup_app(app)
+#login_manager = LoginManager()
+#login_manager.setup_app(app)
 
 app.register_blueprint(bananas, url_prefix="/bananas", config=app.config)
 
 
 
-@login_manager.user_loader
-def load_user(userid):
-    return User.get(userid)
+# @login_manager.user_loader
+# def load_user(userid):
+#     return User.get(userid)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
