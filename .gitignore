@@ -2,6 +2,7 @@ bin/
 lib/
 db/
 include/
+node_modules/
 
 conf
 *.pyc
