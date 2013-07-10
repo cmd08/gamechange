@@ -1,81 +1,63 @@
-{% extends "bananas/base.html" %}
-{% block title %}Index{% endblock %}
-{% block head %}
-    {% if config['DEBUG'] %}
-    	<link rel="stylesheet/less" type="text/css" href="{{config['STATIC_ROOT_URL']}}less/index.less" />
-    {% endif %}
-    {{ super() }}
-{% endblock %}
-{% block content %}
+<!doctype html>
+<html lang="en" ng-app="myApp">
+<head>
+	<meta charset="utf-8">
+	<title>My AngularJS App</title>
 
-	<div id="home">
-		<div id="tree">
-			<img src="{{config['STATIC_ROOT_URL']}}img/banana_tree.png"/>
-	    </div>
-		
-		<div id="monkey">
-			<img src="{{config['STATIC_ROOT_URL']}}img/monkeyfull.png"/>
-	    </div>
+	<link rel="stylesheet/less" href="{{config['STATIC_ROOT_URL']}}bananas/less/index.less"/>
 
-		<div id="content">
-			<div id="launch">
-				<div id="start" class="risque">
-			    <a href="">GO PLAY!</a>
-				</div>
-
-				<div id="logo">
-					<h1>logo</h1>
-				</div>
-			</div>
-
-			<div id="menu" class="hide">
-        <div id="rightarrow">
-         	<div class="content">
-            <h1>MONKEY BUSINESS</h1>
-          </div>
-          <a href="#"><img src="{{config['STATIC_ROOT_URL']}}img/rightarrowstd.png"/></a>
-        </div>
-        <div id="leftarrow">
-          <div class="content">
-            <h1>BANANA HUNT</h1>
-          </div>
-          <a href="#"><img src="{{config['STATIC_ROOT_URL']}}img/rightarrowstd.png"/></a>
-        </div>
-			</div>
-		</div>
-	</div>
-
-	<div id="bananarun" class="hide bamboo-frame">
-	</div>
-
-	<div id="monkeybusiness" class="hide bamboo-frame">
-		<!--<img src="{{config['STATIC_ROOT_URL']}}img/bamboo_frame.png"/>-->
-		<div class="bamboo-frame-holder">
-			<div class="bamboo-text-wrap">
-				<p> Buy Some Bananas!!!!</p>
-			</div>
-		</div>		
-		<div class="bamboo-frame-img"></div>
-	</div>
-
+	<script src="{{config['STATIC_ROOT_URL']}}js/jquery.js" type="text/javascript"></script>
+	<link rel="stylesheet" type="text/css" href="{{config['STATIC_ROOT_URL']}}css/bootstrap.css">
+	    
+	{% if config['DEBUG'] %}
+	<link rel="stylesheet/less" type="text/css" href="{{config['STATIC_ROOT_URL']}}bananas/less/base.less" />
 	<script type="text/javascript">
-		$('#start').click(function(e){ 
-			e.preventDefault(); 
-			$('#launch').hide();
-			$('#hut').hide(); 
-			$('#menu').fadeIn();  
-			return false} );
-		$('#rightarrow').click(function(e){ 
-			e.preventDefault(); 
-			$('#menu').hide();
-			$('#hut').hide();
-			$('#tree').hide(); 
-			//Brings the monkey to the front of the display
-			//so that it is not behind the sign
-			$('#monkey').css('zIndex', 5);
-			$('#monkeybusiness').fadeIn();  
-			return false} );
+	    less = {relativeUrls: true, rootpath: "http://localhost:8001/static/bananas"};
 	</script>
 
+	<script src="{{config['STATIC_ROOT_URL']}}js/less.js" type="text/javascript"></script>
+	{% else %}
+	<link rel="stylesheet" href="{{config['STATIC_ROOT_URL']}}bananas/css/style.css" />
+	{% endif %}
+</head>
 
-{% endblock %}
+{{raw}}
+<body>
+	<div id="land"></div>
+
+	<div class="cloud">	<span class="cloud-round"> </span> 	</div>
+	
+	<div id="home">
+		<div id="tree">
+			<img src="/static/img/banana_tree.png"/>
+		</div>
+
+		<div id="monkey">
+			<img src="/static/img/monkeyfull.png"/>
+		</div>
+
+
+		<div id="content" ng-view> </div>
+	</div>
+
+	<div id="footer"> </div>
+
+	<!--
+	<ul class="menu">
+		<li><a href="#/view1">view1</a></li>
+		<li><a href="#/view2">view2</a></li>
+	</ul>
+	-->
+
+	<!-- In production use:
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+	-->
+	{{ endraw }}
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+	<script src="{{config['STATIC_ROOT_URL']}}bananas/js/app.js"></script>
+	<script src="{{config['STATIC_ROOT_URL']}}bananas/js/services.js"></script>
+	<script src="{{config['STATIC_ROOT_URL']}}bananas/js/controllers.js"></script>
+	<script src="{{config['STATIC_ROOT_URL']}}bananas/js/filters.js"></script>
+	<script src="{{config['STATIC_ROOT_URL']}}bananas/js/directives.js"></script>
+</body>
+</html>
