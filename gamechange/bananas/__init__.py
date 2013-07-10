@@ -5,7 +5,7 @@ import time
 bananas = Blueprint('bananas', __name__, template_folder='templates')
 app = current_app
 
-#routes prefixed with bananas by the app
+#routes prefixed with bananas by the api_user_post
 @bananas.route('/', defaults={'page': 'index'})
 @bananas.route('/<page>')
 def show(page):
@@ -60,7 +60,9 @@ def api_user_post():
 
 
 def wrap_api_call(json=None):
-	wrapper = {'debug': True, 'api-version': 0.1, 'hostname': app.config['SERVER_NAME'], 'system-time-millis': int(round(time.time() * 1000))}
+	wrapper = {'debug': True, 'apiversion': 0.1, 'hostname': app.config['SERVER_NAME'], 'systemtimemillis': int(round(time.time() * 1000))}
 	if(json != None):
 		wrapper['data'] = json
-	return jsonify(wrapper)
+	#don't add wrapper for testing
+	#return jsonify(wrapper)
+	return jsonify(json)

@@ -1,9 +1,13 @@
 
 <div id="monkeybusiness" class="bamboo-frame">
-	<!--<img src="/static/img/bamboo_frame.png"/>-->
 	<div class="bamboo-frame-holder">
-		<div class="bamboo-text-wrap">
-			<p> Buy Some Bananas!!!!</p>
+		<div class="bamboo-text-wrap" ng-controller="shop_products_ctrl">
+			<h2>Shop</h2>
+			<ul class="unstyled">
+				<li ng-repeat="product in shop">
+					<span>{{product.name}}, Cost: {{product.cost}} bananas, Description: {{product.description}}</span>
+				</li>
+			</ul>
 		</div>
 	</div>		
 	<div class="bamboo-frame-img"></div>
