@@ -5,6 +5,7 @@ from flask_login import LoginManager
 from re import compile
 import random, string
 from base64 import *
+from models import User, db
 
 from bananas import bananas
 
@@ -14,7 +15,7 @@ app = Flask(__name__)
 import gamechange.error
 
 app.config.from_envvar('FLASK_CONFIG')
-db = SQLAlchemy(app)
+db.init_app(app)
 mail = Mail(app)
 
 #login_manager = LoginManager()
@@ -22,48 +23,14 @@ mail = Mail(app)
 
 app.register_blueprint(bananas, url_prefix="/bananas", config=app.config)
 
-
+@app.route('/initDB')
+def init_db():
+    db.create_all()
+    return "This is naughty and MUST not be in production!"
 
 # @login_manager.user_loader
 # def load_user(userid):
 #     return User.get(userid)
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(120))
-    last_name = db.Column(db.String(120))
-    email = db.Column(db.String(120), unique=True)
-    verified = db.Column(db.Boolean, default=False)
-    subscribed = db.Column(db.Boolean, default=True)
-
-    def isValid(self):
-        self.error = dict()
-        valid = True
-        if not User.query.filter_by(email=self.email).first() == None :
-            self.error['email'] = "Oops! Looks like you've already signed up!"
-            valid = False
-        if '@' not in self.email:
-            self.error['email'] = "Please check your e-mail address is valid."
-            valid = False
-        if self.first_name == '':
-            valid = False
-            self.error['first_name'] = "Please enter your first name."
-        if self.last_name == '':
-            valid = False
-            self.error['last_name'] = "Please enter your last name."
-        if self.email == '':
-            valid = False
-            self.error['email'] = "Please provide an e-mail address."
-        return valid
-
-
-    def __init__(self, first_name, last_name, email):
-        self.first_name = first_name
-        self.last_name = last_name
-        self.email = email
-        
-    def __repr__(self):
-        return '<User %r>' % self.email
 
 @app.before_request
 def csrf_protect():
