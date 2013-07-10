@@ -1,0 +1,67 @@
+<html>
+	<head>
+		<title>Game Change Go Bananas Runkeeper Welcome Page</title>
+	</head>
+	<body>
+		<div align="center" style="width:100%;">
+		<div align="center" style="width:720px;display:inline-block;">
+			<h1>Game Change Go Bananas Runkeeper Welcome Page</h1>	
+			</a>
+			</p>
+			<p>
+				<b>{{ profile.get('name') }}</b><br>
+				{{ profile.get('athlete_type') }}
+				from
+				{{ profile.get('location', 'Somewhere') }}
+			</p>
+			<p align="center">
+				<h2>Recent Activities</h2>	
+				<table border=1>
+					<thead>
+						<th>Date / Time</th>
+						<th>Sport</th>
+						<th>Distance (km)</th>
+					</thead>
+					<tbody>
+						{% for stats in activities %}
+						<tr>
+							<td>{{ stats.get('start_time') }}</td>
+							<td>{{ stats.get('type') }}</td>
+							<td align="right">{{ '%.1f' % stats.get('total_distance', 0) }}</td>
+						</tr>
+						{% endfor %}		
+					</tbody>
+				</table>
+			</p>
+			<p align="center">
+				<h2>Total Distance</h2>	
+				<table border=1>
+					<thead>
+						<th>Sport</th>
+						<th>This Week<br>(km)</th>
+						<th>Last Week<br>(km)</th>
+						<th>This Month<br>(km)</th>
+						<th>Last Month<br>(km)</th>
+						<th>Overall<br>(km)</th>
+					</thead>
+					<tbody>
+						{% for sport, stats in records.items() %}
+						<tr>
+							<td>{{ sport }}</td>
+							<td align="right">{{ '%.1f' % stats.get('THIS_WEEK', 0) }}</td>
+							<td align="right">{{ '%.1f' % stats.get('LAST_WEEK', 0) }}</td>
+							<td align="right">{{ '%.1f' % stats.get('THIS_MONTH', 0) }}</td>
+							<td align="right">{{ '%.1f' % stats.get('LAST_MONTH', 0) }}</td>
+							<td align="right">{{ '%.1f' % stats.get('OVERALL', 0) }}</td>
+						</tr>
+						{% endfor %}		
+					</tbody>
+				</table>
+			</p>
+			<p>
+				<a href="logout">Logout</a>
+			</p>
+		</div>
+		</div>
+	</body>
+</html>

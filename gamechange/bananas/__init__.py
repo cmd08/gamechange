@@ -27,27 +27,58 @@ def js_show(page):
 def deauthorize_healthgraph_api():
     return ""
 
-@bananas.route('/login')
-def login():
-    print ""
-
-@bananas.route('/healthgraph/test')
-def healthgraph_test():
-	print ""
-
 @bananas.route('/healthgraph/authorize')
 def authorize():
 	sess = request.environ['beaker.session']
 	if sess.has_key('rk_access_token'):
-		bananas.redirect('healthgraph/test')
+		return redirect('bananas/healthgraph/welcome')
 	else:
-		rk_auth_mgr = healthgraph.AuthManager(app.config['client_id'], app.config['client_secret'], 
-			'/'.join((conf['baseurl'], 'login',)))
+		rk_auth_mgr = healthgraph.AuthManager(app.config['HEALTHGRAPH_CLIENT_ID'], 
+			app.config['HEALTHGRAPH_CLIENT_SECRET'], '/'.join(('http://127.0.0.1:8001', 'bananas/healthgraph/login',)))
 		rk_auth_uri = rk_auth_mgr.get_login_url()
 		rk_button_img = rk_auth_mgr.get_login_button_url('blue', 'black', 300)
-		return bananas.template('index.html', {'rk_button_img': rk_button_img,
-			'rk_auth_uri': rk_auth_uri,})
-	# return jsonify()
+		return render_template('bananas/validate.html', rk_button_img = rk_button_img, rk_auth_uri = rk_auth_uri)
+
+@bananas.route('/healthgraph/login')
+def login():
+	sess = request.environ['beaker.session']
+	code = request.args.get('code')
+	print code
+	if code is not None:
+		rk_auth_mgr = healthgraph.AuthManager(app.config['HEALTHGRAPH_CLIENT_ID'], app.config['HEALTHGRAPH_CLIENT_SECRET'], 
+			'/'.join(('http://127.0.0.1:8001', 'bananas/healthgraph/login',)))
+		access_token = rk_auth_mgr.get_access_token(code)
+		sess['rk_access_token'] = access_token
+		sess.save()
+		return redirect('bananas/healthgraph/welcome')
+
+@bananas.route('/healthgraph/welcome')
+def welcome():
+	sess = request.environ['beaker.session']
+	access_token = sess.get('rk_access_token')
+	if access_token is not None:
+		user = healthgraph.User(session=healthgraph.Session(access_token))
+		profile = user.get_profile()
+		records = user.get_records()
+		act_iter = user.get_fitness_activity_iter()
+		# print user
+		# fitnessactivities = healthgraph.FitnessActivity(resource='FitnessActivity', session=healthgraph.Session(access_token))
+		# print act_iter
+		activities = [act_iter.next() for _ in range(act_iter.count())]
+		# return jsonify (fitnessactivities)
+		# return jsonify(user)
+		return render_template('bananas/welcome.html', 
+			profile=profile, 
+			activities=activities, 
+			records=records.get_totals())
+	else:
+		return redirect('/')
+
+@bananas.route('/healthgraph/logout')
+def logout():
+    sess = request.environ['beaker.session']
+    sess.delete()
+    return redirect('bananas/healthgraph/authorize')
 
 @bananas.route('/api/')
 def api_index():
