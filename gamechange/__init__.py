@@ -5,10 +5,23 @@ from flask_login import LoginManager
 from re import compile
 import random, string
 from base64 import *
+from beaker.middleware import SessionMiddleware
 
 from bananas import bananas
 
 app = Flask(__name__)
+
+
+session_opts = {
+    'session.type': 'file',
+    'session.cookie_expires': 1800,
+    'session.data_dir': '/tmp/cache/data',
+    'session.lock_dir': '/tmp/cache/data',
+    'session.auto': False,
+}
+
+app.wsgi_app = SessionMiddleware(app.wsgi_app, session_opts)
+
 #import gamechange.admin
 #from gamechange.decorators import *
 import gamechange.error
