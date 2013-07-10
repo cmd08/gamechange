@@ -1,10 +1,19 @@
-from flask import Blueprint, render_template, abort, redirect, current_app, jsonify
+from flask import Blueprint, render_template, abort, redirect, current_app, jsonify, request, session
 from jinja2 import TemplateNotFound
 import healthgraph
 import time
+from beaker.middleware import SessionMiddleware
 
 bananas = Blueprint('bananas', __name__, template_folder='templates')
 app = current_app
+
+session_opts = {
+    'session.type': 'file',
+    'session.cookie_expires': 1800,
+    'session.data_dir': '/tmp/cache/data',
+    'session.lock_dir': '/tmp/cache/data',
+    'session.auto': False,
+}
 
 #routes prefixed with bananas by the app
 @bananas.route('/', defaults={'page': 'index'})
@@ -36,16 +45,17 @@ def healthgraph_test():
 
 @bananas.route('/healthgraph/authorize')
 def authorize():
-    sess = bananas.request.environ['beaker.session']
-    if sess.has_key('rk_access_token'):
-        bananas.redirect('healthgraph/test')
-    else:
-        rk_auth_mgr = healthgraph.AuthManager(conf['client_id'], conf['client_secret'], 
-                                          '/'.join((conf['baseurl'], 'login',)))
-        rk_auth_uri = rk_auth_mgr.get_login_url()
-        rk_button_img = rk_auth_mgr.get_login_button_url('blue', 'black', 300)
-        return bananas.template('index.html', {'rk_button_img': rk_button_img,
-                                              'rk_auth_uri': rk_auth_uri,})
+	app.wsgi_app = SessionMiddleware(app.wsgi_app, session_opts)
+	sess = request.environ['beaker.session']
+	if sess.has_key('rk_access_token'):
+		bananas.redirect('healthgraph/test')
+	else:
+		rk_auth_mgr = healthgraph.AuthManager(conf['client_id'], conf['client_secret'], 
+			'/'.join((conf['baseurl'], 'login',)))
+		rk_auth_uri = rk_auth_mgr.get_login_url()
+		rk_button_img = rk_auth_mgr.get_login_button_url('blue', 'black', 300)
+		return bananas.template('index.html', {'rk_button_img': rk_button_img,
+			'rk_auth_uri': rk_auth_uri,})
 	# return jsonify()
 
 @bananas.route('/api/')
