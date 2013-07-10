@@ -1,10 +1,7 @@
 from flask import Blueprint, render_template, abort, redirect, current_app, jsonify
 from jinja2 import TemplateNotFound
-<<<<<<< HEAD
 import healthgraph
-=======
 import time
->>>>>>> e4dfa566b0dc849581ca0f4213bb74851a3f9608
 
 bananas = Blueprint('bananas', __name__, template_folder='templates')
 app = current_app
@@ -39,15 +36,15 @@ def healthgraph_test():
 
 @bananas.route('/healthgraph/authorize')
 def authorize():
-    sess = request.environ['beaker.session']
+    sess = bananas.request.environ['beaker.session']
     if sess.has_key('rk_access_token'):
-        bottle.redirect('healthgraph/test')
+        bananas.redirect('healthgraph/test')
     else:
         rk_auth_mgr = healthgraph.AuthManager(conf['client_id'], conf['client_secret'], 
                                           '/'.join((conf['baseurl'], 'login',)))
         rk_auth_uri = rk_auth_mgr.get_login_url()
         rk_button_img = rk_auth_mgr.get_login_button_url('blue', 'black', 300)
-        return bottle.template('index.html', {'rk_button_img': rk_button_img,
+        return bananas.template('index.html', {'rk_button_img': rk_button_img,
                                               'rk_auth_uri': rk_auth_uri,})
 	# return jsonify()
 
