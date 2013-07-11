@@ -62,10 +62,13 @@ def welcome():
 		records = user.get_records()
 		act_iter = user.get_fitness_activity_iter()
 		# print user
-		# fitnessactivities = healthgraph.FitnessActivity(resource='FitnessActivity', session=healthgraph.Session(access_token))
+		# fitnessactivities = healthgraph.FitnessActivityIter(resource='/fitnessActivities', session=healthgraph.Session(access_token))
 		# print act_iter
+		# print jsonify(user)
 		activities = [act_iter.next() for _ in range(act_iter.count())]
-		# return jsonify (fitnessactivities)
+		# print jsonify(activities)
+		# return jsonify (fitnessactivities[1])
+		# return jsonify (activities)
 		# return jsonify(user)
 		return render_template('bananas/welcome.html', 
 			profile=profile, 
