@@ -1,11 +1,22 @@
-from flask import Blueprint, render_template, abort, redirect, current_app, jsonify, request, session
+from flask import Blueprint, render_template, abort, redirect, current_app, jsonify, request, session, Response
 from jinja2 import TemplateNotFound
+from collections import defaultdict
+import datetime
+from time import mktime
+import json
 import healthgraph
 import time
 
 bananas = Blueprint('bananas', __name__, template_folder='templates')
 app = current_app
 
+class MyEncoder(json.JSONEncoder):
+
+    def default(self, obj):
+        if isinstance(obj, datetime.datetime):
+            return int(mktime(obj.timetuple()))
+
+        return json.JSONEncoder.default(self, obj)
 
 #routes prefixed with bananas by the app
 @bananas.route('/', defaults={'page': 'index'})
@@ -68,14 +79,55 @@ def welcome():
 		activities = [act_iter.next() for _ in range(act_iter.count())]
 		# print jsonify(activities)
 		# return jsonify (fitnessactivities[1])
-		# return jsonify (activities)
+		print(activities[1].get_activity_summary())
+		response = defaultdict(list)
+		for i in range(act_iter.count()):
+			activity = dict(activity_id = str(activities[i].get('uri')[1]).split('/')[2],
+				type = activities[i].get('type'), 
+				start_time = activities[i].get('start_time'),
+				total_distance = activities[i].get('total_distance'))
+			response["activities"].append(activity)
+			# response["activities"].append(activities)
+
+		# response = {'items' : [
+		# 	{'name':'Coconut', 'cost':1, 'description': 'A coconut'},
+		# 	{'name':'Shack', 'cost': 100, 'description': 'A slightly better house'}
+		# 	]}
+		# print(response['items'])
+		return Response(json.dumps(response, cls = MyEncoder, indent = 4), mimetype='application/json')
+		# return jsonify(response)
+		# for stats in activities
+		# 	response = {'activities' : [
+
+		# 	]}
+
+		# json.JSONencoder.encode(activities)
+		# return Response(json.dumps(activities[1].get_activity_summary()), mimetype='application/json')
 		# return jsonify(user)
+		# activity_id = list()
+		# for item in activities:
+		# 	details = item.get('uri')
+		# 	activity_id.append((str(details[1])).split('/')[2])
+		# print(activity_id)		
+		# return Response(json.dumps(activity_id, indent=4),  mimetype='application/json')
+		# return(jsonify(activity_id))
+		# print(activities.)
 		return render_template('bananas/welcome.html', 
 			profile=profile, 
 			activities=activities, 
-			records=records.get_totals())
+			records=records.get_totals(),
+			# response = response
+			)
 	else:
 		return redirect('/')
+@bananas.route('/test/json')
+def test_json():
+    list = [
+            {'a': 1, 'b': 2},
+            {'a': 5, 'b': 10}
+           ]
+    # return jsonify(results = list)
+    return Response(json.dumps(list, indent=4), mimetype='application/json')
 
 @bananas.route('/healthgraph/logout')
 def logout():
