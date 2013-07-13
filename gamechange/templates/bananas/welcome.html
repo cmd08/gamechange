@@ -24,9 +24,9 @@
 						<th>Distance (km)</th>
 					</thead>
 					<tbody>
-						{% for stats in activities %}
+						{% for stats in response %}
 						<tr>
-							<td>{{ stats.get('uri')[1]|replace("/fitnessActivities/", "") }}</td>
+							<td>{{ stats.get('activity_id')[1]|replace("/fitnessActivities/", "") }}</td>
 							<td>{{ stats.get('start_time') }}</td>
 							<td>{{ stats.get('type') }}</td>
 							<td align="right">{{ '%.1f' % stats.get('total_distance', 0) }}</td>

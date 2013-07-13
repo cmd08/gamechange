@@ -72,14 +72,8 @@ def welcome():
 		profile = user.get_profile()
 		records = user.get_records()
 		act_iter = user.get_fitness_activity_iter()
-		# print user
-		# fitnessactivities = healthgraph.FitnessActivityIter(resource='/fitnessActivities', session=healthgraph.Session(access_token))
-		# print act_iter
-		# print jsonify(user)
 		activities = [act_iter.next() for _ in range(act_iter.count())]
-		# print jsonify(activities)
-		# return jsonify (fitnessactivities[1])
-		print(activities[1].get_activity_summary())
+
 		response = defaultdict(list)
 		for i in range(act_iter.count()):
 			activity = dict(activity_id = str(activities[i].get('uri')[1]).split('/')[2],
@@ -87,47 +81,17 @@ def welcome():
 				start_time = activities[i].get('start_time'),
 				total_distance = activities[i].get('total_distance'))
 			response["activities"].append(activity)
-			# response["activities"].append(activities)
 
-		# response = {'items' : [
-		# 	{'name':'Coconut', 'cost':1, 'description': 'A coconut'},
-		# 	{'name':'Shack', 'cost': 100, 'description': 'A slightly better house'}
-		# 	]}
-		# print(response['items'])
 		return Response(json.dumps(response, cls = MyEncoder, indent = 4), mimetype='application/json')
-		# return jsonify(response)
-		# for stats in activities
-		# 	response = {'activities' : [
 
-		# 	]}
-
-		# json.JSONencoder.encode(activities)
-		# return Response(json.dumps(activities[1].get_activity_summary()), mimetype='application/json')
-		# return jsonify(user)
-		# activity_id = list()
-		# for item in activities:
-		# 	details = item.get('uri')
-		# 	activity_id.append((str(details[1])).split('/')[2])
-		# print(activity_id)		
-		# return Response(json.dumps(activity_id, indent=4),  mimetype='application/json')
-		# return(jsonify(activity_id))
-		# print(activities.)
-		return render_template('bananas/welcome.html', 
-			profile=profile, 
-			activities=activities, 
-			records=records.get_totals(),
-			# response = response
-			)
+		# return render_template('bananas/welcome.html', 
+		# 	profile=profile, 
+		# 	activities=activities, 
+		# 	records=records.get_totals(),
+		#	response=response # interprets this as string when in html jinja2 but activities works fine?
+		# 	)
 	else:
 		return redirect('/')
-@bananas.route('/test/json')
-def test_json():
-    list = [
-            {'a': 1, 'b': 2},
-            {'a': 5, 'b': 10}
-           ]
-    # return jsonify(results = list)
-    return Response(json.dumps(list, indent=4), mimetype='application/json')
 
 @bananas.route('/healthgraph/logout')
 def logout():
