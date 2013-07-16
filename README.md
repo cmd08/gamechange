@@ -52,6 +52,14 @@ Welcome to the Gamechange developers repository - to get yourself setup simply f
 
 	j) Test the setup now by typing cd ~/python/gamechange and you should see (gamechange) at the start of the new line
 
+	k) git submodule init
+
+	l) git submodule update
+
+	m) cd healthgraph-api
+
+	n) python setup.py install
+
 4) Test the basics. In the same terminal type:
 
 	a) ./runserver.py

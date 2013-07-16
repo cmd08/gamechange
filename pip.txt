@@ -8,3 +8,5 @@ Flask-Testing==0.4
 Flask-Uploads==0.1.3
 healthgraph-api==0.3.0
 werkzeug==0.8.3
+Beaker==1.6.4
+requests==1.2.3
