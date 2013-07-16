@@ -1,0 +1,3 @@
+[submodule "healthgraph-api"]
+	path = healthgraph-api
+	url = git@github.com:aksatshah/healthgraph-api.git
