@@ -10,6 +10,8 @@ import time
 bananas = Blueprint('bananas', __name__, template_folder='templates')
 app = current_app
 
+conf = {'baseurl': 'http://127.0.0.1:8000'}
+
 class MyEncoder(json.JSONEncoder):
 
     def default(self, obj):
@@ -54,7 +56,6 @@ def authorize():
 def login():
 	sess = request.environ['beaker.session']
 	code = request.args.get('code')
-	print code
 	if code is not None:
 		rk_auth_mgr = healthgraph.AuthManager(app.config['HEALTHGRAPH_CLIENT_ID'], app.config['HEALTHGRAPH_CLIENT_SECRET'], 
 			'/'.join(('http://127.0.0.1:8001', 'bananas/healthgraph/login',)))
@@ -79,7 +80,11 @@ def welcome():
 			activity = dict(activity_id = str(activities[i].get('uri')[1]).split('/')[2],
 				type = activities[i].get('type'), 
 				start_time = activities[i].get('start_time'),
-				total_distance = activities[i].get('total_distance'))
+				total_distance = activities[i].get('total_distance'),
+				source = activities[i].get('source'),
+				entry_mode = activities[i].get('entry_mode'),
+				total_calories = activities[i].get('total_calories')
+				)
 			response["activities"].append(activity)
 
 		return Response(json.dumps(response, cls = MyEncoder, indent = 4), mimetype='application/json')
