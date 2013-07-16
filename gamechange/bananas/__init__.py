@@ -100,7 +100,12 @@ def api_user_post():
 	return wrap_api_call(response)
 
 def wrap_api_call(json=None):
-    wrapper = {'_csrf_token': gamechange.generate_csrf_token(), 'debug': True, 'api-version': 0.1, 'hostname': app.config['SERVER_NAME'], 'system-time-millis': int(round(time.time() * 1000))}
+    wrapper = {'_csrf_token': gamechange.generate_csrf_token(), 'api_version': 0.1, 'hostname': app.config['SERVER_NAME'], 'system_time_millis': int(round(time.time() * 1000))}
+    if(app.config['DEBUG']):
+    	wrapper['debug'] = True
+    if(app.config['TESTING']):
+    	wrapper['testing'] = True
     if(json != None):
         wrapper['data'] = json
-        return jsonify(wrapper)
+
+    return jsonify(wrapper)

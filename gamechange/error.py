@@ -27,6 +27,6 @@ def page_not_found(e):
 def error_page_test(e):
     try:
     	print 'errors/%s.html' % e
-        return render_template('errors/%s.html' % e)
+        return render_template('errors/%s.html' % e), e
     except TemplateNotFound:
         abort(404)
