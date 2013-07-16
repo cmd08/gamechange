@@ -77,15 +77,16 @@ def welcome():
 
 		response = defaultdict(list)
 		for i in range(act_iter.count()):
-			activity = dict(activity_id = str(activities[i].get('uri')[1]).split('/')[2],
-				type = activities[i].get('type'), 
-				start_time = activities[i].get('start_time'),
-				total_distance = activities[i].get('total_distance'),
-				source = activities[i].get('source'),
-				entry_mode = activities[i].get('entry_mode'),
-				total_calories = activities[i].get('total_calories')
-				)
-			response["activities"].append(activity)
+			if activities[i].get('entry_mode') == "Web":
+				activity = dict(activity_id = str(activities[i].get('uri')[1]).split('/')[2],
+					type = activities[i].get('type'), 
+					start_time = activities[i].get('start_time'),
+					total_distance = activities[i].get('total_distance'),
+					source = activities[i].get('source'),
+					entry_mode = activities[i].get('entry_mode'),
+					total_calories = activities[i].get('total_calories')
+					)
+				response["activities"].append(activity)
 
 		return Response(json.dumps(response, cls = MyEncoder, indent = 4), mimetype='application/json')
 
