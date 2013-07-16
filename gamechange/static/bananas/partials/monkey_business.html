@@ -1,14 +1,18 @@
 
-<div id="monkeybusiness" class="bamboo-frame">
-	<div class="bamboo-frame-holder">
-		<div class="bamboo-text-wrap" ng-controller="shop_products_ctrl">
+<!--<div id="monkeybusiness" class="bamboo-frame">
+	<!--<div class="bamboo-frame-holder">
+		<div class="bamboo-text-wrap" ng-controller="shop_products_ctrl">-->
+<div id="monkeybusiness">
+	<div>
+		<div ng-controller="shop_products_ctrl">
 			<h2>Shop</h2>
 			<ul class="unstyled">
 				<li ng-repeat="product in shop">
-					<span>{{product.name}}, Cost: {{product.cost}} bananas, Description: {{product.description}}</span>
+					<span>{{product.name}}, Cost: {{product.cost}} bananas, Description: {{product.description}}</span> 
+					<span ng-click="buy(product.cost)"> <a>BUY!</a></span>
 				</li>
 			</ul>
 		</div>
 	</div>		
-	<div class="bamboo-frame-img"></div>
+	<!--<div class="bamboo-frame-img"></div>-->
 </div>

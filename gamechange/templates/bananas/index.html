@@ -22,12 +22,16 @@
 </head>
 
 {{raw}}
-<body>
+<body ng-controller="user_ctrl">
 	<div id="land"></div>
 
-	<div class="cloud">	<span class="cloud-round"> </span> 	</div>
+	<!-- <div class="cloud">	<span class="cloud-round"> </span> 	</div> -->
 	
-	<div id="home">
+	<div id="home">	
+		<div id="userinfo" >
+			<p> <span ng-bind="user.username"> </span>, <span ng-bind="user.bananas"> </span> bananas </p>
+		</div>
+
 		<div id="tree">
 			<img src="/static/img/banana_tree.png"/>
 		</div>
@@ -36,18 +40,10 @@
 			<img src="/static/img/monkeyfull.png"/>
 		</div>
 
-
 		<div id="content" ng-view> </div>
 	</div>
 
 	<div id="footer"> </div>
-
-	<!--
-	<ul class="menu">
-		<li><a href="#/view1">view1</a></li>
-		<li><a href="#/view2">view2</a></li>
-	</ul>
-	-->
 
 	<!-- In production use:
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>

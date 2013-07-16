@@ -47,7 +47,7 @@ def api_shop_get():
 
 @bananas.route('/api/user',  methods = ['GET'])
 def api_user_get():
-	response = {'username':'Joe Bloggs', 'bananas': '23'}
+	response = {'username':'joe_bloggs', 'bananas': '23'}
 	return wrap_api_call(response)
 
 #post doesn't work yet! Returns 403!
@@ -63,6 +63,4 @@ def wrap_api_call(json=None):
 	wrapper = {'debug': True, 'apiversion': 0.1, 'hostname': app.config['SERVER_NAME'], 'systemtimemillis': int(round(time.time() * 1000))}
 	if(json != None):
 		wrapper['data'] = json
-	#don't add wrapper for testing
 	return jsonify(wrapper)
-	#return jsonify(json)
