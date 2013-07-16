@@ -18,14 +18,12 @@ controller('MyCtrl1', [function() {
 
 function shop_products_ctrl($scope, Restangular)
 {
-  	// $scope.shop = [
-  	// 	{name:'Water', cost:2, description:'water, what more can I say!!!'},
-  	// 	{name:'Coconut', cost:5, description:'Green or brown, who knows??'},
-  	// 	{name:'Mango', cost:10, description:'water, what more can I say!!!'}
-  	// ];
 
-  $scope.shop = Restangular.all("shop").getList();
-
+  Restangular.all('shop').getList().then(function (results) {
+    $scope.shop = results.items;
+    console.log($scope.shop );
+  });
 
 }
 
+ 

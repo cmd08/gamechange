@@ -64,5 +64,5 @@ def wrap_api_call(json=None):
 	if(json != None):
 		wrapper['data'] = json
 	#don't add wrapper for testing
-	#return jsonify(wrapper)
-	return jsonify(json)
+	return jsonify(wrapper)
+	#return jsonify(json)
