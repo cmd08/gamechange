@@ -7,8 +7,9 @@ class ShopItem(db.Model):
     __tablename__ = "shop_item"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
-    description = db.Column(db.String(512))
+    description = db.Column(db.Text)
     type = db.Column(db.String(50))
+    cost = db.Column(db.Integer)
 
     __mapper_args__ = {
         'polymorphic_identity' : 'shop_item',
