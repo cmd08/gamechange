@@ -58,12 +58,15 @@ def authorize():
 def login():
 	sess = request.environ['beaker.session']
 	code = request.args.get('code')
+	print code
 	if code is not None:
 		rk_auth_mgr = healthgraph.AuthManager(app.config['HEALTHGRAPH_CLIENT_ID'], app.config['HEALTHGRAPH_CLIENT_SECRET'], 
 			'/'.join(('http://127.0.0.1:8001', 'bananas/healthgraph/login',)))
 		access_token = rk_auth_mgr.get_access_token(code)
 		sess['rk_access_token'] = access_token
 		sess.save()
+		# User.get(session['user-id'])
+		# User.get(1)
 		return redirect('bananas/healthgraph/welcome')
 
 @bananas.route('/healthgraph/welcome')
@@ -96,7 +99,7 @@ def welcome():
 		# 	profile=profile, 
 		# 	activities=activities, 
 		# 	records=records.get_totals(),
-		#	response=response # interprets this as string when in html jinja2 but activities works fine?
+		# 	# response=response # interprets this as string when in html jinja2 but activities works fine?
 		# 	)
 	else:
 		return redirect('/')
