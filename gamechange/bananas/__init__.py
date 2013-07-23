@@ -142,6 +142,13 @@ def api_shop_post():
     gamechange.db.session.commit()
     return wrap_api_call(resp)
 
+@bananas.route('/api/shop/<item_id>/buy', methods = ['POST'])
+def api_shop_buy_item(item_id):
+    item = ShopItem.query.get(item_id)
+    session['bananas'] = int(session['bananas']) - item.cost
+    #Add item to user's inventory!
+    return api_user_get()
+
 @bananas.route('/api/user',  methods = ['GET'])
 def api_user_get():
 
@@ -149,21 +156,34 @@ def api_user_get():
         response = {'error': 'No logged in user'}
         return wrap_api_call(response), 403
 
-    response = {'username':session['username'], 'bananas': session['bananas']}
+    response = {'username':session['username'], 'bananas': int(session['bananas'])}
     return wrap_api_call(response)
 
+@bananas.route('/api/user/cheat', methods=['POST'])
+def user_cheat():
+    if "bananas" in session:
+        session['bananas'] = request.form['bananas']
+    return api_user_get()
+
+
+
 @bananas.route('/api/user/login', methods = ['POST'])
-def api_user_logi_post():
-    if(not request.json == None):
-        username = request.json['username']
-        password = request.json['password']
-    else :
-        username = request.form['username']
-        password = request.form['password']
-    #Do some logic here to log the user in!
-    session['username'] = username
-    session['bananas'] = 0
-    response = {'username': username, 'bananas': session['bananas']}
+def api_user_login_post():
+    if("username" in session):
+        pass
+        #already logged in
+    else:
+        if(not request.json == None):
+            username = request.json['username']
+            password = request.json['password']
+        else :
+            username = request.form['username']
+            password = request.form['password']
+        #Do some logic here to log the user in!
+        session['username'] = username
+        session['bananas'] = 0
+    
+    response = {'username': session['username'], 'bananas': session['bananas']}
     return wrap_api_call(response)
 
 #post doesn't work yet! Returns 403!
