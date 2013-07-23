@@ -45,8 +45,7 @@ def deauthorize_healthgraph_api():
 
 @bananas.route('/healthgraph/authorize')
 def authorize():
-	sess = request.environ['beaker.session']
-	if sess.has_key('rk_access_token'):
+	if session.has_key('rk_access_token'):
 		return redirect('bananas/healthgraph/welcome')
 	else:
 		rk_auth_mgr = healthgraph.AuthManager(app.config['HEALTHGRAPH_CLIENT_ID'], 
@@ -57,20 +56,17 @@ def authorize():
 
 @bananas.route('/healthgraph/login')
 def login():
-	sess = request.environ['beaker.session']
 	code = request.args.get('code')
 	if code is not None:
 		rk_auth_mgr = healthgraph.AuthManager(app.config['HEALTHGRAPH_CLIENT_ID'], app.config['HEALTHGRAPH_CLIENT_SECRET'], 
 			'/'.join(('http://127.0.0.1:8001', 'bananas/healthgraph/login',)))
 		access_token = rk_auth_mgr.get_access_token(code)
-		sess['rk_access_token'] = access_token
-		sess.save()
+		session['rk_access_token'] = access_token
 		return redirect('bananas/healthgraph/welcome')
 
 @bananas.route('/healthgraph/welcome')
 def welcome():
-	sess = request.environ['beaker.session']
-	access_token = sess.get('rk_access_token')
+	access_token = session.get('rk_access_token')
 	if access_token is not None:
 		user = healthgraph.User(session=healthgraph.Session(access_token))
 		profile = user.get_profile()
@@ -104,8 +100,7 @@ def welcome():
 
 @bananas.route('/healthgraph/logout')
 def logout():
-    sess = request.environ['beaker.session']
-    sess.delete()
+    session.pop('rk_access_token')
     return redirect('bananas/healthgraph/authorize')
 
 @bananas.route('/api/users', methods = ['GET'])
