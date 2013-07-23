@@ -125,15 +125,17 @@ def api_shop_post():
     name = request.form['name']
     description = request.form['description']
     type = request.form['type']
+    cost = request.form['cost']
+
     if type == 'shelter':
         level = request.form['level']
         image_url = request.form['image_url']
         storage_space = request.form['storage_space']
         food_decay_rate_multiplier = request.form['food_decay_rate_multiplier']
-        item = Shelter(name, description, level, image_url, storage_space, food_decay_rate_multiplier)
+        item = Shelter(name, cost, description, level, image_url, storage_space, food_decay_rate_multiplier)
         resp = item.serialize   
     else :
-        item = ShopItem(name, description)
+        item = ShopItem(name, cost, description)
         resp = item.serialize
 
     gamechange.db.session.add(item)
