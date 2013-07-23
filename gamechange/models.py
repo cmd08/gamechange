@@ -16,16 +16,18 @@ class ShopItem(db.Model):
         'polymorphic_on' : type
     }
 
-    def __init__(self, name, description):
+    def __init__(self, name, cost, description):
         self.name = name
+        self.cost = cost
         self.description = description
-
+        
     @property
     def serialize(self):
         """Return object data in easily serializeable format"""
         return {
             'id'         : self.id,
             'name'		: self.name,
+            'cost'      : self.cost,
             'description': self.description
         }
 

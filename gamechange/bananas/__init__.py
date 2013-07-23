@@ -12,6 +12,7 @@ from gamechange.models import User, ShopItem, Shelter
 bananas = Blueprint('bananas', __name__, template_folder='templates')
 app = current_app
 
+
 conf = {'baseurl': 'http://127.0.0.1:8000'}
 
 class MyEncoder(json.JSONEncoder):
@@ -124,15 +125,17 @@ def api_shop_post():
     name = request.form['name']
     description = request.form['description']
     type = request.form['type']
+    cost = request.form['cost']
+
     if type == 'shelter':
         level = request.form['level']
         image_url = request.form['image_url']
         storage_space = request.form['storage_space']
         food_decay_rate_multiplier = request.form['food_decay_rate_multiplier']
-        item = Shelter(name, description, level, image_url, storage_space, food_decay_rate_multiplier)
+        item = Shelter(name, cost, description, level, image_url, storage_space, food_decay_rate_multiplier)
         resp = item.serialize   
     else :
-        item = ShopItem(name, description)
+        item = ShopItem(name, cost, description)
         resp = item.serialize
 
     gamechange.db.session.add(item)
@@ -141,6 +144,7 @@ def api_shop_post():
 
 @bananas.route('/api/user',  methods = ['GET'])
 def api_user_get():
+
     if "username" not in session:
         response = {'error': 'No logged in user'}
         return wrap_api_call(response), 403
@@ -150,8 +154,12 @@ def api_user_get():
 
 @bananas.route('/api/user/login', methods = ['POST'])
 def api_user_logi_post():
-    username = request.form['username']
-    password = request.form['password']
+    if(not request.json == None):
+        username = request.json['username']
+        password = request.json['password']
+    else :
+        username = request.form['username']
+        password = request.form['password']
     #Do some logic here to log the user in!
     session['username'] = username
     session['bananas'] = 0
@@ -167,6 +175,7 @@ def api_user_post():
 	return wrap_api_call(response)
 
 def wrap_api_call(json=None):
+
     wrapper = {'_csrf_token': gamechange.generate_csrf_token(), 'api_version': 0.1, 'hostname': app.config['SERVER_NAME'], 'system_time_millis': int(round(time.time() * 1000))}
     if(app.config['DEBUG']):
     	wrapper['debug'] = True

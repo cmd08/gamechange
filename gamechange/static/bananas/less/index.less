@@ -1,4 +1,10 @@
 
+#userinfo {
+	position: fixed;
+	background-color: white;
+	padding: 2%;
+}
+
 #home {
 	font-size: 100%;
 	#content {
@@ -128,42 +134,28 @@
 }
 
 .bamboo-frame {
-	-webkit-transform-style: preserve-3d;
-	-webkit-perspective: 862px;
-	-webkit-perspective-origin: 70% 34%;
-
 	height:100%;
 	width:100%;
 
-	background-image: url("/static/img/bamboo_frame.png");
+	background-image: url("/static/img/bamboo_frame_flat.png");
 	background-size: 100% 100%;
 
 	.bamboo-frame-holder {
-		background-color: white;
-		width: 70%;
-		height: 51%;
-		top: 21%;
-		-webkit-transform: rotateY(25deg);
-		left: 24%;
+		width: 59%;
+		height: 47%;
+		top: 25%;
+		left: 22%;
 		display: block;
 		position: absolute;
 
 		.bamboo-text-wrap {
-			margin: 20px;
+			h2 {
+				margin-top: 0;
+			}
 		}
+
 	}
 }
-
-.bamboo-frame-img {
-	position: fixed;
-
-	height:100%;
-	width:100%;
-
-	background-image: url("/static/img/bamboo_frame.png");
-	background-size: 100% 100%;
-}
-
 
 #bananarun {
 }
