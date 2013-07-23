@@ -157,8 +157,12 @@ def api_user_get():
 
 @bananas.route('/api/user/login', methods = ['POST'])
 def api_user_logi_post():
-    username = request.form['username']
-    password = request.form['password']
+    if(not request.json == None):
+        username = request.json['username']
+        password = request.json['password']
+    else :
+        username = request.form['username']
+        password = request.form['password']
     #Do some logic here to log the user in!
     session['username'] = username
     session['bananas'] = 0

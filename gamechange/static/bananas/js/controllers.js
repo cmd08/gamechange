@@ -31,7 +31,7 @@ function shop_products_ctrl($scope, Restangular)
       //console.log(cost, ' bananas spent');
 
       //Update backend through API
-      
+
     }
     else
     {
@@ -44,11 +44,19 @@ function shop_products_ctrl($scope, Restangular)
 
 function user_ctrl($scope, Restangular)
 {
-  Restangular.all('user').getList().then(function (results) {
-    $scope.user = results;
-    console.log($scope.user.username);
-    console.log($scope.user.bananas);
+
+  Restangular.all('user').customPOST('login', {}, {}, {username: "Ashley", password: "yoMumma"}).then(function (results) {
+    $scope.user = results.data;
+    //console.log($scope.user);
   });
+
+
+  //Get back the username and the no of bananas
+  // Restangular.all('user').getList().then(function (results) {
+  //   $scope.user = results;
+  //   console.log($scope.user.username);
+  //   console.log($scope.user.bananas);
+  // });
 
   // $scope.spend_bananas = function( cost ) {
   //   if $scope.user.bananas > cost :
@@ -58,6 +66,11 @@ function user_ctrl($scope, Restangular)
   //     return 'invalid';
   // }
 
+}
+
+function popup_ctrl($scope)
+{
+  
 }
 
  

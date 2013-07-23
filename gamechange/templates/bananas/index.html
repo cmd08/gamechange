@@ -25,7 +25,7 @@
 <body ng-controller="user_ctrl">
 	<div id="land"></div>
 
-	<!-- <div class="cloud">	<span class="cloud-round"> </span> 	</div> -->
+	<div class="cloud">	<span class="cloud-round"> </span> 	</div>
 	
 	<div id="home">	
 		<div id="userinfo" >
@@ -43,13 +43,25 @@
 		<div id="content" ng-view> </div>
 	</div>
 
-	<div id="footer"> </div>
+	<div id="footer">
+		<div id="popup" style="display:none" ng-controller="popup_ctrl">
+			<img class="popup_icon" src="">
+			<h2 class="popup_heading"></h2>
+			<p class="popup_body"></p>
+			<button>close</button>
+		</div>
+	<div>
 
 	<!-- In production use:
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
 	-->
 	{{ endraw }}
+
+	{% if config['DEBUG'] %}
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.js"></script>
+	{% else %}
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+	{% endif %}
 	<script src="{{config['STATIC_ROOT_URL']}}bananas/js/app.js"></script>
 	<script src="{{config['STATIC_ROOT_URL']}}bananas/js/services.js"></script>
 	<script src="{{config['STATIC_ROOT_URL']}}bananas/js/controllers.js"></script>

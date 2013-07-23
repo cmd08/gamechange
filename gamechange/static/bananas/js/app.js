@@ -1,5 +1,6 @@
 'use strict';
 
+var last_csrf_token;
 
 // Declare app level module which depends on filters, and services
 angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.directives', 'myApp.controllers', 'restangular']).
@@ -17,19 +18,22 @@ angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.directives', 
     // This function is used to map the JSON data to something Restangular
     // expects
     RestangularProvider.setResponseExtractor(function(response, operation, what, url) {
+        
+        last_csrf_token = response._csrf_token;
+
         if (operation === "getList") {
             // Use results as the return type, and save the result metadata
             // in _resultmeta
             var newResponse = response.data;
             newResponse._resultmeta = {
-                "apiversion": response.apiversion,
+                "_csrf_token": response._csrf_token,
+                "api_version": response.api_version,
                 "debug": response.debug,
                 "hostname": response.hostname,
-                "systemtimemillis": response.systemtimemillis,
+                "system_time_millis": response.system_time_millis,
             };
             return newResponse;
         }
-
         return response;
     });
 
