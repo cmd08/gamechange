@@ -46,13 +46,28 @@ def init_db():
 #     return User.get(userid)
 
 @app.before_request
-def csrf_protect():
+def ensure_xsrf_token_is_valid():
     if request.method == "POST":
-        token = session.pop('_csrf_token', None)
-        if not token or token != request.form.get('_csrf_token'):
-            abort(403)
-        else: 
+        local_token = session['_csrf_token']
+        remote_token = request.form.get('_csrf_token') if request.headers['X-XSRF-TOKEN'] == None else request.headers['X-XSRF-TOKEN']
+        
+        if local_token == None: 
             session['_csrf_token'] = generate_csrf_token()
+            abort(403)
+
+        if remote_token == None:
+            abort(403)
+
+        if not local_token == remote_token:
+            abort(403)
+
+@app.after_request
+def apply_xsrf_cookie(response):
+    if request.method == "GET":
+        response.set_cookie('XSRF-TOKEN', session['_csrf_token'])
+    
+    return response
+
 
 def generate_csrf_token():
     if '_csrf_token' not in session:
