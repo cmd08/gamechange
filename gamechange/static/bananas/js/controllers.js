@@ -24,19 +24,25 @@ function shop_products_ctrl($scope, Restangular)
     //console.log($scope.shop );
   });
 
-  $scope.buy = function(cost) {
-    if ($scope.user.bananas >= cost)
-    {
-      $scope.user.bananas -= cost;
-      //console.log(cost, ' bananas spent');
+  $scope.buy = function(product) {
+    console.log("BUY!")
+    Restangular.one('shop', product.id).customPOST('buy')
+    Restangular.one('user', $scope.user.id).get().then(function(response){
+      console.log(response.data);
+      $scope.user = response.data;
+    });
+    // if ($scope.user.bananas >= cost)
+    // {
+    //   $scope.user.bananas -= cost;
+    //   //console.log(cost, ' bananas spent');
 
-      //Update backend through API
+    //   //Update backend through API
 
-    }
-    else
-    {
-      console.log('Not enough bananas');
-    }
+    // }
+    // else
+    // {
+    //   console.log('Not enough bananas');
+    // }
 
   };
 
