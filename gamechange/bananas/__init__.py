@@ -146,9 +146,9 @@ def api_shop_post():
 def api_shop_buy_item(item_id):
     item = ShopItem.query.get(item_id)
     session['bananas'] = int(session['bananas']) - item.cost
-    me = User.get(int(session['user_id']))
+    me = User.query.get(int(session['user_id']))
     me.add_to_inventory(item)
-    return api_user_get()
+    return wrap_api_call(me.serialize)
 
 @bananas.route('/api/user',  methods = ['GET'])
 def api_user_get():
@@ -190,8 +190,8 @@ def api_user_login_post():
             return wrap_api_call({'error': 'Incorrect password'}), 403
 
         #Should check the user isn't banned here!
-
-        session['username'] = username
+        session['user_id'] = user.id
+        session['username'] = user.username
         session['bananas'] = 0
     
     response = {'username': session['username'], 'bananas': session['bananas']}
