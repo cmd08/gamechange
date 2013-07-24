@@ -124,17 +124,17 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.email
 
-    def set_password(password):
+    def set_password(self, password):
         self.password = password
 
-    def check_password(password):
+    def check_password(self, password):
         return self.password == password
 
-    def set_shelter(shelter):
+    def set_shelter(self, shelter):
         self.shelter = shelter
         db.session.commit()
 
-    def add_to_inventory(item):
+    def add_to_inventory(self, item):
         self.inventory_items.append(item)
         db.session.commit()
 
