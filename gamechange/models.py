@@ -20,22 +20,26 @@ class ShopItem(db.Model):
         self.name = name
         self.cost = cost
         self.description = description
+
+    def __repr__(self):
+        return self.name
         
     @property
     def serialize(self):
         """Return object data in easily serializeable format"""
         return {
-            'id'         : self.id,
-            'name'		: self.name,
-            'cost'      : self.cost,
-            'description': self.description
+            'id'            : self.id,
+            'name'		    : self.name,
+            'cost'          : self.cost,
+            'description'   : self.description
         }
 
 class Shelter(ShopItem):
     level = db.Column(db.Integer)
     image_url = db.Column(db.String(512))
-    storage_space = db.Column(db.Integer)
+    capacity = db.Column(db.Integer)
     food_decay_rate_multiplier = db.Column(db.Integer)
+    storage_space = db.Column(db.Integer)
 
     def __init__(self, name, description, level, image_url, storage_space, food_decay_rate_multiplier):
         self.name = name
@@ -52,15 +56,19 @@ class Shelter(ShopItem):
     @property
     def serialize(self):
         return {
-            'id' : self.id,
-            'name' : self.name,
-            'description': self.description,
-            'level' : self.level,
-            'image_url' : self.image_url,
-            'storage_space' : self.storage_space,
-            'food_decay_rate_multiplier' : self.food_decay_rate_multiplier
+            'id'                        : self.id,
+            'name'                      : self.name,
+            'description'               : self.description,
+            'level'                     : self.level,
+            'image_url'                 : self.image_url,
+            'storage_space'             : self.storage_space,
+            'food_decay_rate_multiplier': self.food_decay_rate_multiplier
         }
 
+inventory_items = db.Table('inventory_items',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('item_id', db.Integer, db.ForeignKey('shop_item.id'))
+)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -69,6 +77,10 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True)
     verified = db.Column(db.Boolean, default=False)
     subscribed = db.Column(db.Boolean, default=True)
+    shelter_type_id = db.Column(db.Integer, db.ForeignKey('shop_item.id'))
+    shelter = db.relationship('Shelter', backref=db.backref('user', lazy='dynamic'))
+    inventory_items = db.relationship('ShopItem', secondary=inventory_items,
+        backref=db.backref('user', lazy='dynamic'))
 
     def isValid(self):
         self.error = dict()
@@ -96,7 +108,9 @@ class User(db.Model):
        return {
            'id'         : self.id,
            'first_name'	: self.first_name,
-           'last_name'	: self.last_name
+           'last_name'	: self.last_name,
+           'email'      : self.email,
+           'shelter'    : self.shelter.serialize(),
        }
 
     def __init__(self, first_name, last_name, email):
@@ -106,3 +120,14 @@ class User(db.Model):
         
     def __repr__(self):
         return '<User %r>' % self.email
+
+    def set_shelter(shelter):
+        self.shelter = shelter
+        db.session.commit()
+
+    def add_to_inventory(item):
+        self.inventory_items.append(item)
+        db.session.commit()
+
+
+
