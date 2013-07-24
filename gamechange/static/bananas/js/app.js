@@ -3,7 +3,7 @@
 var last_csrf_token;
 
 // Declare app level module which depends on filters, and services
-angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.directives', 'myApp.controllers', 'restangular']).
+angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.directives', 'myApp.controllers', 'restangular', 'ui.bootstrap']).
   config(function($routeProvider) {
     $routeProvider.when('/home', {templateUrl: '/static/bananas/partials/home.html', controller: 'MyCtrl1'});
     $routeProvider.when('/main_menu', {templateUrl: '/static/bananas/partials/main_menu.html', controller: 'MyCtrl2'});

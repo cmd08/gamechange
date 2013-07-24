@@ -27,20 +27,39 @@
 
 	<div class="cloud">	<span class="cloud-round"> </span> 	</div>
 	
-	<div id="home">	
-		<div id="userinfo" >
-			<p> <span ng-bind="user.username"> </span>, <span ng-bind="user.bananas"> </span> bananas </p>
-		</div>
+	<div id="frame">	
 
+	
 		<div id="tree">
 			<img src="/static/img/banana_tree.png"/>
 		</div>
+
+		<div id="content" ng-view> </div>
 
 		<div id="monkey">
 			<img src="/static/img/monkeyfull.png"/>
 		</div>
 
-		<div id="content" ng-view> </div>
+		<div id="userinfo" >
+			<p> <span ng-bind="user.username"> </span>, <span ng-bind="user.bananas"> </span> bananas </p>
+    		<progress percent="user.health" class="progress-success" animate="false"></progress>
+		</div>	
+
+		<div id="login" ng-show="display_login">
+			<div class="bamboo-frame">
+				<div class="bamboo-frame-holder">
+					<div class="bamboo-text-wrap">
+						<h2>Login</h2>
+						<!-- Username and password entry box -->
+						<form name="login-form">
+							User name: <input type="text" name="username" ng-model="user.username" required>
+							Password: <input type="password" name="password" ng-model="user.password" required>
+							<button ng-click="login()">LOGIN</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<div id="footer">
@@ -62,6 +81,8 @@
 	{% else %}
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
 	{% endif %}
+	<!-- The below js uses hardcoded Bootstrap Templates, remove tpls for custom templates -->
+	<script src="{{config['STATIC_ROOT_URL']}}js/ui-bootstrap-tpls-0.4.0.js"></script>
 	<script src="{{config['STATIC_ROOT_URL']}}bananas/js/app.js"></script>
 	<script src="{{config['STATIC_ROOT_URL']}}bananas/js/services.js"></script>
 	<script src="{{config['STATIC_ROOT_URL']}}bananas/js/controllers.js"></script>

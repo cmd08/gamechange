@@ -26,11 +26,15 @@ function shop_products_ctrl($scope, Restangular)
 
   $scope.buy = function(product) {
     console.log("BUY!")
-    Restangular.one('shop', product.id).customPOST('buy')
-    Restangular.one('user', $scope.user.id).get().then(function(response){
+    Restangular.one('shop', product.id).customPOST('buy').then(function(){
+      Restangular.one('user', $scope.user.id).get().then(function(response){
       console.log(response.data);
-      $scope.user = response.data;
+
+      $scope.user.bananas = response.data.bananas;
     });
+    });
+
+
     // if ($scope.user.bananas >= cost)
     // {
     //   $scope.user.bananas -= cost;
@@ -50,19 +54,40 @@ function shop_products_ctrl($scope, Restangular)
 
 function user_ctrl($scope, Restangular)
 {
+  $scope.display_login = false;
+  //CODE OUTLINE
+  //Get User Data
+    //If fails
+      //Login
+      //Get User Data
 
-  Restangular.all('user').customPOST('login', {}, {}, {username: "Ashley", password: "yoMumma"}).then(function (results) {
-    $scope.user = results.data;
-    //console.log($scope.user);
+  // Get back the username and the no of bananas
+  Restangular.all('user').getList().then(function (results) {
+    console.log("User logged in");
+    $scope.user = results;
+  },
+  function() {
+    console.log("User Not Logged in, showing login page");
+    $scope.display_login = true;
+
   });
 
+  $scope.login = function (user) {
+    Restangular.all('user').customPOST('login', {}, {}, {username: $scope.user.username, password: $scope.user.password}).then(function (results) {
+      console.log("user logged in");
+      $scope.user = results.data;
+      //Need to pull health from API
 
-  //Get back the username and the no of bananas
-  // Restangular.all('user').getList().then(function (results) {
-  //   $scope.user = results;
-  //   console.log($scope.user.username);
-  //   console.log($scope.user.bananas);
-  // });
+      $scope.display_login = false;
+    },
+    function () {
+      console.log("Login Failed");
+    });
+  }
+
+
+
+  
 
   // $scope.spend_bananas = function( cost ) {
   //   if $scope.user.bananas > cost :
