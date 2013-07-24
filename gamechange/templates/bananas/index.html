@@ -43,6 +43,7 @@
 		<div id="userinfo" ng-hide="display_login">
 			<p> <span ng-bind="user.username"> </span>, <span ng-bind="user.bananas"> </span> bananas </p>
     		<progress percent="user.health" class="progress-success" animate="false"></progress>
+    		<button ng-click="logout()">Logout</button>
 		</div>	
 
 		<div id="login" ng-show="display_login">

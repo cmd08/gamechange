@@ -72,7 +72,7 @@ function user_ctrl($scope, Restangular)
 
   });
 
-  $scope.login = function (user) {
+  $scope.login = function () {
     Restangular.all('user').customPOST('login', {}, {}, {username: $scope.user.username, password: $scope.user.password}).then(function (results) {
       console.log("user logged in");
       $scope.user = results.data;
@@ -85,6 +85,16 @@ function user_ctrl($scope, Restangular)
       console.log("Login Failed");
       $scope.login_failed = true;
     });
+  }
+
+  $scope.logout = function () {
+    Restangular.all('user').customPOST('logout').then( function (results) {
+      $scope.display_login = true;
+      console.log("User Logout done");
+    },
+    function (results) {
+      console.log("User Logout failed");
+    })
   }
 
 
