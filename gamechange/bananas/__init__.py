@@ -145,7 +145,6 @@ def api_shop_post():
 @bananas.route('/api/shop/<item_id>/buy', methods = ['POST'])
 def api_shop_buy_item(item_id):
     item = ShopItem.query.get(item_id)
-    session['bananas'] = int(session['bananas']) - item.cost
     me = User.query.get(int(session['user_id']))
     me.add_to_inventory(item)
     return wrap_api_call(me.serialize)
@@ -163,6 +162,9 @@ def api_user_get():
 def user_cheat():
     if "bananas" in session:
         session['bananas'] = request.form['bananas']
+        User.query.get(session['user_id']).bananas = request.form['bananas']
+        gamechange.db.session.commit()
+
     return api_user_get()
 
 
@@ -191,7 +193,7 @@ def api_user_login_post():
         #Should check the user isn't banned here!
         session['user_id'] = user.id
         session['username'] = user.username
-        session['bananas'] = 0
+        session['bananas'] = user.bananas
     
     response = {'username': session['username'], 'bananas': session['bananas']}
     return wrap_api_call(response)

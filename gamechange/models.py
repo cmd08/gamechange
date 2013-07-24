@@ -79,6 +79,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True)
     verified = db.Column(db.Boolean, default=False)
     subscribed = db.Column(db.Boolean, default=True)
+    bananas = db.Column(db.Integer, default=0)
     # shelter_type_id = db.Column(db.Integer, db.ForeignKey('shop_item.id'))
     # shelter = db.relationship('Shelter', backref=db.backref('user', lazy='dynamic'))
     inventory_items = db.relationship('ShopItem', secondary=inventory_items,
@@ -113,6 +114,8 @@ class User(db.Model):
            'first_name'	: self.first_name,
            'last_name'	: self.last_name,
            'email'      : self.email,
+           'bananas'    : self.bananas,
+           'username'   : self.username,
            'inventory'  : [i.serialize for i in self.inventory_items],
        }
 
@@ -136,6 +139,10 @@ class User(db.Model):
         db.session.commit()
 
     def add_to_inventory(self, item):
+        if (self.bananas - item.cost < 0):
+            raise ValueError('You do not have sufficient bananas!')
+
+        self.bananas = self.bananas - item.cost
         self.inventory_items.append(item)
         db.session.commit()
 
