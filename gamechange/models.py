@@ -72,6 +72,8 @@ inventory_items = db.Table('inventory_items',
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(120), unique=True)
+    password = db.Column(db.String(256), nullable=True)
     first_name = db.Column(db.String(120))
     last_name = db.Column(db.String(120))
     email = db.Column(db.String(120), unique=True)
@@ -113,13 +115,20 @@ class User(db.Model):
            'shelter'    : self.shelter.serialize(),
        }
 
-    def __init__(self, first_name, last_name, email):
+    def __init__(self, username, first_name, last_name, email):
+        self.username = username
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
         
     def __repr__(self):
         return '<User %r>' % self.email
+
+    def set_password(password):
+        self.password = password
+
+    def check_password(password):
+        return self.password == password
 
     def set_shelter(shelter):
         self.shelter = shelter
