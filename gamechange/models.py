@@ -68,8 +68,9 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True)
     verified = db.Column(db.Boolean, default=False)
     subscribed = db.Column(db.Boolean, default=True)
-    username = db.Column() text
-    healthgraph_api_key = db.Column() text
+    # username = db.Column() text
+    healthgraph_api_key = db.Column(db.String(32), unique=True)
+    healthgraph_activities = db.relationship('HealthgraphActivity', backref='User', lazy='dynamic')
 
 
     def isValid(self):
@@ -109,6 +110,6 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.email
 
-class HealthgraphActivity(db.Model)
+class HealthgraphActivity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user = db.ForeignKey(User)
+    user = db.Column(db.Integer, db.ForeignKey('user.id'))
