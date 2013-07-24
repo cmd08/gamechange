@@ -79,8 +79,8 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True)
     verified = db.Column(db.Boolean, default=False)
     subscribed = db.Column(db.Boolean, default=True)
-    shelter_type_id = db.Column(db.Integer, db.ForeignKey('shop_item.id'))
-    shelter = db.relationship('Shelter', backref=db.backref('user', lazy='dynamic'))
+    # shelter_type_id = db.Column(db.Integer, db.ForeignKey('shop_item.id'))
+    # shelter = db.relationship('Shelter', backref=db.backref('user', lazy='dynamic'))
     inventory_items = db.relationship('ShopItem', secondary=inventory_items,
         backref=db.backref('user', lazy='dynamic'))
 
@@ -112,7 +112,7 @@ class User(db.Model):
            'first_name'	: self.first_name,
            'last_name'	: self.last_name,
            'email'      : self.email,
-           'shelter'    : self.shelter.serialize(),
+           # 'shelter'    : self.shelter.serialize(),
        }
 
     def __init__(self, username, first_name, last_name, email):
