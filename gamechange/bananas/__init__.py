@@ -153,12 +153,11 @@ def api_shop_buy_item(item_id):
 @bananas.route('/api/user',  methods = ['GET'])
 def api_user_get():
 
-    if "username" not in session:
+    if "user_id" not in session:
         response = {'error': 'No logged in user'}
         return wrap_api_call(response), 403
 
-    response = {'username':session['username'], 'bananas': int(session['bananas'])}
-    return wrap_api_call(response)
+    return wrap_api_call(User.query.get(int(session["user_id"])).serialize)
 
 @bananas.route('/api/user/cheat', methods=['POST'])
 def user_cheat():
