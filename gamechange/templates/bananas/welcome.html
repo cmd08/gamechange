@@ -18,15 +18,13 @@
 				<h2>Recent Activities</h2>	
 				<table border=1>
 					<thead>
-						<th>Activity ID</th>
 						<th>Date / Time</th>
 						<th>Sport</th>
 						<th>Distance (km)</th>
 					</thead>
 					<tbody>
-						{% for stats in response %}
+						{% for stats in activities %}
 						<tr>
-							<td>{{ stats.get('activity_id')[1]|replace("/fitnessActivities/", "") }}</td>
 							<td>{{ stats.get('start_time') }}</td>
 							<td>{{ stats.get('type') }}</td>
 							<td align="right">{{ '%.1f' % stats.get('total_distance', 0) }}</td>
