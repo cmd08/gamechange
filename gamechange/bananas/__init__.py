@@ -103,14 +103,14 @@ def logout():
     session.pop('rk_access_token')
     return redirect('bananas/healthgraph/authorize')
 
+@bananas.route('/api/')
+def api_index():
+    return wrap_api_call()
+
 @bananas.route('/api/users', methods = ['GET'])
 def api_users():
     json_list = [i.serialize for i in User.query.all()]
     return wrap_api_call(json_list)
-
-@bananas.route('/api/')
-def api_index():
-    return wrap_api_call()
 
 @bananas.route('/api/shop', methods = ['GET'])
 def api_shop_get():
@@ -146,7 +146,8 @@ def api_shop_post():
 def api_shop_buy_item(item_id):
     item = ShopItem.query.get(item_id)
     session['bananas'] = int(session['bananas']) - item.cost
-    #Add item to user's inventory!
+    me = User.get(int(session['user_id']))
+    me.add_to_inventory(item)
     return api_user_get()
 
 @bananas.route('/api/user',  methods = ['GET'])
