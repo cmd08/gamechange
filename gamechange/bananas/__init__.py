@@ -180,7 +180,17 @@ def api_user_login_post():
         else :
             username = request.form['username']
             password = request.form['password']
-        #Do some logic here to log the user in!
+        
+        user = User.query.filter_by(username=username).first()
+
+        if user is None:
+            return wrap_api_call({'error': 'No such user'}), 403
+
+        if not user.check_password(password):
+            return wrap_api_call({'error': 'Incorrect password'}), 403
+
+        #Should check the user isn't banned here!
+
         session['username'] = username
         session['bananas'] = 0
     
