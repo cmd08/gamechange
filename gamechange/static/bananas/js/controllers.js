@@ -80,7 +80,8 @@ function user_ctrl($scope, Restangular)
 
       $scope.display_login = false;
     },
-    function () {
+    function (results) {
+      console.log(results.data.data.error);
       console.log("Login Failed");
       $scope.login_failed = true;
     });

@@ -184,10 +184,10 @@ def api_user_login_post():
         user = User.query.filter_by(username=username).first()
 
         if user is None:
-            abort(403)
+            return wrap_api_call({'error': 'No such user'}), 403
 
         if not user.check_password(password):
-            abort (403)
+            return wrap_api_call({'error': 'Incorrect password'}), 403
 
         #Should check the user isn't banned here!
 
