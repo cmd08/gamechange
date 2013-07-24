@@ -186,6 +186,14 @@ def api_user_login_post():
     response = {'username': session['username'], 'bananas': session['bananas']}
     return wrap_api_call(response)
 
+@bananas.route('/api/user/logout', methods = ['POST'])
+def api_user_logout_post():
+    if "username" in session:
+        session.pop("username")
+        return wrap_api_call()
+    else:
+        abort(500)
+
 #post doesn't work yet! Returns 403!
 @bananas.route('/api/user', methods = ['POST'])
 def api_user_post():
