@@ -27,7 +27,7 @@ function shop_products_ctrl($scope, Restangular)
   $scope.buy = function(product) {
     console.log("BUY!")
     Restangular.one('shop', product.id).customPOST('buy').then(function(){
-      Restangular.one('user', $scope.user.id).get().then(function(response){
+      Restangular.one('user').get().then(function(response){
       console.log(response.data);
 
       $scope.user.bananas = response.data.bananas;
