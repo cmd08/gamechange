@@ -112,7 +112,7 @@ class User(db.Model):
            'first_name'	: self.first_name,
            'last_name'	: self.last_name,
            'email'      : self.email,
-           # 'shelter'    : self.shelter.serialize(),
+           'inventory'  : [i.serialize for i in self.inventory_items],
        }
 
     def __init__(self, username, first_name, last_name, email):
