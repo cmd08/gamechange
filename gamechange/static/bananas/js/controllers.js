@@ -82,6 +82,7 @@ function user_ctrl($scope, Restangular)
     },
     function () {
       console.log("Login Failed");
+      $scope.login_failed = true;
     });
   }
 
