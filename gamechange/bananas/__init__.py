@@ -148,7 +148,6 @@ def api_shop_buy_item(item_id):
     session['bananas'] = int(session['bananas']) - item.cost
     me = User.query.get(int(session['user_id']))
     me.add_to_inventory(item)
-    print me.serialize
     return wrap_api_call(me.serialize)
 
 @bananas.route('/api/user',  methods = ['GET'])
