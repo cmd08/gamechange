@@ -213,6 +213,27 @@ def api_user_post():
 	response = "lol"
 	return wrap_api_call(response)
 
+@bananas.route('/api/user/register', methods=['POST'])
+def api_user_register_post():
+    if(not request.json == None):
+        username = request.json['username']
+        password = request.json['password']
+        first_name = request.json['first_name']
+        last_name = request.json['last_name']
+        email = request.json['email']
+    else :
+        username = request.form['username']
+        password = request.form['password']
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        email = request.form['email']
+
+    new_user = User(username, first_name, last_name, email)
+    new_user.set_password(password)
+    gamechange.db.session.add(new_user)
+    gamechange.db.session.commit()
+    return wrap_api_call(new_user.serialize)
+
 def wrap_api_call(json=None):
 
     wrapper = {'_csrf_token': gamechange.generate_csrf_token(), 'api_version': 0.1, 'hostname': app.config['SERVER_NAME'], 'system_time_millis': int(round(time.time() * 1000))}
