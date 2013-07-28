@@ -39,7 +39,8 @@ app.register_blueprint(bananas, url_prefix="/bananas", config=app.config)
 @app.route('/initDB')
 def init_db():
     db.create_all()
-    return "This is naughty and MUST not be in production!"
+    session.pop("user_id")
+    return "This is naughty and MUST not be in production! This also clears the session!"
 
 # @login_manager.user_loader
 # def load_user(userid):
