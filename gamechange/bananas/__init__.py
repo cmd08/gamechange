@@ -151,7 +151,6 @@ def api_shop_buy_item(item_id):
 
 @bananas.route('/api/user',  methods = ['GET'])
 def api_user_get():
-
     if "user_id" not in session:
         response = {'error': 'No logged in user'}
         return wrap_api_call(response), 403
@@ -167,11 +166,11 @@ def user_cheat():
 
     return api_user_get()
 
-
-
 @bananas.route('/api/user/login', methods = ['POST'])
 def api_user_login_post():
-    if("username" in session):
+    print("Entering login function...")
+    if("user_id" in session):
+        user = User.query.get(session["user_id"])
         pass
         #already logged in
     else:
@@ -179,9 +178,12 @@ def api_user_login_post():
             username = request.json['username']
             password = request.json['password']
         else :
-            username = request.form['username']
-            password = request.form['password']
-        
+            try:
+                username = request.form['username']
+                password = request.form['password']
+            except KeyError:
+                return wrap_api_call({'error':'Both fields are required'}), 400
+        print(username)
         user = User.query.filter_by(username=username).first()
 
         if user is None:
@@ -192,16 +194,14 @@ def api_user_login_post():
 
         #Should check the user isn't banned here!
         session['user_id'] = user.id
-        session['username'] = user.username
-        session['bananas'] = user.bananas
     
-    response = {'username': session['username'], 'bananas': session['bananas']}
+    response = {'username': user.username, 'bananas': user.bananas}
     return wrap_api_call(response)
 
 @bananas.route('/api/user/logout', methods = ['POST'])
 def api_user_logout_post():
-    if "username" in session:
-        session.pop("username")
+    if "user_id" in session:
+        session.pop("user_id")
         return wrap_api_call()
     else:
         abort(500)
@@ -213,6 +213,14 @@ def api_user_post():
 	# response = {'username':username}
 	response = "lol"
 	return wrap_api_call(response)
+
+@bananas.route('/api/inventory', methods=['GET'])
+def api_inventory_get():
+    if "user_id" in session:
+        resp = ""
+        return wrap_api_call(resp)
+    else:
+        abort(403)
 
 @bananas.route('/api/user/register', methods=['POST'])
 def api_user_register_post():
@@ -236,7 +244,6 @@ def api_user_register_post():
     return wrap_api_call(new_user.serialize)
 
 def wrap_api_call(json=None):
-
     wrapper = {'_csrf_token': gamechange.generate_csrf_token(), 'api_version': 0.1, 'hostname': app.config['SERVER_NAME'], 'system_time_millis': int(round(time.time() * 1000))}
     if(app.config['DEBUG']):
     	wrapper['debug'] = True
