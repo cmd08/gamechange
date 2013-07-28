@@ -73,18 +73,32 @@ function user_ctrl($scope, Restangular)
   });
 
   $scope.login = function () {
-    Restangular.all('user').customPOST('login', {}, {}, {username: $scope.user.username, password: $scope.user.password}).then(function (results) {
-      console.log("user logged in");
-      $scope.user = results.data;
-      //Need to pull health from API
-
-      $scope.display_login = false;
-    },
-    function (results) {
-      console.log(results.data.data.error);
-      console.log("Login Failed");
+    //Need to check that username and password are not blank
+    if ($scope.login_form.username.$error.required)
+    {
+      console.log("Blank Username Field");
       $scope.login_failed = true;
-    });
+    }
+    else if ($scope.login_form.password.$error.required)
+    {
+      console.log("Blank Password Field");
+      $scope.login_failed = true;
+    }
+    else
+    {
+      Restangular.all('user').customPOST('login', {}, {}, {username: $scope.user.username, password: $scope.user.password}).then(function (results) {
+        console.log("user logged in");
+        $scope.user = results.data;
+        //Need to pull health from API
+
+        $scope.display_login = false;
+      },
+      function (results) {
+        console.log(results.data.data.error);
+        console.log("Login Failed");
+        $scope.login_failed = true;
+      });
+    }
   }
 
   $scope.logout = function () {
@@ -97,6 +111,18 @@ function user_ctrl($scope, Restangular)
     })
   }
 
+  $scope.show_user_details = function () {
+    if ( ! $scope.user_detailed )
+    {
+      console.log("Showing Detailed User Data");
+      $scope.user_detailed = true;
+    }
+    else
+    {
+      console.log("Hiding Detailed User Data");
+      $scope.user_detailed = false;
+    }
+  }
 
 
   
