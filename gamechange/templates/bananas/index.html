@@ -40,10 +40,14 @@
 			<img src="/static/img/monkeyfull.png"/>
 		</div>
 
-		<div id="userinfo" ng-hide="display_login">
+		<div id="userinfo" ng-click="show_user_details()" ng-hide="display_login">
 			<p> <span ng-bind="user.username"> </span>, <span ng-bind="user.bananas"> </span> bananas </p>
     		<progress percent="user.health" class="progress-success" animate="false"></progress>
-    		<button ng-click="logout()">Logout</button>
+    		<div ng-show="user_detailed">
+    			<h3>Inventory</h3>
+    			<button ng-click="logout()">Logout</button>
+    		</div>
+    		<div class="dropdown-tri"></div>
 		</div>	
 
 		<div id="login" ng-show="display_login">
@@ -52,7 +56,7 @@
 					<div class="bamboo-text-wrap">
 						<h2>Login</h2>
 						<!-- Username and password entry box -->
-						<form name="login-form">
+						<form name="login_form">
 							<div class="alert" ng-show="login_failed">
 								<button type="button" class="close" data-dismiss="alert">&times;</button>
 								<strong>Warning!</strong> Login failed.
