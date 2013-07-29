@@ -111,7 +111,7 @@ function user_ctrl($scope, Restangular)
     })
   }
 
-  $scope.show_user_details = function () {
+  $scope.toggle_user_details = function () {
     if ( ! $scope.user_detailed )
     {
       console.log("Showing Detailed User Data");

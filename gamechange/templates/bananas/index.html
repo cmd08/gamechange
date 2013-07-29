@@ -4,8 +4,6 @@
 	<meta charset="utf-8">
 	<title>Go Bananas</title>
 
-	<link rel="stylesheet/less" href="{{config['STATIC_ROOT_URL']}}bananas/less/index.less"/>
-
 	<script src="{{config['STATIC_ROOT_URL']}}js/jquery.js" type="text/javascript"></script>
 	<link rel="stylesheet" type="text/css" href="{{config['STATIC_ROOT_URL']}}css/bootstrap.css">
 	    
@@ -40,14 +38,21 @@
 			<img src="/static/img/monkeyfull.png"/>
 		</div>
 
-		<div id="userinfo" ng-click="show_user_details()" ng-hide="display_login">
-			<p> <span ng-bind="user.username"> </span>, <span ng-bind="user.bananas"> </span> bananas </p>
-    		<progress percent="user.health" class="progress-success" animate="false"></progress>
+		<div id="userinfo" ng-hide="display_login">
+			<div style="float:left;">
+				<p> <span ng-bind="user.username"> </span>, <span ng-bind="user.bananas"> </span> bananas </p>
+	    		<progress style="margin:5px;" percent="user.health" class="progress-success" animate="false"></progress>
+    		</div>
+    		<div style="float:right;" class="tri-holder">
+    			<div class="tri-down" ng-click="toggle_user_details()" ng-hide="user_detailed"></div>
+    			<div class="tri-up" ng-click="toggle_user_details()" ng-show="user_detailed"></div>
+    		</div>
     		<div ng-show="user_detailed">
     			<h3>Inventory</h3>
-    			<button ng-click="logout()">Logout</button>
+    			<button ng-click="logout()">Logout</button><button back-button>Back</buttom>
     		</div>
-    		<div class="dropdown-tri"></div>
+    		
+    		
 		</div>	
 
 		<div id="login" ng-show="display_login">
