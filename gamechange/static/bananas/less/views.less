@@ -1,0 +1,92 @@
+// Less for indivudual views 
+
+#launch {
+	#start {
+		a{
+			text-align: center;
+			color: black;
+			position: fixed;
+			width: 30%;
+			bottom: 4%;
+			left: 35%;
+			font-size: 32px;
+
+			&:hover { color: red };
+		}
+	}
+
+	#logo {
+		@logo_width: 40%;
+		width: @logo_width;
+		position: fixed;
+		top: 10%;
+		left: ( (100% - @logo_width) / 2 );
+		text-align: center;
+	}
+
+}
+
+#menu {
+	a{
+		text-decoration: none;
+	}
+	img {
+		width: 100%;
+		height: 100%;
+	}
+	#rightarrow{
+		width:16%;
+		height:20%;
+		position:fixed;
+		bottom: 42%;
+		left: 68%;
+		.content{
+			position:fixed;
+			bottom:47%;
+			left:37%;
+			h1, h2 {
+				font-family: 'Risque', cursive;
+				font-size: 3em;
+			}
+		}
+	}
+	#leftarrow{
+		img {
+			.rotate_x(180deg, 1.0, 0deg, 0px);
+			width:16%;
+			height:20%;
+			position:fixed;
+			bottom: 20%;
+			left: 18%;
+		}
+		.content{
+			position:fixed;
+			bottom:25%;
+			left:35%;
+			h1, h2 {
+				font-family: 'Risque', cursive;
+				font-size: 3em;
+			}
+		}			
+	}
+}
+
+#monkeybusiness {
+	position: fixed;
+	a{
+		text-align: center;
+		color: black;
+		&:hover { color: red };
+		position: fixed;
+	}
+	img {
+		width: 100%;
+		height: 100%;
+	}
+}
+
+
+#bananarun {
+
+}
+

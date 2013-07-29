@@ -1,7 +1,14 @@
+/*
+Less file for styles applied to all pages 
+*/
+
+// Colour Scheme for site
 @sky_blue_dark: #3a6fcf;
 @sky_blue_light: #a6d8fd;
+@dark_grey: #333333;
 
 @import url(http://fonts.googleapis.com/css?family=Patrick+Hand|Poiret+One|Risque);
+@import url(views.less);
 
 .risque {
 	font-family: 'Risque', cursive;
@@ -30,6 +37,15 @@ body {
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='@sky_blue_dark', endColorstr='@sky_blue_light'); /* for IE */	
 	background: -webkit-radial-gradient(10% 30%, @sky_blue_dark, @sky_blue_light );
 	background: -moz-linear-gradient(top,  @sky_blue_dark,  @sky_blue_light); /* for firefox 3.6+ */
+
+	/*Disable highlighting on entire page*/
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: moz-none;
+	-ms-user-select: none;
+	user-select: none;
+
 }
 
 #content {
@@ -62,7 +78,7 @@ body {
 
 
 #hut {
-	z-index: -9;
+	//z-index: -9;
 	width: 20%;
 	position: fixed;
 	bottom:10%;
@@ -164,3 +180,112 @@ to {right: 120%;}
 		inset 2px 4px 2px rgba(230, 230, 230, 0.5),
 		0px -10px 15px rgba(255, 255, 255, 0.4);
 }
+
+
+.tri-holder {
+	margin:5px;
+}
+
+.tri-down {
+	width: 0px;
+	height: 0px;
+	border-style: solid;
+	border-width: 17.3px 10px 0 10px;
+	border-color: @dark_grey transparent transparent transparent;
+}
+
+.tri-up {
+	width: 0px;
+	height: 0px;
+	border-style: solid;
+	border-width: 0 10px 17.3px 10px;
+	border-color: transparent transparent @dark_grey transparent;
+}
+
+#userinfo {
+	position: fixed;
+	background-color: rgba( 255, 255, 255, 0.7);
+	padding: 2%;
+}
+
+.bamboo-frame {
+	height:100%;
+	width:100%;
+
+	background-image: url("/static/img/bamboo_frame_flat.png");
+	background-size: 100% 100%;
+
+	.bamboo-frame-holder {
+		width: 59%;
+		height: 47%;
+		top: 25%;
+		left: 22%;
+		display: block;
+		position: absolute;
+
+		.bamboo-text-wrap {
+			h2 {
+				margin-top: 0;
+			}
+		}
+
+	}
+}
+
+
+#frame {
+	font-size: 100%;
+	width: 100%;
+	height: 100%;
+
+	#login {
+		width: 100%;
+		height: 100%;
+	}
+
+	#content {
+		position: fixed;
+		width:100%;
+		height:100%;
+	}
+	
+
+	#monkey {
+		width: 24%;
+		position: fixed;
+		right: -3%;
+		bottom: 0;
+		img {
+			width:100%;
+			position: absolute;
+			bottom: 0;
+		}
+	}
+
+	#tree {
+		height: 60%;
+		width: 30%;
+		position: fixed;
+		left: 9%;
+		top: 40%;
+		img {
+			width:100%;
+			position: absolute;
+			bottom: 0;
+		}
+	}
+}
+
+.flip {
+	.rotate_x(180deg, 1.0, 0deg, 0px);
+}
+
+//Function to rotate an item by any angle
+.rotate_x (@rotate: 90deg, @scale: 1, @skew: 1deg, @translate: 10px) {
+    -webkit-transform: rotate(@rotate) scale(@scale) skew(@skew) translate(@translate);
+    -moz-transform: rotate(@rotate) scale(@scale) skew(@skew) translate(@translate);
+    -o-transform: rotate(@rotate) scale(@scale) skew(@skew) translate(@translate);
+    -ms-transform: rotate(@rotate) scale(@scale) skew(@skew) translate(@translate);
+    transform: rotate(@rotate) scale(@scale) skew(@skew) translate(@translate);
+}
+

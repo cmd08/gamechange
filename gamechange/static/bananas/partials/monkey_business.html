@@ -1,10 +1,24 @@
 
 <div id="monkeybusiness" class="bamboo-frame">
-	<!--<img src="/static/img/bamboo_frame.png"/>-->
 	<div class="bamboo-frame-holder">
-		<div class="bamboo-text-wrap">
-			<p> Buy Some Bananas!!!!</p>
+		<div class="bamboo-text-wrap" ng-controller="shop_products_ctrl">
+			<carousel interval="myInterval">
+			    <slide ng-repeat="product in shop" active="slide.active">
+					<div style="float:left; width:66%;">
+						<h2>{{product.name}}</h2>
+						<p>{{product.description}}</p>
+					</div>
+					<div style="float:right; width:33%">	
+						<img src="http://www.edrants.com/wp-content/uploads/2009/09/placeholder.jpg" style="max-width:100%; max-height:66%;"></img>
+						<div style="attribute-holder">
+							<span style="position: absolute;left: 70%;margin-top: 5%;">x{{product.cost}}</span>
+							<img src="/static/img/banana_bunch_icon.png" style="max-width:38%; max-height:33%;"></img>
+							<img src="http://www.edrants.com/wp-content/uploads/2009/09/placeholder.jpg" style="max-width:38%; max-height:33%;"></img>
+						</div>
+					</div>
+					<button ng-click="buy(product)" style="position:fixed;width:20%;bottom:5%;left:40%">Buy</button>
+			    </slide>
+			</carousel>
 		</div>
-	</div>		
-	<div class="bamboo-frame-img"></div>
+	</div>
 </div>
