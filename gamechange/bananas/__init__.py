@@ -7,14 +7,15 @@ import json
 import healthgraph
 import time
 import gamechange
-from gamechange.models import User, ShopItem, Shelter, HealthgraphActivity
+from gamechange.models import User, ShopItem, Shelter, db, HealthgraphActivity
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 from wsgiref.handlers import format_date_time
-import pdb
+
 
 bananas = Blueprint('bananas', __name__, template_folder='templates')
 app = current_app
+
 
 conf = {'baseurl': 'http://127.0.0.1:8000'}
 
@@ -159,14 +160,14 @@ def logout():
 	session.pop('rk_access_token', None)
 	return "Need to redirect to the gamechange logout page - this page may be obselete depending on work from Ashley"
 
+@bananas.route('/api/')
+def api_index():
+    return wrap_api_call()
+
 @bananas.route('/api/users', methods = ['GET'])
 def api_users():
     json_list = [i.serialize for i in User.query.all()]
     return wrap_api_call(json_list)
-
-@bananas.route('/api/')
-def api_index():
-    return wrap_api_call()
 
 @bananas.route('/api/shop', methods = ['GET'])
 def api_shop_get():
@@ -181,39 +182,89 @@ def api_shop_post():
     name = request.form['name']
     description = request.form['description']
     type = request.form['type']
+    cost = request.form['cost']
+
     if type == 'shelter':
         level = request.form['level']
         image_url = request.form['image_url']
         storage_space = request.form['storage_space']
         food_decay_rate_multiplier = request.form['food_decay_rate_multiplier']
-        item = Shelter(name, description, level, image_url, storage_space, food_decay_rate_multiplier)
+        item = Shelter(name, cost, description, level, image_url, storage_space, food_decay_rate_multiplier)
         resp = item.serialize   
     else :
-        item = ShopItem(name, description)
+        item = ShopItem(name, cost, description)
         resp = item.serialize
 
     gamechange.db.session.add(item)
     gamechange.db.session.commit()
     return wrap_api_call(resp)
 
+@bananas.route('/api/shop/<item_id>/buy', methods = ['POST'])
+def api_shop_buy_item(item_id):
+    item = ShopItem.query.get(item_id)
+    me = User.query.get(int(session['user_id']))
+    try:
+        me.add_to_inventory(item)
+    except ValueError:
+        return wrap_api_call({"error": "You have insufficient bananas"}), 400
+    
+    db.session.commit()
+    return wrap_api_call(me.serialize)
+
 @bananas.route('/api/user',  methods = ['GET'])
 def api_user_get():
-    if "username" not in session:
+    if "user_id" not in session:
         response = {'error': 'No logged in user'}
         return wrap_api_call(response), 403
 
-    response = {'username':session['username'], 'bananas': session['bananas']}
-    return wrap_api_call(response)
+    return wrap_api_call(User.query.get(int(session["user_id"])).serialize)
+
+@bananas.route('/api/user/cheat', methods=['POST'])
+def user_cheat():
+    if "bananas" in session:
+        session['bananas'] = request.form['bananas']
+        User.query.get(session['user_id']).bananas = request.form['bananas']
+        gamechange.db.session.commit()
+
+    return api_user_get()
 
 @bananas.route('/api/user/login', methods = ['POST'])
-def api_user_logi_post():
-    username = request.form['username']
-    password = request.form['password']
-    #Do some logic here to log the user in!
-    session['username'] = username
-    session['bananas'] = 0
-    response = {'username': username, 'bananas': session['bananas']}
+def api_user_login_post():
+    if("user_id" in session):
+        user = User.query.get(session["user_id"])
+        pass
+        #already logged in
+    else:
+        if(not request.json == None):
+            username = request.json['username']
+            password = request.json['password']
+        else :
+            try:
+                username = request.form['username']
+                password = request.form['password']
+            except KeyError:
+                return wrap_api_call({'error':'Both fields are required'}), 400
+        user = User.query.filter_by(username=username).first()
+
+        if user is None:
+            return wrap_api_call({'error': 'No such user'}), 403
+
+        if not user.check_password(password):
+            return wrap_api_call({'error': 'Incorrect password'}), 403
+
+        #Should check the user isn't banned here!
+        session['user_id'] = user.id
+    
+    response = {'username': user.username, 'bananas': user.bananas}
     return wrap_api_call(response)
+
+@bananas.route('/api/user/logout', methods = ['POST'])
+def api_user_logout_post():
+    if "user_id" in session:
+        session.pop("user_id")
+        return wrap_api_call()
+    else:
+        abort(500)
 
 #post doesn't work yet! Returns 403!
 @bananas.route('/api/user', methods = ['POST'])
@@ -222,6 +273,35 @@ def api_user_post():
 	# response = {'username':username}
 	response = "lol"
 	return wrap_api_call(response)
+
+@bananas.route('/api/inventory', methods=['GET'])
+def api_inventory_get():
+    if "user_id" in session:
+        resp = ""
+        return wrap_api_call(resp)
+    else:
+        abort(403)
+
+@bananas.route('/api/user/register', methods=['POST'])
+def api_user_register_post():
+    if(not request.json == None):
+        username = request.json['username']
+        password = request.json['password']
+        first_name = request.json['first_name']
+        last_name = request.json['last_name']
+        email = request.json['email']
+    else :
+        username = request.form['username']
+        password = request.form['password']
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        email = request.form['email']
+
+    new_user = User(username, first_name, last_name, email)
+    new_user.set_password(password)
+    gamechange.db.session.add(new_user)
+    gamechange.db.session.commit()
+    return wrap_api_call(new_user.serialize)
 
 def wrap_api_call(json=None):
     wrapper = {'_csrf_token': gamechange.generate_csrf_token(), 'api_version': 0.1, 'hostname': app.config['SERVER_NAME'], 'system_time_millis': int(round(time.time() * 1000))}
