@@ -146,7 +146,11 @@ def api_shop_post():
 def api_shop_buy_item(item_id):
     item = ShopItem.query.get(item_id)
     me = User.query.get(int(session['user_id']))
-    me.add_to_inventory(item)
+    try:
+        me.add_to_inventory(item)
+    except ValueError:
+        return wrap_api_call({"error": "You have insufficient bananas"}), 400
+    
     db.session.commit()
     return wrap_api_call(me.serialize)
 
