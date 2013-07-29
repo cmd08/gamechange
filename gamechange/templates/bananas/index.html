@@ -17,6 +17,27 @@
 	{% else %}
 	<link rel="stylesheet" href="{{config['STATIC_ROOT_URL']}}bananas/css/style.css" />
 	{% endif %}
+
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+	<script type="text/javascript">
+		function hideAddressBar()
+		{
+		  if(!window.location.hash)
+		  {
+		      if(document.height < window.outerHeight)
+		      {
+		          document.body.style.height = (window.outerHeight + 50) + 'px';
+		      }
+		 
+		      setTimeout( function(){ window.scrollTo(0, 1); }, 50 );
+		  }
+		}
+		 
+		window.addEventListener("load", function(){ if(!window.pageYOffset){ hideAddressBar(); } } );
+		window.addEventListener("orientationchange", hideAddressBar );
+	</script>
+
 </head>
 
 {{raw}}
