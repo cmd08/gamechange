@@ -6,7 +6,7 @@ from re import compile
 import random, string
 from base64 import *
 from beaker.middleware import SessionMiddleware
-from models import User, db
+from models import User, db, ShopItem
 
 from bananas import bananas
 
@@ -38,21 +38,54 @@ app.register_blueprint(bananas, url_prefix="/bananas", config=app.config)
 
 @app.route('/initDB')
 def init_db():
+    
     db.create_all()
-    return "This is naughty and MUST not be in production!"
+    if "user_id" in session:
+        session.pop("user_id")
+    me = User('chris', 'Chris', 'Darby', 'me@chrisdarby.com')
+    me.set_password('123')
+    me.bananas = 100
+
+    db.session.add(me)
+
+    item1 = ShopItem('Test Item', 10, 'First test item')
+    item2 = ShopItem('Test Item 2', 20, 'Second test item')
+
+    db.session.add(item1)
+    db.session.add(item2)
+
+    db.session.commit()
+    return "This is naughty and MUST not be in production! This also clears the session!"
 
 # @login_manager.user_loader
 # def load_user(userid):
 #     return User.get(userid)
 
 @app.before_request
-def csrf_protect():
+def ensure_xsrf_token_is_valid():
     if request.method == "POST":
-        token = session.pop('_csrf_token', None)
-        if not token or token != request.form.get('_csrf_token'):
-            abort(403)
-        else: 
+        local_token = session['_csrf_token']
+        remote_token = request.form.get('_csrf_token') if request.headers['X-XSRF-TOKEN'] == None else request.headers['X-XSRF-TOKEN']
+        
+        if local_token == None: 
             session['_csrf_token'] = generate_csrf_token()
+            abort(403)
+
+        if remote_token == None:
+            abort(403)
+
+        if not local_token == remote_token:
+            abort(403)
+
+@app.after_request
+def apply_xsrf_cookie(response):
+    if request.method == "GET":
+        if '_csrf_token' not in session:
+            session['_csrf_token'] = generate_csrf_token()
+        response.set_cookie('XSRF-TOKEN', session['_csrf_token'])
+    
+    return response
+
 
 def generate_csrf_token():
     if '_csrf_token' not in session:

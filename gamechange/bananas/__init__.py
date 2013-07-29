@@ -7,20 +7,24 @@ import json
 import healthgraph
 import time
 import gamechange
-from gamechange.models import User, ShopItem, Shelter
+from gamechange.models import User, ShopItem, Shelter, db, HealthgraphActivity
 from sqlalchemy.exc import IntegrityError
+from datetime import datetime
+from wsgiref.handlers import format_date_time
+
 
 bananas = Blueprint('bananas', __name__, template_folder='templates')
 app = current_app
 
+
 conf = {'baseurl': 'http://127.0.0.1:8000'}
 
-userID = 1
+userID = 3
 
 class MyEncoder(json.JSONEncoder):
 
     def default(self, obj):
-        if isinstance(obj, datetime.datetime):
+        if isinstance(obj, datetime):
             return int(mktime(obj.timetuple()))
 
         return json.JSONEncoder.default(self, obj)
@@ -104,6 +108,7 @@ def welcome():
 	if rk_access_token is not None:
 		# try to access healthgraph data using rk_access_token from the database - catch if access token is wrong
 		# and ask for user to login again
+		db_user = User.query.get(userID)
 		try:
 			rk_user = healthgraph.User(session=healthgraph.Session(rk_access_token))
 		except ValueError:
@@ -113,23 +118,38 @@ def welcome():
 			session.pop('rk_access_token')
 			return redirect('/bananas/healthgraph/authorize')
 		else:
+			stamp = mktime(db_user.last_checked.timetuple())
+			modified_since = format_date_time(stamp)
 			rk_profile = rk_user.get_profile()
 			rk_records = rk_user.get_records()
-			rk_act_iter = rk_user.get_fitness_activity_iter()
+			pdb.set_trace()
+			rk_act_iter = rk_user.get_fitness_activity_iter(modified_since=modified_since)
 			rk_activities = [rk_act_iter.next() for _ in range(rk_act_iter.count())]
-
 			response = defaultdict(list)
-			for i in range(rk_act_iter.count()):
-				if rk_activities[i].get('entry_mode') == "Web":
-					rk_activity = dict(activity_id = str(rk_activities[i].get('uri')[1]).split('/')[2],
-						type = rk_activities[i].get('type'), 
-						start_time = rk_activities[i].get('start_time'),
-						total_distance = rk_activities[i].get('total_distance'),
-						source = rk_activities[i].get('source'),
-						entry_mode = rk_activities[i].get('entry_mode'),
-						total_calories = rk_activities[i].get('total_calories')
-						)
-					response["activities"].append(rk_activity)
+			if rk_activities:
+				for i in range(rk_act_iter.count()):
+					if rk_activities[i].get('entry_mode') == "Web":
+						activity_id = str(rk_activities[i].get('uri')[1]).split('/')[2]
+						rk_activity = dict(activity_id = str(rk_activities[i].get('uri')[1]).split('/')[2],
+							type = rk_activities[i].get('type'), 
+							start_time = rk_activities[i].get('start_time'),
+							total_distance = rk_activities[i].get('total_distance'),
+							source = rk_activities[i].get('source'),
+							entry_mode = rk_activities[i].get('entry_mode'),
+							total_calories = rk_activities[i].get('total_calories')
+							)
+						response["activities"].append(rk_activity)
+						if HealthgraphActivity.query.filter_by(id=activity_id).first() == None:		
+							activity = HealthgraphActivity(str(rk_activities[i].get('uri')[1]).split('/')[2], 
+								rk_activities[i].get('type'),
+								rk_activities[i].get('total_calories'),
+								userID)
+							db_user.last_checked = datetime.now()
+							gamechange.db.session.add(activity)
+							try:
+								gamechange.db.session.commit()
+							except IntegrityError:
+								return "Well that activity dusnt have a unique ID?"
 
 			return Response(json.dumps(response, cls = MyEncoder, indent = 4), mimetype='application/json')
 	else:
@@ -140,14 +160,14 @@ def logout():
 	session.pop('rk_access_token', None)
 	return "Need to redirect to the gamechange logout page - this page may be obselete depending on work from Ashley"
 
+@bananas.route('/api/')
+def api_index():
+    return wrap_api_call()
+
 @bananas.route('/api/users', methods = ['GET'])
 def api_users():
     json_list = [i.serialize for i in User.query.all()]
     return wrap_api_call(json_list)
-
-@bananas.route('/api/')
-def api_index():
-    return wrap_api_call()
 
 @bananas.route('/api/shop', methods = ['GET'])
 def api_shop_get():
@@ -162,39 +182,89 @@ def api_shop_post():
     name = request.form['name']
     description = request.form['description']
     type = request.form['type']
+    cost = request.form['cost']
+
     if type == 'shelter':
         level = request.form['level']
         image_url = request.form['image_url']
         storage_space = request.form['storage_space']
         food_decay_rate_multiplier = request.form['food_decay_rate_multiplier']
-        item = Shelter(name, description, level, image_url, storage_space, food_decay_rate_multiplier)
+        item = Shelter(name, cost, description, level, image_url, storage_space, food_decay_rate_multiplier)
         resp = item.serialize   
     else :
-        item = ShopItem(name, description)
+        item = ShopItem(name, cost, description)
         resp = item.serialize
 
     gamechange.db.session.add(item)
     gamechange.db.session.commit()
     return wrap_api_call(resp)
 
+@bananas.route('/api/shop/<item_id>/buy', methods = ['POST'])
+def api_shop_buy_item(item_id):
+    item = ShopItem.query.get(item_id)
+    me = User.query.get(int(session['user_id']))
+    try:
+        me.add_to_inventory(item)
+    except ValueError:
+        return wrap_api_call({"error": "You have insufficient bananas"}), 400
+    
+    db.session.commit()
+    return wrap_api_call(me.serialize)
+
 @bananas.route('/api/user',  methods = ['GET'])
 def api_user_get():
-    if "username" not in session:
+    if "user_id" not in session:
         response = {'error': 'No logged in user'}
         return wrap_api_call(response), 403
 
-    response = {'username':session['username'], 'bananas': session['bananas']}
-    return wrap_api_call(response)
+    return wrap_api_call(User.query.get(int(session["user_id"])).serialize)
+
+@bananas.route('/api/user/cheat', methods=['POST'])
+def user_cheat():
+    if "bananas" in session:
+        session['bananas'] = request.form['bananas']
+        User.query.get(session['user_id']).bananas = request.form['bananas']
+        gamechange.db.session.commit()
+
+    return api_user_get()
 
 @bananas.route('/api/user/login', methods = ['POST'])
-def api_user_logi_post():
-    username = request.form['username']
-    password = request.form['password']
-    #Do some logic here to log the user in!
-    session['username'] = username
-    session['bananas'] = 0
-    response = {'username': username, 'bananas': session['bananas']}
+def api_user_login_post():
+    if("user_id" in session):
+        user = User.query.get(session["user_id"])
+        pass
+        #already logged in
+    else:
+        if(not request.json == None):
+            username = request.json['username']
+            password = request.json['password']
+        else :
+            try:
+                username = request.form['username']
+                password = request.form['password']
+            except KeyError:
+                return wrap_api_call({'error':'Both fields are required'}), 400
+        user = User.query.filter_by(username=username).first()
+
+        if user is None:
+            return wrap_api_call({'error': 'No such user'}), 403
+
+        if not user.check_password(password):
+            return wrap_api_call({'error': 'Incorrect password'}), 403
+
+        #Should check the user isn't banned here!
+        session['user_id'] = user.id
+    
+    response = {'username': user.username, 'bananas': user.bananas}
     return wrap_api_call(response)
+
+@bananas.route('/api/user/logout', methods = ['POST'])
+def api_user_logout_post():
+    if "user_id" in session:
+        session.pop("user_id")
+        return wrap_api_call()
+    else:
+        abort(500)
 
 #post doesn't work yet! Returns 403!
 @bananas.route('/api/user', methods = ['POST'])
@@ -203,6 +273,35 @@ def api_user_post():
 	# response = {'username':username}
 	response = "lol"
 	return wrap_api_call(response)
+
+@bananas.route('/api/inventory', methods=['GET'])
+def api_inventory_get():
+    if "user_id" in session:
+        resp = ""
+        return wrap_api_call(resp)
+    else:
+        abort(403)
+
+@bananas.route('/api/user/register', methods=['POST'])
+def api_user_register_post():
+    if(not request.json == None):
+        username = request.json['username']
+        password = request.json['password']
+        first_name = request.json['first_name']
+        last_name = request.json['last_name']
+        email = request.json['email']
+    else :
+        username = request.form['username']
+        password = request.form['password']
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        email = request.form['email']
+
+    new_user = User(username, first_name, last_name, email)
+    new_user.set_password(password)
+    gamechange.db.session.add(new_user)
+    gamechange.db.session.commit()
+    return wrap_api_call(new_user.serialize)
 
 def wrap_api_call(json=None):
     wrapper = {'_csrf_token': gamechange.generate_csrf_token(), 'api_version': 0.1, 'hostname': app.config['SERVER_NAME'], 'system_time_millis': int(round(time.time() * 1000))}
