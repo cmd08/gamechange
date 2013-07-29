@@ -7,20 +7,23 @@ import json
 import healthgraph
 import time
 import gamechange
-from gamechange.models import User, ShopItem, Shelter
+from gamechange.models import User, ShopItem, Shelter, HealthgraphActivity
 from sqlalchemy.exc import IntegrityError
+from datetime import datetime
+from wsgiref.handlers import format_date_time
+import pdb
 
 bananas = Blueprint('bananas', __name__, template_folder='templates')
 app = current_app
 
 conf = {'baseurl': 'http://127.0.0.1:8000'}
 
-userID = 1
+userID = 3
 
 class MyEncoder(json.JSONEncoder):
 
     def default(self, obj):
-        if isinstance(obj, datetime.datetime):
+        if isinstance(obj, datetime):
             return int(mktime(obj.timetuple()))
 
         return json.JSONEncoder.default(self, obj)
@@ -104,6 +107,7 @@ def welcome():
 	if rk_access_token is not None:
 		# try to access healthgraph data using rk_access_token from the database - catch if access token is wrong
 		# and ask for user to login again
+		db_user = User.query.get(userID)
 		try:
 			rk_user = healthgraph.User(session=healthgraph.Session(rk_access_token))
 		except ValueError:
@@ -113,23 +117,38 @@ def welcome():
 			session.pop('rk_access_token')
 			return redirect('/bananas/healthgraph/authorize')
 		else:
+			stamp = mktime(db_user.last_checked.timetuple())
+			modified_since = format_date_time(stamp)
 			rk_profile = rk_user.get_profile()
 			rk_records = rk_user.get_records()
-			rk_act_iter = rk_user.get_fitness_activity_iter()
+			pdb.set_trace()
+			rk_act_iter = rk_user.get_fitness_activity_iter(modified_since=modified_since)
 			rk_activities = [rk_act_iter.next() for _ in range(rk_act_iter.count())]
-
 			response = defaultdict(list)
-			for i in range(rk_act_iter.count()):
-				if rk_activities[i].get('entry_mode') == "Web":
-					rk_activity = dict(activity_id = str(rk_activities[i].get('uri')[1]).split('/')[2],
-						type = rk_activities[i].get('type'), 
-						start_time = rk_activities[i].get('start_time'),
-						total_distance = rk_activities[i].get('total_distance'),
-						source = rk_activities[i].get('source'),
-						entry_mode = rk_activities[i].get('entry_mode'),
-						total_calories = rk_activities[i].get('total_calories')
-						)
-					response["activities"].append(rk_activity)
+			if rk_activities:
+				for i in range(rk_act_iter.count()):
+					if rk_activities[i].get('entry_mode') == "Web":
+						activity_id = str(rk_activities[i].get('uri')[1]).split('/')[2]
+						rk_activity = dict(activity_id = str(rk_activities[i].get('uri')[1]).split('/')[2],
+							type = rk_activities[i].get('type'), 
+							start_time = rk_activities[i].get('start_time'),
+							total_distance = rk_activities[i].get('total_distance'),
+							source = rk_activities[i].get('source'),
+							entry_mode = rk_activities[i].get('entry_mode'),
+							total_calories = rk_activities[i].get('total_calories')
+							)
+						response["activities"].append(rk_activity)
+						if HealthgraphActivity.query.filter_by(id=activity_id).first() == None:		
+							activity = HealthgraphActivity(str(rk_activities[i].get('uri')[1]).split('/')[2], 
+								rk_activities[i].get('type'),
+								rk_activities[i].get('total_calories'),
+								userID)
+							db_user.last_checked = datetime.now()
+							gamechange.db.session.add(activity)
+							try:
+								gamechange.db.session.commit()
+							except IntegrityError:
+								return "Well that activity dusnt have a unique ID?"
 
 			return Response(json.dumps(response, cls = MyEncoder, indent = 4), mimetype='application/json')
 	else:
