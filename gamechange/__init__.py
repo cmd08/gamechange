@@ -80,6 +80,8 @@ def ensure_xsrf_token_is_valid():
 @app.after_request
 def apply_xsrf_cookie(response):
     if request.method == "GET":
+        if '_csrf_token' not in session:
+            session['_csrf_token'] = generate_csrf_token()
         response.set_cookie('XSRF-TOKEN', session['_csrf_token'])
     
     return response

@@ -7,7 +7,11 @@ import json
 import healthgraph
 import time
 import gamechange
-from gamechange.models import User, ShopItem, Shelter, db
+from gamechange.models import User, ShopItem, Shelter, db, HealthgraphActivity
+from sqlalchemy.exc import IntegrityError
+from datetime import datetime
+from wsgiref.handlers import format_date_time
+
 
 bananas = Blueprint('bananas', __name__, template_folder='templates')
 app = current_app
@@ -15,10 +19,12 @@ app = current_app
 
 conf = {'baseurl': 'http://127.0.0.1:8000'}
 
+userID = 3
+
 class MyEncoder(json.JSONEncoder):
 
     def default(self, obj):
-        if isinstance(obj, datetime.datetime):
+        if isinstance(obj, datetime):
             return int(mktime(obj.timetuple()))
 
         return json.JSONEncoder.default(self, obj)
@@ -43,9 +49,36 @@ def js_show(page):
 def deauthorize_healthgraph_api():
     return ""
 
+@bananas.route('/fillDB')
+def fill():
+	Aksat = User('Aksat', 'Shah', 'gamechangedev@gmail.com')
+	Ashley = User('Ashley', 'Grealish', 'ashley@gamechange.info')
+	Chris = User('Chris', 'Darby', 'chris@gamechange.info')
+	Joao = User('Joao', 'Some long name', 'joao@gamechange.info')
+	gamechange.db.session.add(Aksat)
+	gamechange.db.session.add(Ashley)
+	gamechange.db.session.add(Chris)
+	gamechange.db.session.add(Joao)
+	gamechange.db.session.commit()
+	return "Filled trial data!"
+
 @bananas.route('/healthgraph/authorize')
 def authorize():
 	if session.has_key('rk_access_token'):
+		rk_access_token = session.get('rk_access_token')
+		db_user = User.query.get(userID)
+		db_user.healthgraph_api_key = rk_access_token
+		try:
+			gamechange.db.session.commit()
+		except IntegrityError:
+			# if the user has somehow tried to reauthorize with the same account for the same user
+			gamechange.db.session.rollback()
+			if rk_access_token == User.query.get(userID).healthgraph_api_key:
+				return redirect('bananas/healthgraph/welcome')
+
+			# if the user is trying to login with an account which is authorized for another user
+			session.pop('rk_access_token')
+			return "Oh we cant store that in the database - the access token is not unique"
 		return redirect('bananas/healthgraph/welcome')
 	else:
 		rk_auth_mgr = healthgraph.AuthManager(app.config['HEALTHGRAPH_CLIENT_ID'], 
@@ -60,48 +93,72 @@ def login():
 	if code is not None:
 		rk_auth_mgr = healthgraph.AuthManager(app.config['HEALTHGRAPH_CLIENT_ID'], app.config['HEALTHGRAPH_CLIENT_SECRET'], 
 			'/'.join(('http://127.0.0.1:8001', 'bananas/healthgraph/login',)))
-		access_token = rk_auth_mgr.get_access_token(code)
-		session['rk_access_token'] = access_token
-		return redirect('bananas/healthgraph/welcome')
+		rk_access_token = rk_auth_mgr.get_access_token(code)
+		session['rk_access_token'] = rk_access_token
+		return redirect('bananas/healthgraph/authorize')
 
 @bananas.route('/healthgraph/welcome')
 def welcome():
-	access_token = session.get('rk_access_token')
-	if access_token is not None:
-		user = healthgraph.User(session=healthgraph.Session(access_token))
-		profile = user.get_profile()
-		records = user.get_records()
-		act_iter = user.get_fitness_activity_iter()
-		activities = [act_iter.next() for _ in range(act_iter.count())]
+	# try to access the rk_access_token from the database based on userID - catch if userID not found
+	try:
+		rk_access_token = User.query.get(userID).healthgraph_api_key
+	except AttributeError:
+		return "User ID is incorrect!"
 
-		response = defaultdict(list)
-		for i in range(act_iter.count()):
-			if activities[i].get('entry_mode') == "Web":
-				activity = dict(activity_id = str(activities[i].get('uri')[1]).split('/')[2],
-					type = activities[i].get('type'), 
-					start_time = activities[i].get('start_time'),
-					total_distance = activities[i].get('total_distance'),
-					source = activities[i].get('source'),
-					entry_mode = activities[i].get('entry_mode'),
-					total_calories = activities[i].get('total_calories')
-					)
-				response["activities"].append(activity)
+	if rk_access_token is not None:
+		# try to access healthgraph data using rk_access_token from the database - catch if access token is wrong
+		# and ask for user to login again
+		db_user = User.query.get(userID)
+		try:
+			rk_user = healthgraph.User(session=healthgraph.Session(rk_access_token))
+		except ValueError:
+			db_user = User.query.get(userID)
+			db_user.healthgraph_api_key = None
+			gamechange.db.session.commit()
+			session.pop('rk_access_token')
+			return redirect('/bananas/healthgraph/authorize')
+		else:
+			stamp = mktime(db_user.last_checked.timetuple())
+			modified_since = format_date_time(stamp)
+			rk_profile = rk_user.get_profile()
+			rk_records = rk_user.get_records()
+			pdb.set_trace()
+			rk_act_iter = rk_user.get_fitness_activity_iter(modified_since=modified_since)
+			rk_activities = [rk_act_iter.next() for _ in range(rk_act_iter.count())]
+			response = defaultdict(list)
+			if rk_activities:
+				for i in range(rk_act_iter.count()):
+					if rk_activities[i].get('entry_mode') == "Web":
+						activity_id = str(rk_activities[i].get('uri')[1]).split('/')[2]
+						rk_activity = dict(activity_id = str(rk_activities[i].get('uri')[1]).split('/')[2],
+							type = rk_activities[i].get('type'), 
+							start_time = rk_activities[i].get('start_time'),
+							total_distance = rk_activities[i].get('total_distance'),
+							source = rk_activities[i].get('source'),
+							entry_mode = rk_activities[i].get('entry_mode'),
+							total_calories = rk_activities[i].get('total_calories')
+							)
+						response["activities"].append(rk_activity)
+						if HealthgraphActivity.query.filter_by(id=activity_id).first() == None:		
+							activity = HealthgraphActivity(str(rk_activities[i].get('uri')[1]).split('/')[2], 
+								rk_activities[i].get('type'),
+								rk_activities[i].get('total_calories'),
+								userID)
+							db_user.last_checked = datetime.now()
+							gamechange.db.session.add(activity)
+							try:
+								gamechange.db.session.commit()
+							except IntegrityError:
+								return "Well that activity dusnt have a unique ID?"
 
-		return Response(json.dumps(response, cls = MyEncoder, indent = 4), mimetype='application/json')
-
-		# return render_template('bananas/welcome.html', 
-		# 	profile=profile, 
-		# 	activities=activities, 
-		# 	records=records.get_totals(),
-		#	response=response # interprets this as string when in html jinja2 but activities works fine?
-		# 	)
+			return Response(json.dumps(response, cls = MyEncoder, indent = 4), mimetype='application/json')
 	else:
-		return redirect('/')
+		return redirect('/bananas/healthgraph/authorize')
 
 @bananas.route('/healthgraph/logout')
 def logout():
-    session.pop('rk_access_token')
-    return redirect('bananas/healthgraph/authorize')
+	session.pop('rk_access_token', None)
+	return "Need to redirect to the gamechange logout page - this page may be obselete depending on work from Ashley"
 
 @bananas.route('/api/')
 def api_index():
