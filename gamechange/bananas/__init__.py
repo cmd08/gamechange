@@ -7,7 +7,7 @@ import json
 import healthgraph
 import time
 import gamechange
-from gamechange.models import User, ShopItem, Shelter
+from gamechange.models import User, ShopItem, Shelter, db
 
 bananas = Blueprint('bananas', __name__, template_folder='templates')
 app = current_app
@@ -146,7 +146,12 @@ def api_shop_post():
 def api_shop_buy_item(item_id):
     item = ShopItem.query.get(item_id)
     me = User.query.get(int(session['user_id']))
-    me.add_to_inventory(item)
+    try:
+        me.add_to_inventory(item)
+    except ValueError:
+        return wrap_api_call({"error": "You have insufficient bananas"}), 400
+    
+    db.session.commit()
     return wrap_api_call(me.serialize)
 
 @bananas.route('/api/user',  methods = ['GET'])
@@ -168,7 +173,6 @@ def user_cheat():
 
 @bananas.route('/api/user/login', methods = ['POST'])
 def api_user_login_post():
-    print("Entering login function...")
     if("user_id" in session):
         user = User.query.get(session["user_id"])
         pass
@@ -183,7 +187,6 @@ def api_user_login_post():
                 password = request.form['password']
             except KeyError:
                 return wrap_api_call({'error':'Both fields are required'}), 400
-        print(username)
         user = User.query.filter_by(username=username).first()
 
         if user is None:
