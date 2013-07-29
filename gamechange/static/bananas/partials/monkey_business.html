@@ -16,7 +16,10 @@
 							<img src="http://www.edrants.com/wp-content/uploads/2009/09/placeholder.jpg" style="max-width:38%; max-height:33%;"></img>
 						</div>
 					</div>
-					<button ng-click="buy(product)" style="position:fixed;width:20%;bottom:5%;left:40%">Buy</button>
+					<button ng-click="buy(product)" ng-disabled="user.bananas < product.cost" style="position:fixed;width:30%;bottom:5%;left:35%">
+						<span ng-hide="user.bananas < product.cost">Buy</span>
+						<span ng-show="user.bananas < product.cost">Not enough Bananas</span>
+					</button>
 			    </slide>
 			</carousel>
 		</div>
