@@ -5,13 +5,13 @@
 			<carousel interval="myInterval">
 			    <slide ng-repeat="product in shop" active="slide.active">
 					<div style="float:left; width:66%;">
-						<h2>{{product.name}}</h2>
-						<p>{{product.description}}</p>
+						<h2>{[{product.name}]}</h2>
+						<p>{[{product.description}]}</p>
 					</div>
 					<div style="float:right; width:33%">	
 						<img src="http://www.edrants.com/wp-content/uploads/2009/09/placeholder.jpg" style="max-width:100%; max-height:66%;"></img>
 						<div style="attribute-holder">
-							<span style="position: absolute;left: 70%;margin-top: 5%;">x{{product.cost}}</span>
+							<span style="position: absolute;left: 70%;margin-top: 5%;">x{[{product.cost}]}</span>
 							<img src="/static/img/banana_bunch_icon.png" style="max-width:38%; max-height:33%;"></img>
 							<img src="http://www.edrants.com/wp-content/uploads/2009/09/placeholder.jpg" style="max-width:38%; max-height:33%;"></img>
 						</div>

@@ -34,7 +34,8 @@ class ShopItem(db.Model):
             'id'            : self.id,
             'name'          : self.name,
             'cost'          : self.cost,
-            'description'   : self.description
+            'description'   : self.description,
+            'type'          : self.type,
         }
 
 class User(db.Model):
