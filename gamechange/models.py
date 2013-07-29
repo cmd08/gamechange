@@ -5,7 +5,7 @@ from flask import jsonify
 from datetime import datetime
 
 db = SQLAlchemy()
- 
+
 class ShopItem(db.Model):
     __tablename__ = "shop_item"
     id = db.Column(db.Integer, primary_key=True)
@@ -46,8 +46,13 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True)
     verified = db.Column(db.Boolean, default=False)
     subscribed = db.Column(db.Boolean, default=True)
+    last_checked = db.Column(db.DateTime, default=datetime(1970, 1, 1, 0, 0, 0, 0))
+    # username = db.Column() text
+    healthgraph_api_key = db.Column(db.String(32), unique=True)
+    healthgraph_activities = db.relationship('HealthgraphActivity', backref='User', lazy='dynamic')
     bananas = db.Column(db.Integer, default=0)
     inventory_items = db.relationship("UserShopItem")
+
 
     def isValid(self):
         self.error = dict()
@@ -109,7 +114,29 @@ class User(db.Model):
 
         self.bananas = self.bananas - item.cost
         self.inventory_items.append(UserShopItem(item))
-        
+
+
+class HealthgraphActivity(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    activity_type = db.Column(db.String(32))
+    calories = db.Column(db.Integer)
+    user = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    @property
+    def serialize(self):
+       """Return object data in easily serializeable format"""
+       return {
+           'id'             : self.id,
+           'activity_type'  : self.activity_type,
+           'calories'       : self.calories,
+           'user'           : self.user
+       }
+
+    def __init__(self, id, activity_type, calories, user):
+        self.id = id
+        self.activity_type = activity_type
+        self.calories = calories
+        self.user = user      
 
 
 class UserShopItem(db.Model):
