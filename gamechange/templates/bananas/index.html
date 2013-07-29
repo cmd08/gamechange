@@ -40,14 +40,15 @@
 			<img src="/static/img/monkeyfull.png"/>
 		</div>
 
-		<div id="userinfo" ng-click="show_user_details()" ng-hide="display_login">
+		<div id="userinfo" ng-hide="display_login">
 			<p> <span ng-bind="user.username"> </span>, <span ng-bind="user.bananas"> </span> bananas </p>
     		<progress percent="user.health" class="progress-success" animate="false"></progress>
     		<div ng-show="user_detailed">
     			<h3>Inventory</h3>
     			<button ng-click="logout()">Logout</button>
     		</div>
-    		<div class="dropdown-tri"></div>
+    		<div class="dropdown-tri-down" ng-click="toggle_user_details()" ng-hide="user_detailed"></div>
+    		<div class="dropdown-tri-up" ng-click="toggle_user_details()" ng-show="user_detailed"></div>
 		</div>	
 
 		<div id="login" ng-show="display_login">
