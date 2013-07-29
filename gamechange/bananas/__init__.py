@@ -46,10 +46,17 @@ def deauthorize_healthgraph_api():
 
 @bananas.route('/fillDB')
 def fill():
-    Aksat = User('Aksat', 'Shah', 'gamechangedev@gmail.com')
-    Ashley = User('Ashley', 'Grealish', 'ashley@gamechange.info')
-    Chris = User('Chris', 'Darby', 'chris@gamechange.info')
-    Joao = User('Joao', 'Some long name', 'joao@gamechange.info')
+    if "user_id" in session:
+        session.pop("user_id")
+
+    Aksat = User('Aksat','Aksat', 'Shah', 'gamechangedev@gmail.com')
+    Ashley = User('Ashley', 'Ashley', 'Grealish', 'ashley@gamechange.info')
+    Chris = User('Chris', 'Chris', 'Darby', 'chris@gamechange.info')
+    Joao = User('Joao', 'Joao', 'Some long name', 'joao@gamechange.info')
+    Aksat.set_password('123')
+    Ashley.set_password('123')
+    Chris.set_password('123')
+    Joao.set_password('123')
     gamechange.db.session.add(Aksat)
     gamechange.db.session.add(Ashley)
     gamechange.db.session.add(Chris)
@@ -61,7 +68,7 @@ def fill():
 def healthgraph_authorize():
 
     '''catch the case where the user isn't logged in to our app first'''
-    if user_id not in session:
+    if "user_id" not in session:
         #log in the user!
         return wrap_api_call({'redirect': '/bananas/login'}), 403
 
@@ -128,7 +135,6 @@ def healthgraph_welcome():
             modified_since = format_date_time(stamp)
             rk_profile = rk_user.get_profile()
             rk_records = rk_user.get_records()
-            pdb.set_trace()
             rk_act_iter = rk_user.get_fitness_activity_iter(modified_since=modified_since)
             rk_activities = [rk_act_iter.next() for _ in range(rk_act_iter.count())]
             response = defaultdict(list)
