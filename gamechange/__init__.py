@@ -6,7 +6,7 @@ from re import compile
 import random, string
 from base64 import *
 from beaker.middleware import SessionMiddleware
-from models import User, db
+from models import User, db, ShopItem
 
 from bananas import bananas
 
@@ -38,8 +38,23 @@ app.register_blueprint(bananas, url_prefix="/bananas", config=app.config)
 
 @app.route('/initDB')
 def init_db():
+    
     db.create_all()
-    session.pop("user_id")
+    if "user_id" in session:
+        session.pop("user_id")
+    me = User('chris', 'Chris', 'Darby', 'me@chrisdarby.com')
+    me.set_password('123')
+    me.bananas = 100
+
+    db.session.add(me)
+
+    item1 = ShopItem('Test Item', 10, 'First test item')
+    item2 = ShopItem('Test Item 2', 20, 'Second test item')
+
+    db.session.add(item1)
+    db.session.add(item2)
+
+    db.session.commit()
     return "This is naughty and MUST not be in production! This also clears the session!"
 
 # @login_manager.user_loader
