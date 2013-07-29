@@ -19,19 +19,23 @@
 	{% endif %}
 
 	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<script type="text/javascript">
 		function hideAddressBar()
 		{
-		  if(!window.location.hash)
-		  {
-		      if(document.height < window.outerHeight)
-		      {
-		          document.body.style.height = (window.outerHeight + 50) + 'px';
-		      }
-		 
-		      setTimeout( function(){ window.scrollTo(0, 1); }, 50 );
-		  }
+			if(navigator.userAgent.match(/Android/i)){
+    			window.scrollTo(0,1);
+			}
+
+			if(!window.location.hash)
+			{
+				if(document.height < window.outerHeight)
+				{
+					document.body.style.height = (window.outerHeight + 50) + 'px';
+				}
+
+				setTimeout( function(){ window.scrollTo(0, 1); }, 50 );
+			}
 		}
 		 
 		window.addEventListener("load", function(){ if(!window.pageYOffset){ hideAddressBar(); } } );
