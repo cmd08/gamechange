@@ -52,7 +52,7 @@
 	}
 	#leftarrow{
 		img {
-			.transform(180deg, 1.0, 0deg, 0px);
+			.rotate_x(180deg, 1.0, 0deg, 0px);
 			width:16%;
 			height:20%;
 			position:fixed;
@@ -68,13 +68,6 @@
 				font-size: 3em;
 			}
 		}			
-	}
-	.transform (@rotate: 90deg, @scale: 1, @skew: 1deg, @translate: 10px) {
-	    -webkit-transform: rotate(@rotate) scale(@scale) skew(@skew) translate(@translate);
-	    -moz-transform: rotate(@rotate) scale(@scale) skew(@skew) translate(@translate);
-	    -o-transform: rotate(@rotate) scale(@scale) skew(@skew) translate(@translate);
-	    -ms-transform: rotate(@rotate) scale(@scale) skew(@skew) translate(@translate);
-	    transform: rotate(@rotate) scale(@scale) skew(@skew) translate(@translate);
 	}
 }
 

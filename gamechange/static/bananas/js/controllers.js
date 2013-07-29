@@ -54,7 +54,7 @@ function shop_products_ctrl($scope, Restangular)
 
 function user_ctrl($scope, Restangular)
 {
-  $scope.display_login = false;
+  $scope.display_login = false; 
   //CODE OUTLINE
   //Get User Data
     //If fails
@@ -65,6 +65,7 @@ function user_ctrl($scope, Restangular)
   Restangular.all('user').getList().then(function (results) {
     console.log("User logged in");
     $scope.user = results;
+    $scope.user.health = Math.random() * 100;
   },
   function() {
     console.log("User Not Logged in, showing login page");
@@ -89,6 +90,7 @@ function user_ctrl($scope, Restangular)
       Restangular.all('user').customPOST('login', {}, {}, {username: $scope.user.username, password: $scope.user.password}).then(function (results) {
         console.log("user logged in");
         $scope.user = results.data;
+        $scope.user.health = Math.random() * 100;
         //Need to pull health from API
 
         $scope.display_login = false;
