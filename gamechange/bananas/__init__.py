@@ -63,29 +63,38 @@ def fill():
 	return "Filled trial data!"
 
 @bananas.route('/healthgraph/authorize')
-def authorize():
-	if session.has_key('rk_access_token'):
-		rk_access_token = session.get('rk_access_token')
-		db_user = User.query.get(userID)
-		db_user.healthgraph_api_key = rk_access_token
-		try:
-			gamechange.db.session.commit()
-		except IntegrityError:
-			# if the user has somehow tried to reauthorize with the same account for the same user
-			gamechange.db.session.rollback()
-			if rk_access_token == User.query.get(userID).healthgraph_api_key:
-				return redirect('bananas/healthgraph/welcome')
+def healthgraph_authorize():
 
-			# if the user is trying to login with an account which is authorized for another user
-			session.pop('rk_access_token')
-			return "Oh we cant store that in the database - the access token is not unique"
-		return redirect('bananas/healthgraph/welcome')
-	else:
-		rk_auth_mgr = healthgraph.AuthManager(app.config['HEALTHGRAPH_CLIENT_ID'], 
-			app.config['HEALTHGRAPH_CLIENT_SECRET'], '/'.join(('http://127.0.0.1:8001', 'bananas/healthgraph/login',)))
-		rk_auth_uri = rk_auth_mgr.get_login_url()
-		rk_button_img = rk_auth_mgr.get_login_button_url('blue', 'black', 300)
-		return render_template('bananas/validate.html', rk_button_img = rk_button_img, rk_auth_uri = rk_auth_uri)
+    '''catch the case where the user isn't logged in to our app first'''
+    if 'user_id' not in session:
+        #log in the user!
+        return wrap_api_call({'redirect': '/bananas/login'}), 403
+
+    if session.has_key('rk_access_token'):
+        '''See if the user has previously authorized Healtgraph for us and it is still valid'''
+        rk_access_token = session.get('rk_access_token')
+        db_user = User.query.get(session['user_id'])
+        db_user.healthgraph_api_key = rk_access_token
+        try:
+            gamechange.db.session.commit()
+        except IntegrityError:
+            # if the user has somehow tried to reauthorize with the same account for the same user
+            gamechange.db.session.rollback()
+            if rk_access_token == User.query.get(session['user_id']).healthgraph_api_key:
+                return redirect('bananas/healthgraph/welcome')
+
+            # if the user is trying to login with an account which is authorized for another user
+            session.pop('rk_access_token')
+            return "Oh we cant store that in the database - the access token is not unique"
+        return redirect('bananas/healthgraph/welcome')
+    
+    else:
+        '''They have not! Let's authorize them'''
+        rk_auth_mgr = healthgraph.AuthManager(app.config['HEALTHGRAPH_CLIENT_ID'], 
+            app.config['HEALTHGRAPH_CLIENT_SECRET'], '/'.join((app.config['BASEURL'], 'bananas/healthgraph/login',)))
+        rk_auth_uri = rk_auth_mgr.get_login_url()
+        rk_button_img = rk_auth_mgr.get_login_button_url('blue', 'black', 300)
+        return render_template('bananas/validate.html', rk_button_img = rk_button_img, rk_auth_uri = rk_auth_uri)
 
 @bananas.route('/healthgraph/login')
 def login():
@@ -304,7 +313,11 @@ def api_user_register_post():
     return wrap_api_call(new_user.serialize)
 
 def wrap_api_call(json=None):
-    wrapper = {'_csrf_token': gamechange.generate_csrf_token(), 'api_version': 0.1, 'hostname': app.config['SERVER_NAME'], 'system_time_millis': int(round(time.time() * 1000))}
+    wrapper = {'_csrf_token': gamechange.generate_csrf_token(), 
+        'api_version': 0.1, 
+        'hostname': app.config['SERVER_NAME'], 
+        'system_time_millis': int(round(time.time() * 1000))
+        }
     if(app.config['DEBUG']):
     	wrapper['debug'] = True
     if(app.config['TESTING']):
