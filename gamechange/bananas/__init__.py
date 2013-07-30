@@ -273,6 +273,24 @@ def api_user_logout_post():
     else:
         abort(500)
 
+@bananas.route('/api/user/inventory/<item_id>/use', methods=['POST'])
+def api_user_inventory_use(item_id):
+    if 'user_id' not in session:
+        return wrap_api_call({'error': 'not logged in'}), 403
+
+    item = UserShopItem.query.get(item_id)
+
+    if item is None:
+        return wrap_api_call({'error': 'this item does not exist anymore!'}), 403
+
+    if item.user_id != session['user_id']:
+        return wrap_api_call({'error': 'this item does not belong to the currently logged in user!'}), 403
+
+    db.session.delete(item)
+    db.session.commit()
+
+    return api_user_get()
+
 #post doesn't work yet! Returns 403!
 @bananas.route('/api/user', methods = ['POST'])
 def api_user_post():
