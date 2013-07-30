@@ -11,6 +11,7 @@ from gamechange.models import User, ShopItem, UserShopItem, Shelter, db, Healthg
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 from wsgiref.handlers import format_date_time
+import pdb
 
 bananas = Blueprint('bananas', __name__, template_folder='templates')
 app = current_app
@@ -130,6 +131,7 @@ def healthgraph_get():
             rk_act_iter = rk_user.get_fitness_activity_iter(modified_since=modified_since)
             rk_activities = [rk_act_iter.next() for _ in range(rk_act_iter.count())]
             response = defaultdict(list)
+            pdb.set_trace()
             if rk_activities:
                 for i in range(rk_act_iter.count()):
                     if rk_activities[i].get('entry_mode') == "Web":
@@ -159,7 +161,7 @@ def healthgraph_get():
                             except IntegrityError:
                                 return wrap_api_call({"error" : "activity id not unique"}), 400
 
-                        return wrap_api_call(response)
+                return wrap_api_call(response)
             else:
                 json_list = [i.serialize for i in HealthgraphActivity.query.filter_by(user=session['user_id']).all()]
                 return wrap_api_call(json_list)
