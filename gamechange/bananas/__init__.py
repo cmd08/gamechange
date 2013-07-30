@@ -35,6 +35,11 @@ def js_show(page):
 def deauthorize_healthgraph_api():
     return ""
 
+
+@bananas.route('/templates/bananas/validate')
+def validate():
+    return render_template('bananas/validate.html')
+
 @bananas.route('/fillDB')
 def fill():
     if "user_id" in session:
