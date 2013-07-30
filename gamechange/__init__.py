@@ -6,7 +6,7 @@ from re import compile
 import random, string
 from base64 import *
 from beaker.middleware import SessionMiddleware
-from models import User, db, ShopItem
+from models import User, db, Shelter, Supplies
 
 from bananas import bananas
 
@@ -48,11 +48,12 @@ def init_db():
 
     db.session.add(me)
 
-    item1 = ShopItem('Test Item', 10, 'First test item')
-    item2 = ShopItem('Test Item 2', 20, 'Second test item')
+    water = Supplies("Water", 1, '', '', 1, 0, 1)
+    coconut = Supplies(name="Coconut", cost=2, description="Delicious, nutricious, and easy to keep", 
+        image_url='', health_points=3, shelf_life=10, size=1)
 
-    db.session.add(item1)
-    db.session.add(item2)
+    db.session.add(water)
+    db.session.add(coconut)
 
     db.session.commit()
     return "This is naughty and MUST not be in production! This also clears the session!"
