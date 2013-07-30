@@ -13,6 +13,7 @@ class ShopItem(db.Model):
     description = db.Column(db.Text)
     type = db.Column(db.String(50))
     cost = db.Column(db.Integer)
+    image_url = db.Column(db.String(512))
 
     __mapper_args__ = {
         'polymorphic_identity' : 'shop_item',
@@ -78,17 +79,21 @@ class User(db.Model):
     @property
     def serialize(self):
       """Return object data in easily serializeable format"""
-      return {
-        'id'            : self.id,
-        'username'      : self.username,
-        'first_name'    : self.first_name,
-        'last_name'     : self.last_name,
-        'email'         : self.email,
-        'bananas'       : self.bananas,
-        'username'      : self.username,
+      resp = {
+        'id'                    : self.id,
+        'username'              : self.username,
+        'first_name'            : self.first_name,
+        'last_name'             : self.last_name,
+        'email'                 : self.email,
+        'bananas'               : self.bananas,
+        'username'              : self.username,
+        'last_checked'          : self.last_checked.isoformat(),
         #'health'        : self.health,
-        'inventory'     : [i.serialize for i in self.inventory_items],
+        'inventory'             : [i.serialize for i in self.inventory_items],
       }
+      if (self.healthgraph_api_key is not None):
+            resp['healthgraph_api_key'] = self.healthgraph_api_key
+      return resp
 
     def __init__(self, username, first_name, last_name, email):
         self.username = username
@@ -164,7 +169,6 @@ class UserShopItem(db.Model):
 
 class Shelter(ShopItem):
     level = db.Column(db.Integer)
-    image_url = db.Column(db.String(512))
     capacity = db.Column(db.Integer)
     food_decay_rate_multiplier = db.Column(db.Integer)
     storage_space = db.Column(db.Integer)
@@ -190,5 +194,40 @@ class Shelter(ShopItem):
             'level'                     : self.level,
             'image_url'                 : self.image_url,
             'storage_space'             : self.storage_space,
-            'food_decay_rate_multiplier': self.food_decay_rate_multiplier
+            'food_decay_rate_multiplier': self.food_decay_rate_multiplier,
+            'type'                      : self.type,
+        }
+
+
+class Supplies(ShopItem):
+    health_points = db.Column(db.Integer)
+    shelf_life = db.Column(db.Integer, default=None)
+    size = db.Column(db.Integer, default=1)
+    
+
+    def __init__(self, name, cost, description, image_url, health_points, shelf_life, size):
+        self.name = name
+        self.cost = cost
+        self.description = description
+        self.image_url = image_url
+        self.health_points = health_points
+        self.shelf_life = shelf_life
+        self.size = size
+    
+    __mapper_args__ = {
+        'polymorphic_identity' : 'supply'
+    }
+
+    @property
+    def serialize(self):
+        return {
+            'id'                        : self.id,
+            'name'                      : self.name,
+            'cost'                      : self.cost,
+            'description'               : self.description,
+            'image_url'                 : self.image_url,
+            'health_points'             : self.health_points,
+            'shelf_life'                : self.shelf_life,
+            'size'                      : self.size,
+            'type'                      : self.type,
         }
