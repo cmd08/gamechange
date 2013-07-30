@@ -78,15 +78,17 @@ class User(db.Model):
     def serialize(self):
       """Return object data in easily serializeable format"""
       return {
-        'id'            : self.id,
-        'username'      : self.username,
-        'first_name'    : self.first_name,
-        'last_name'     : self.last_name,
-        'email'         : self.email,
-        'bananas'       : self.bananas,
-        'username'      : self.username,
+        'id'                    : self.id,
+        'username'              : self.username,
+        'first_name'            : self.first_name,
+        'last_name'             : self.last_name,
+        'email'                 : self.email,
+        'bananas'               : self.bananas,
+        'username'              : self.username,
+        'last_checked'          : self.last_checked.isoformat(),
+        'healthgraph_api_key'   : self.healthgraph_api_key,
         #'health'        : self.health,
-        'inventory'     : [i.serialize for i in self.inventory_items],
+        'inventory'             : [i.serialize for i in self.inventory_items],
       }
 
     def __init__(self, username, first_name, last_name, email):
