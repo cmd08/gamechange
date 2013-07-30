@@ -52,8 +52,10 @@ def init_db():
     coconut = Supplies(name="Coconut", cost=2, description="Delicious, nutricious, and easy to keep", 
         image_url='', health_points=3, shelf_life=10, size=1)
 
+    shelter = Shelter(name="Shelter", cost=10, description="Basic Shelter", level=1, image_url="", storage_space=5, food_decay_rate_multiplier=1)
     db.session.add(water)
     db.session.add(coconut)
+    db.session.add(shelter)
 
     db.session.commit()
     return "This is naughty and MUST not be in production! This also clears the session!"

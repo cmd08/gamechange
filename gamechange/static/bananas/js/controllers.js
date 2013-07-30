@@ -24,7 +24,7 @@ function shop_products_ctrl($scope, Restangular)
   });
 
   $scope.buy = function(product) {
-    console.log("BUY!")
+    console.log("BUY!");
     Restangular.one('shop', product.id).customPOST('buy').then(function(){
       Restangular.one('user').get().then(function(response){
         console.log(response.data);
@@ -109,6 +109,19 @@ function user_ctrl($scope, Restangular)
     function (results) {
       console.log("User Logout failed");
     })
+  }
+
+  $scope.use_item = function(item) {
+    console.log("Use item:");
+    console.log(item);
+
+    Restangular.one('user/inventory', item.inventory_id).customPOST('use').then(function(){
+      Restangular.one('user').get().then(function(response){
+        console.log(response.data);
+        $scope.user = response.data;  
+        $scope.user.health = Math.random() * 100;
+      });
+    });
   }
 
 

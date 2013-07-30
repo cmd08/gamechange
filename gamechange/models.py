@@ -173,8 +173,9 @@ class Shelter(ShopItem):
     food_decay_rate_multiplier = db.Column(db.Integer)
     storage_space = db.Column(db.Integer)
 
-    def __init__(self, name, description, level, image_url, storage_space, food_decay_rate_multiplier):
+    def __init__(self, name, cost, description, level, image_url, storage_space, food_decay_rate_multiplier):
         self.name = name
+        self.cost = cost
         self.description = description
         self.level = level
         self.image_url = image_url
@@ -189,6 +190,7 @@ class Shelter(ShopItem):
     def serialize(self):
         return {
             'id'                        : self.id,
+            'cost'                      : self.cost,
             'name'                      : self.name,
             'description'               : self.description,
             'level'                     : self.level,

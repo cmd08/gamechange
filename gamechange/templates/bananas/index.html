@@ -77,8 +77,13 @@
     			<h3>Inventory</h3>
     			<ul class="unstyled">
     				<li ng-repeat="useritem in user.inventory">
-    					<p>{[{useritem.item.name}]}, {[{useritem.item.description}]}</p> 
-    					<!-- Add remove and use button -->
+    					<span ng-hide="useritem.item.type == 'shelter'">
+	    					<h4>{[{useritem.item.name}]}</h4>
+	    					<a href ng-click="use_item(useritem)">Use</a>
+	    					<p>Type: {[{useritem.item.type}]}</p>
+	    					<p>Description: {[{useritem.item.description}]}</p> 
+	    					<!-- Add remove and use button -->
+	    				</span>
     				</li>
     			</ul>
     			<button ng-click="logout()">Logout</button><button back-button>Back</buttom>
