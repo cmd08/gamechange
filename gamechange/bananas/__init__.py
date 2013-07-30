@@ -12,7 +12,6 @@ from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 from wsgiref.handlers import format_date_time
 
-
 bananas = Blueprint('bananas', __name__, template_folder='templates')
 app = current_app
 
@@ -56,10 +55,6 @@ def fill():
     gamechange.db.session.commit()
     return "Filled trial data!"
 
-@bananas.route('/api/healthgraph')
-def api_healthgraph():
-    return wrap_api_call('test')
-
 @bananas.route('/api/healthgraph/authorize')
 def healthgraph_authorize():
 
@@ -79,12 +74,12 @@ def healthgraph_authorize():
             # if the user has somehow tried to reauthorize with the same account for the same user
             gamechange.db.session.rollback()
             if rk_access_token == User.query.get(session['user_id']).healthgraph_api_key:
-                return redirect('bananas/api/healthgraph/welcome')
+                return redirect('bananas/api/healthgraph')
 
             # if the user is trying to login with an account which is authorized for another user
             session.pop('rk_access_token')
             return "Oh we cant store that in the database - the access token is not unique"
-        return redirect('bananas/api/healthgraph/welcome')
+        return redirect('bananas/api/healthgraph')
     
     else:
         '''They have not! Let's authorize them'''
@@ -103,16 +98,18 @@ def healthgraph_login():
         rk_access_token = rk_auth_mgr.get_access_token(code)
         session['rk_access_token'] = rk_access_token
         return redirect('bananas/api/healthgraph/authorize')
+    else:
+        return wrap_api_call({'error':'code is required'}), 400
 
-@bananas.route('/api/healthgraph/welcome', methods=['GET'])
-def healthgraph_welcome():
+@bananas.route('/api/healthgraph', methods=['GET'])
+def healthgraph_get():
     if 'user_id' not in session:
         return wrap_api_call({'redirect':'login'}), 403
     # try to access the rk_access_token from the database based on session['user_id'] - catch if session['user_id'] not found
     try:
         rk_access_token = User.query.get(session['user_id']).healthgraph_api_key
     except AttributeError:
-        return "Attribute Error: User ID doesn't exist?"
+        return wrap_api_call({'error':'User ID doesn\'t exist in database'}), 400
 
     if rk_access_token is not None:
         # try to access healthgraph data using rk_access_token from the database - catch if access token is wrong
@@ -125,7 +122,7 @@ def healthgraph_welcome():
             db_user.healthgraph_api_key = None
             gamechange.db.session.commit()
             session.pop('rk_access_token')
-            return redirect('/bananas/api/healthgraph/authorize')
+            return wrap_api_call({'error':'HealthGraph not authorized','redirect':'/api/healthgraph/authorize'}), 403
         else:
             # get activity details since the last checked time
             stamp = mktime(db_user.last_checked.timetuple())
@@ -162,9 +159,12 @@ def healthgraph_welcome():
                             except IntegrityError:
                                 return wrap_api_call({"error" : "activity id not unique"}), 400
 
-            return wrap_api_call(response)
+                        return wrap_api_call(response)
+            else:
+                json_list = [i.serialize for i in HealthgraphActivity.query.filter_by(user=session['user_id']).all()]
+                return wrap_api_call(json_list)
     else:
-        return redirect('/bananas/api/healthgraph/authorize')
+        return wrap_api_call({'error':'HealthGraph not authorized', 'redirect':'/api/healthgraph/authorize'}), 403
 
 @bananas.route('/api/healthgraph/logout')
 def logout():
