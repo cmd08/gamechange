@@ -131,10 +131,9 @@ def healthgraph_welcome():
             session.pop('rk_access_token')
             return redirect('/bananas/healthgraph/authorize')
         else:
+            # get activity details since the last checked time
             stamp = mktime(db_user.last_checked.timetuple())
             modified_since = format_date_time(stamp)
-            rk_profile = rk_user.get_profile()
-            rk_records = rk_user.get_records()
             rk_act_iter = rk_user.get_fitness_activity_iter(modified_since=modified_since)
             rk_activities = [rk_act_iter.next() for _ in range(rk_act_iter.count())]
             response = defaultdict(list)
@@ -142,19 +141,29 @@ def healthgraph_welcome():
                 for i in range(rk_act_iter.count()):
                     if rk_activities[i].get('entry_mode') == "Web":
                         activity_id = str(rk_activities[i].get('uri')[1]).split('/')[2]
-                        rk_activity = dict(activity_id = str(rk_activities[i].get('uri')[1]).split('/')[2],
-                            type = rk_activities[i].get('type'), 
-                            start_time = rk_activities[i].get('start_time'),
-                            total_distance = rk_activities[i].get('total_distance'),
-                            source = rk_activities[i].get('source'),
-                            entry_mode = rk_activities[i].get('entry_mode'),
-                            total_calories = rk_activities[i].get('total_calories')
+                        activity_type = rk_activities[i].get('type')
+                        start_time = rk_activities[i].get('start_time')
+                        total_distance = rk_activities[i].get('total_distance')
+                        source = rk_activities[i].get('source')
+                        entry_mode = rk_activities[i].get('entry_mode')
+                        total_calories = rk_activities[i].get('total_calories')
+
+                        # restructure in to dict for JSON response
+                        rk_activity = dict(activity_id = activity_id,
+                            type = activity_type, 
+                            start_time = start_time,
+                            total_distance = total_distance,
+                            source = source,
+                            entry_mode = entry_mode,
+                            total_calories = total_calories
                             )
                         response["activities"].append(rk_activity)
+
+                        # If the activity is not in the database then add it
                         if HealthgraphActivity.query.filter_by(id=activity_id).first() == None:		
-                            activity = HealthgraphActivity(str(rk_activities[i].get('uri')[1]).split('/')[2], 
-                                rk_activities[i].get('type'),
-                                rk_activities[i].get('total_calories'),
+                            activity = HealthgraphActivity(activity_id, 
+                                activity_type,
+                                total_calories,
                                 session['user_id'])
                             db_user.last_checked = datetime.now()
                             gamechange.db.session.add(activity)
