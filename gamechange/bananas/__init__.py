@@ -7,7 +7,7 @@ import json
 import healthgraph
 import time
 import gamechange
-from gamechange.models import User, ShopItem, Shelter, db, HealthgraphActivity
+from gamechange.models import User, ShopItem, Shelter, db, HealthgraphActivity, Supplies
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 from wsgiref.handlers import format_date_time
@@ -190,15 +190,21 @@ def api_shop_post():
     description = request.form['description']
     type = request.form['type']
     cost = request.form['cost']
+    image_url = request.form['image_url']
 
     if type == 'shelter':
         level = request.form['level']
-        image_url = request.form['image_url']
         storage_space = request.form['storage_space']
         food_decay_rate_multiplier = request.form['food_decay_rate_multiplier']
         item = Shelter(name, cost, description, level, image_url, storage_space, food_decay_rate_multiplier)
         resp = item.serialize   
-    else :
+    elif type == 'supply':
+        health_points = request.form['health_points']
+        shelf_life = request.form['shelf_life']
+        size = request.form['size']
+        item = Supplies(name, cost, description, image_url, health_points, shelf_life, size)
+        resp = item.serialize
+    else:
         item = ShopItem(name, cost, description)
         resp = item.serialize
 
