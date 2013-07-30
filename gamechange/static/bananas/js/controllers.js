@@ -14,6 +14,9 @@ controller('MyCtrl1', [function() {
 }])
 .controller('MyCtrl4', [function() {
 
+}])
+.controller('MyCtrl5', [function() {
+
 }]);
 
 function shop_products_ctrl($scope, Restangular)

@@ -7,6 +7,8 @@ config(function($routeProvider) {
     $routeProvider.when('/main_menu', {templateUrl: '/static/bananas/partials/main_menu.html', controller: 'MyCtrl2'});
     $routeProvider.when('/monkey_business', {templateUrl: '/static/bananas/partials/monkey_business.html', controller: 'MyCtrl3'});
     $routeProvider.when('/banana_run', {templateUrl: '/static/bananas/partials/banana_run.html', controller: 'MyCtrl4'});
+    // $routeProvider.when('/banana_run_auth', {templateUrl: '/bananas/templates/bananas/validate', controller: 'MyCtrl5'});
+    $routeProvider.when('/banana_run_auth', {templateUrl: '/bananas/api/healthgraph/authorize', controller: 'MyCtrl5'});
     $routeProvider.otherwise({redirectTo: '/home'});
 }).
 config(function(RestangularProvider) {
