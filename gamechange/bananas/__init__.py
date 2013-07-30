@@ -16,14 +16,6 @@ from wsgiref.handlers import format_date_time
 bananas = Blueprint('bananas', __name__, template_folder='templates')
 app = current_app
 
-class MyEncoder(json.JSONEncoder):
-
-    def default(self, obj):
-        if isinstance(obj, datetime):
-            return int(mktime(obj.timetuple()))
-
-        return json.JSONEncoder.default(self, obj)
-
 #routes prefixed with bananas by the app
 @bananas.route('/', defaults={'page': 'index'})
 @bananas.route('/<page>')
@@ -143,18 +135,12 @@ def healthgraph_welcome():
                         activity_id = str(rk_activities[i].get('uri')[1]).split('/')[2]
                         activity_type = rk_activities[i].get('type')
                         start_time = rk_activities[i].get('start_time')
-                        total_distance = rk_activities[i].get('total_distance')
-                        source = rk_activities[i].get('source')
-                        entry_mode = rk_activities[i].get('entry_mode')
                         total_calories = rk_activities[i].get('total_calories')
 
                         # restructure in to dict for JSON response
                         rk_activity = dict(activity_id = activity_id,
                             type = activity_type, 
-                            start_time = start_time,
-                            total_distance = total_distance,
-                            source = source,
-                            entry_mode = entry_mode,
+                            start_time = start_time.isoformat(),
                             total_calories = total_calories
                             )
                         response["activities"].append(rk_activity)
@@ -172,7 +158,7 @@ def healthgraph_welcome():
                             except IntegrityError:
                                 return "Well that activity doesn't have a unique ID?"
 
-            return Response(json.dumps(response, cls = MyEncoder, indent = 4), mimetype='application/json')
+            return wrap_api_call(response)
     else:
         return redirect('/bananas/healthgraph/authorize')
 
