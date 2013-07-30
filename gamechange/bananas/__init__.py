@@ -84,7 +84,7 @@ def healthgraph_authorize():
             # if the user is trying to login with an account which is authorized for another user
             session.pop('rk_access_token')
             return "Oh we cant store that in the database - the access token is not unique"
-        return redirect('bananas/api/healthgraph')
+        return redirect('bananas/#/banana_run')
     
     else:
         '''They have not! Let's authorize them'''
