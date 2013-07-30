@@ -7,7 +7,7 @@ import json
 import healthgraph
 import time
 import gamechange
-from gamechange.models import User, ShopItem, Shelter, db, HealthgraphActivity, Supplies
+from gamechange.models import User, ShopItem, UserShopItem, Shelter, db, HealthgraphActivity
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 from wsgiref.handlers import format_date_time
