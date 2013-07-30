@@ -19,6 +19,18 @@ controller('MyCtrl1', [function() {
 
 }]);
 
+function banana_run_ctrl ($scope, Restangular)
+{
+  Restangular.all('healthgraph').getList().then(function (results) {
+    $scope.activities = results;
+    console.log($scope.activities );
+  }),
+  function(results) {
+    console.log('Healthgraph error');
+    console.log(results);
+  }; 
+}
+
 function shop_products_ctrl($scope, Restangular)
 {
   Restangular.all('shop').getList().then(function (results) {
