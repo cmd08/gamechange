@@ -66,7 +66,7 @@ def healthgraph_authorize():
     '''catch the case where the user isn't logged in to our app first'''
     if 'user_id' not in session:
         #log in the user!
-        return wrap_api_call({'redirect': '/bananas/login'}), 403
+        return wrap_api_call({'redirect': '/api/healthgraph/login'}), 403
 
     if session.has_key('rk_access_token'):
         '''See if the user has previously authorized Healtgraph for us and it is still valid'''
@@ -89,7 +89,7 @@ def healthgraph_authorize():
     else:
         '''They have not! Let's authorize them'''
         rk_auth_mgr = healthgraph.AuthManager(app.config['HEALTHGRAPH_CLIENT_ID'], 
-            app.config['HEALTHGRAPH_CLIENT_SECRET'], '/'.join((app.config['BASEURL'], 'bananas/healthgraph/login',)))
+            app.config['HEALTHGRAPH_CLIENT_SECRET'], '/'.join((app.config['BASEURL'], 'bananas/api/healthgraph/login',)))
         rk_auth_uri = rk_auth_mgr.get_login_url()
         rk_button_img = rk_auth_mgr.get_login_button_url('blue', 'black', 300)
         return render_template('bananas/validate.html', rk_button_img = rk_button_img, rk_auth_uri = rk_auth_uri)
@@ -99,7 +99,7 @@ def healthgraph_login():
     code = request.args.get('code')
     if code is not None:
         rk_auth_mgr = healthgraph.AuthManager(app.config['HEALTHGRAPH_CLIENT_ID'], app.config['HEALTHGRAPH_CLIENT_SECRET'], 
-            '/'.join((app.config['BASEURL'], 'bananas/healthgraph/login',)))
+            '/'.join((app.config['BASEURL'], 'bananas/api/healthgraph/login',)))
         rk_access_token = rk_auth_mgr.get_access_token(code)
         session['rk_access_token'] = rk_access_token
         return redirect('bananas/api/healthgraph/authorize')
