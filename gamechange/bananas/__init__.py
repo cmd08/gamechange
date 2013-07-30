@@ -156,7 +156,7 @@ def healthgraph_welcome():
                             try:
                                 gamechange.db.session.commit()
                             except IntegrityError:
-                                return "Well that activity doesn't have a unique ID?"
+                                return wrap_api_call({"error" : "activity id not unique"}), 403
 
             return wrap_api_call(response)
     else:
