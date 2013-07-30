@@ -18,7 +18,6 @@ controller('MyCtrl1', [function() {
 
 function shop_products_ctrl($scope, Restangular)
 {
-
   Restangular.all('shop').getList().then(function (results) {
     $scope.shop = results.items;
     //console.log($scope.shop );
@@ -28,10 +27,9 @@ function shop_products_ctrl($scope, Restangular)
     console.log("BUY!")
     Restangular.one('shop', product.id).customPOST('buy').then(function(){
       Restangular.one('user').get().then(function(response){
-      console.log(response.data);
-
-      $scope.user.bananas = response.data.bananas;
-    });
+        console.log(response.data);
+        $scope.user = response.data;  
+      });
     });
 
 
@@ -113,21 +111,6 @@ function user_ctrl($scope, Restangular)
     })
   }
 
-  $scope.toggle_user_details = function () {
-    if ( ! $scope.user_detailed )
-    {
-      console.log("Showing Detailed User Data");
-      $scope.user_detailed = true;
-    }
-    else
-    {
-      console.log("Hiding Detailed User Data");
-      $scope.user_detailed = false;
-    }
-  }
-
-
-  
 
   // $scope.spend_bananas = function( cost ) {
   //   if $scope.user.bananas > cost :
