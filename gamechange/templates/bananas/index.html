@@ -17,6 +17,32 @@
 	{% else %}
 	<link rel="stylesheet" href="{{config['STATIC_ROOT_URL']}}bananas/css/style.css" />
 	{% endif %}
+
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<!-- Prevents zoom on mobile devices. user-scalable=no prevents browser waiting 300ms for double tap check -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<script type="text/javascript">
+		function hideAddressBar()
+		{
+			if(navigator.userAgent.match(/Android/i)){
+    			window.scrollTo(0,1);
+			}
+
+			if(!window.location.hash)
+			{
+				if(document.height < window.outerHeight)
+				{
+					document.body.style.height = (window.outerHeight + 50) + 'px';
+				}
+
+				setTimeout( function(){ window.scrollTo(0, 1); }, 50 );
+			}
+		}
+		 
+		window.addEventListener("load", function(){ if(!window.pageYOffset){ hideAddressBar(); } } );
+		window.addEventListener("orientationchange", hideAddressBar );
+	</script>
+
 </head>
 
 {{raw}}
@@ -49,10 +75,14 @@
     		</div>
     		<div ng-show="user_detailed">
     			<h3>Inventory</h3>
+    			<ul class="unstyled">
+    				<li ng-repeat="useritem in user.inventory">
+    					<p>{[{useritem.item.name}]}, {[{useritem.item.description}]}</p> 
+    					<!-- Add remove and use button -->
+    				</li>
+    			</ul>
     			<button ng-click="logout()">Logout</button><button back-button>Back</buttom>
-    		</div>
-    		
-    		
+    		</div>   		
 		</div>	
 
 		<div id="login" ng-show="display_login">
