@@ -19,7 +19,8 @@
 	{% endif %}
 
 	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<!-- Prevents zoom on mobile devices. user-scalable=no prevents browser waiting 300ms for double tap check -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<script type="text/javascript">
 		function hideAddressBar()
 		{
