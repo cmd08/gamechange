@@ -56,7 +56,11 @@ def fill():
     gamechange.db.session.commit()
     return "Filled trial data!"
 
-@bananas.route('/healthgraph/authorize')
+@bananas.route('/api/healthgraph')
+def api_healthgraph():
+    return wrap_api_call('test')
+
+@bananas.route('/api/healthgraph/authorize')
 def healthgraph_authorize():
 
     '''catch the case where the user isn't logged in to our app first'''
@@ -75,12 +79,12 @@ def healthgraph_authorize():
             # if the user has somehow tried to reauthorize with the same account for the same user
             gamechange.db.session.rollback()
             if rk_access_token == User.query.get(session['user_id']).healthgraph_api_key:
-                return redirect('bananas/healthgraph/welcome')
+                return redirect('bananas/api/healthgraph/welcome')
 
             # if the user is trying to login with an account which is authorized for another user
             session.pop('rk_access_token')
             return "Oh we cant store that in the database - the access token is not unique"
-        return redirect('bananas/healthgraph/welcome')
+        return redirect('bananas/api/healthgraph/welcome')
     
     else:
         '''They have not! Let's authorize them'''
@@ -90,7 +94,7 @@ def healthgraph_authorize():
         rk_button_img = rk_auth_mgr.get_login_button_url('blue', 'black', 300)
         return render_template('bananas/validate.html', rk_button_img = rk_button_img, rk_auth_uri = rk_auth_uri)
 
-@bananas.route('/healthgraph/login')
+@bananas.route('/api/healthgraph/login')
 def healthgraph_login():
     code = request.args.get('code')
     if code is not None:
@@ -98,9 +102,9 @@ def healthgraph_login():
             '/'.join((app.config['BASEURL'], 'bananas/healthgraph/login',)))
         rk_access_token = rk_auth_mgr.get_access_token(code)
         session['rk_access_token'] = rk_access_token
-        return redirect('bananas/healthgraph/authorize')
+        return redirect('bananas/api/healthgraph/authorize')
 
-@bananas.route('/healthgraph/welcome')
+@bananas.route('/api/healthgraph/welcome', methods=['GET'])
 def healthgraph_welcome():
     if 'user_id' not in session:
         return wrap_api_call({'redirect':'login'}), 403
@@ -121,7 +125,7 @@ def healthgraph_welcome():
             db_user.healthgraph_api_key = None
             gamechange.db.session.commit()
             session.pop('rk_access_token')
-            return redirect('/bananas/healthgraph/authorize')
+            return redirect('/bananas/api/healthgraph/authorize')
         else:
             # get activity details since the last checked time
             stamp = mktime(db_user.last_checked.timetuple())
@@ -156,13 +160,13 @@ def healthgraph_welcome():
                             try:
                                 gamechange.db.session.commit()
                             except IntegrityError:
-                                return "Well that activity doesn't have a unique ID?"
+                                return wrap_api_call({"error" : "activity id not unique"}), 400
 
             return wrap_api_call(response)
     else:
-        return redirect('/bananas/healthgraph/authorize')
+        return redirect('/bananas/api/healthgraph/authorize')
 
-@bananas.route('/healthgraph/logout')
+@bananas.route('/api/healthgraph/logout')
 def logout():
     session.pop('rk_access_token', None)
     return "Need to redirect to the gamechange logout page - this page may be obselete depending on work from Ashley"
