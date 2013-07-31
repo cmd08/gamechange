@@ -19,16 +19,22 @@ controller('MyCtrl1', [function() {
 
 }]);
 
-function banana_run_ctrl ($scope, Restangular)
+function banana_run_ctrl ($scope, $location, Restangular)
 {
   Restangular.all('healthgraph').getList().then(function (results) {
     $scope.activities = results;
     console.log($scope.activities );
-  }),
+  },
   function(results) {
     console.log('Healthgraph error');
-    console.log(results);
-  }; 
+    // console.log(results);
+    // console.log(results.data.data);
+    if (results.data.data.redirect == "/api/healthgraph/authorize")
+    {
+      console.log("Need to redirect to authorise page");
+      $location.path('/banana_run_auth');
+    }
+  }); 
 }
 
 function shop_products_ctrl($scope, Restangular)
