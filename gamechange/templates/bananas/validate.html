@@ -1,7 +1,10 @@
-
-<h1>Game Change Go Bananas Runkeeper Login Page</h1>
-<p>
-	<a href="{{ rk_auth_uri }}">
-		<img src="{{ rk_button_img }}" alt="RunKeeper Login Button">
-	</a>
-</p>
+<div id="runkeeper_auth" class="bamboo-frame">
+	<div class="bamboo-frame-holder" ng-controller="banana_run_ctrl">
+		<h2>Runkeeper Login</h2>
+		<div class="runkeeper-loging-holder">
+			<a href="{{ rk_auth_uri }}">
+				<img src="{{ rk_button_img }}" alt="RunKeeper Login Button">
+			</a>	
+		</div>
+	</div>
+</div>
