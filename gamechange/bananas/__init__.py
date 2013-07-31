@@ -131,28 +131,27 @@ def healthgraph_get():
             modified_since = format_date_time(stamp)
             rk_act_iter = rk_user.get_fitness_activity_iter(modified_since=modified_since)
             rk_activities = [rk_act_iter.next() for _ in range(rk_act_iter.count())]
-            response = defaultdict(list)
             if rk_activities:
+                json_list = []
                 for i in range(rk_act_iter.count()):
                     if rk_activities[i].get('entry_mode') == "Web":
                         activity_id = str(rk_activities[i].get('uri')[1]).split('/')[2]
                         activity_type = rk_activities[i].get('type')
                         start_time = rk_activities[i].get('start_time')
-                        total_calories = rk_activities[i].get('total_calories')
+                        calories = rk_activities[i].get('total_calories')
 
                         # restructure in to dict for JSON response
-                        rk_activity = dict(activity_id = activity_id,
-                            type = activity_type, 
-                            start_time = start_time.isoformat(),
-                            total_calories = total_calories
+                        rk_activity = dict(id = activity_id,
+                            activity_type = activity_type,
+                            calories = calories,
+                            user = session['user_id']
                             )
-                        response["activities"].append(rk_activity)
-
+                        json_list.append(rk_activity)
                         # If the activity is not in the database then add it
                         if HealthgraphActivity.query.filter_by(id=activity_id).first() == None:		
                             activity = HealthgraphActivity(activity_id, 
                                 activity_type,
-                                total_calories,
+                                calories,
                                 session['user_id'])
                             db_user.last_checked = datetime.now()
                             gamechange.db.session.add(activity)
@@ -161,7 +160,7 @@ def healthgraph_get():
                             except IntegrityError:
                                 return wrap_api_call({"error" : "activity id not unique"}), 400
 
-                return wrap_api_call(response)
+                return wrap_api_call(json_list)
             else:
                 json_list = [i.serialize for i in HealthgraphActivity.query.filter_by(user=session['user_id']).all()]
                 return wrap_api_call(json_list)
