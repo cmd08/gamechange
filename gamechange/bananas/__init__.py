@@ -36,10 +36,6 @@ def deauthorize_healthgraph_api():
     return ""
 
 
-@bananas.route('/templates/bananas/validate')
-def validate():
-    return render_template('bananas/validate.html')
-
 @bananas.route('/fillDB')
 def fill():
     if "user_id" in session:
@@ -84,6 +80,7 @@ def healthgraph_authorize():
             # if the user is trying to login with an account which is authorized for another user
             session.pop('rk_access_token')
             return "Oh we cant store that in the database - the access token is not unique"
+        session.pop('rk_access_token', None)
         return redirect('bananas/#/banana_run')
     
     else:
