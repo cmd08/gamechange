@@ -11,6 +11,7 @@ from gamechange.models import User, ShopItem, UserShopItem, Shelter, db, Healthg
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 from wsgiref.handlers import format_date_time
+import pdb
 
 bananas = Blueprint('bananas', __name__, template_folder='templates')
 app = current_app
@@ -80,6 +81,7 @@ def healthgraph_authorize():
             # if the user is trying to login with an account which is authorized for another user
             session.pop('rk_access_token')
             return "Oh we cant store that in the database - the access token is not unique"
+        pdb.set_trace()
         session.pop('rk_access_token', None)
         return redirect('bananas/#/banana_run')
     
@@ -121,7 +123,7 @@ def healthgraph_get():
             rk_user = healthgraph.User(session=healthgraph.Session(rk_access_token))
         except ValueError:
             db_user = User.query.get(session['user_id'])
-            db_user.healthgraph_api_key = None
+            db_user.healthgraph_api_key = Nonepost
             gamechange.db.session.commit()
             session.pop('rk_access_token')
             return wrap_api_call({'error':'HealthGraph not authorized','redirect':'/api/healthgraph/authorize'}), 403
@@ -139,12 +141,15 @@ def healthgraph_get():
                         activity_type = rk_activities[i].get('type')
                         start_time = rk_activities[i].get('start_time')
                         calories = rk_activities[i].get('total_calories')
+                        # pdb.set_trace()
+                        bananas_earned = int(round(calories/20))
 
                         # restructure in to dict for JSON response
                         rk_activity = dict(id = activity_id,
                             activity_type = activity_type,
                             calories = calories,
-                            user = session['user_id']
+                            user = session['user_id'],
+                            bananas_earned = bananas_earned
                             )
                         json_list.append(rk_activity)
                         # If the activity is not in the database then add it
@@ -152,16 +157,19 @@ def healthgraph_get():
                             activity = HealthgraphActivity(activity_id, 
                                 activity_type,
                                 calories,
-                                session['user_id'])
+                                session['user_id'],
+                                bananas_earned)
                             db_user.last_checked = datetime.now()
                             gamechange.db.session.add(activity)
                             try:
                                 gamechange.db.session.commit()
+                                pdb.set_trace()
                             except IntegrityError:
                                 return wrap_api_call({"error" : "activity id not unique"}), 400
-
+                pdb.set_trace()
                 return wrap_api_call(json_list)
             else:
+                pdb.set_trace()
                 json_list = [i.serialize for i in HealthgraphActivity.query.filter_by(user=session['user_id']).all()]
                 return wrap_api_call(json_list)
     else:

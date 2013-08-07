@@ -127,6 +127,8 @@ class HealthgraphActivity(db.Model):
     activity_type = db.Column(db.String(32))
     calories = db.Column(db.Integer)
     user = db.Column(db.Integer, db.ForeignKey('user.id'))
+    bananas_earned = db.Column(db.Integer)
+    banked = db.Column(db.Boolean, default=False)
 
     @property
     def serialize(self):
@@ -135,14 +137,24 @@ class HealthgraphActivity(db.Model):
            'id'             : self.id,
            'activity_type'  : self.activity_type,
            'calories'       : self.calories,
-           'user'           : self.user
+           'user'           : self.user,
+           'bananas_earned' : self.bananas_earned,
+           'banked'         : self.banked
        }
 
-    def __init__(self, id, activity_type, calories, user):
+    def __init__(self, id, activity_type, calories, user, bananas_earned):
         self.id = id
         self.activity_type = activity_type
         self.calories = calories
-        self.user = user      
+        self.user = user
+        self.bananas_earned = bananas_earned
+
+    # def __repr__(self):
+    #     return '<HealthgraphActivity %r>' % self.activity_type
+
+    def bank_bananas(self):
+        User.query.get(self.user).bananas = User.query.get(self.user).bananas + self.bananas_earned
+        self.banked = True
 
 
 class UserShopItem(db.Model):
