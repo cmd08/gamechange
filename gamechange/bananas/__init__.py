@@ -177,13 +177,15 @@ def healthgraph_get():
         return wrap_api_call({'error':'HealthGraph not authorized', 'redirect':'/api/healthgraph/authorize'}), 403
 
 @bananas.route('/api/healthgraph/<activity_id>/bank', methods=['POST'])
-def healthgraph_post(id):
+def healthgraph_post(activity_id):
     db_user = User.query.get(session['user_id'])
-    activity = HealthgraphActivity.query.get(id)
+    activity = HealthgraphActivity.query.get(activity_id)
     db_user.bananas = db_user.bananas + activity.bananas_earned
 
-    gamechange.db.session.add(db_user)
+    # gamechange.db.session.add(db_user)
+    gamechange.db.session.commit()
     return wrap_api_call(db_user.bananas)
+    # return wrap_api_call({'error':'corrrrrrrrect'})
 
 
 
