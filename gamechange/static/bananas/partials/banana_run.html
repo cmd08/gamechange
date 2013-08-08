@@ -8,7 +8,12 @@
 
 		<ul>
 			<li ng-repeat="activity in activities">
-				<p>Type: {[{activity.activity_type}]}, Calories: {[{activity.calories}]}, Bananas Earned: {[{activity.bananas_earned}]}</p>
+				<p>Type: {[{activity.activity_type}]}, Calories: {[{activity.calories}]}, Bananas Earned: {[{activity.bananas_earned}]}, Banked: {[{activity.banked}]}
+				<button ng-click="bank(activity)" ng-disabled="activity.banked">
+					<span ng-hide="activity.banked">Buy</span>
+					<span ng-show="activity.banked">Not enough Bananas</span>
+				</button>
+				</p>
 			</li>
 		</ul>
 	</div>

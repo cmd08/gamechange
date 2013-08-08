@@ -149,7 +149,8 @@ def healthgraph_get():
                             activity_type = activity_type,
                             calories = calories,
                             user = session['user_id'],
-                            bananas_earned = bananas_earned
+                            bananas_earned = bananas_earned,
+                            banked = False
                             )
                         json_list.append(rk_activity)
                         # If the activity is not in the database then add it
@@ -174,6 +175,17 @@ def healthgraph_get():
                 return wrap_api_call(json_list)
     else:
         return wrap_api_call({'error':'HealthGraph not authorized', 'redirect':'/api/healthgraph/authorize'}), 403
+
+@bananas.route('/api/healthgraph/<activity_id>/bank', methods=['POST'])
+def healthgraph_post(id):
+    db_user = User.query.get(session['user_id'])
+    activity = HealthgraphActivity.query.get(id)
+    db_user.bananas = db_user.bananas + activity.bananas_earned
+
+    gamechange.db.session.add(db_user)
+    return wrap_api_call(db_user.bananas)
+
+
 
 @bananas.route('/api/healthgraph/logout')
 def logout():

@@ -34,7 +34,16 @@ function banana_run_ctrl ($scope, $location, Restangular)
       console.log("Need to redirect to authorise page");
       $location.path('/banana_run_auth');
     }
-  }); 
+  });
+
+  $scope.bank = function(activity) {
+    console.log(activity)
+    // Restangular.one('healthgraph', activity.id).customPOST('bank').then(function (response){
+      // console.log(response);
+    // });
+    // console.log("BANK!");
+    // console.log();
+  } 
 }
 
 function shop_products_ctrl($scope, Restangular)
