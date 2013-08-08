@@ -12,7 +12,6 @@ from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 from wsgiref.handlers import format_date_time
 
-
 bananas = Blueprint('bananas', __name__, template_folder='templates')
 app = current_app
 
@@ -36,6 +35,7 @@ def js_show(page):
 def deauthorize_healthgraph_api():
     return ""
 
+
 @bananas.route('/fillDB')
 def fill():
     if "user_id" in session:
@@ -56,17 +56,13 @@ def fill():
     gamechange.db.session.commit()
     return "Filled trial data!"
 
-@bananas.route('/api/healthgraph')
-def api_healthgraph():
-    return wrap_api_call('test')
-
 @bananas.route('/api/healthgraph/authorize')
 def healthgraph_authorize():
 
     '''catch the case where the user isn't logged in to our app first'''
     if 'user_id' not in session:
         #log in the user!
-        return wrap_api_call({'redirect': '/bananas/login'}), 403
+        return wrap_api_call({'redirect': '/api/healthgraph/login'}), 403
 
     if session.has_key('rk_access_token'):
         '''See if the user has previously authorized Healtgraph for us and it is still valid'''
@@ -79,17 +75,18 @@ def healthgraph_authorize():
             # if the user has somehow tried to reauthorize with the same account for the same user
             gamechange.db.session.rollback()
             if rk_access_token == User.query.get(session['user_id']).healthgraph_api_key:
-                return redirect('bananas/api/healthgraph/welcome')
+                return redirect('bananas/api/healthgraph')
 
             # if the user is trying to login with an account which is authorized for another user
             session.pop('rk_access_token')
             return "Oh we cant store that in the database - the access token is not unique"
-        return redirect('bananas/api/healthgraph/welcome')
+        session.pop('rk_access_token', None)
+        return redirect('bananas/#/banana_run')
     
     else:
         '''They have not! Let's authorize them'''
         rk_auth_mgr = healthgraph.AuthManager(app.config['HEALTHGRAPH_CLIENT_ID'], 
-            app.config['HEALTHGRAPH_CLIENT_SECRET'], '/'.join((app.config['BASEURL'], 'bananas/healthgraph/login',)))
+            app.config['HEALTHGRAPH_CLIENT_SECRET'], '/'.join((app.config['BASEURL'], 'bananas/api/healthgraph/login',)))
         rk_auth_uri = rk_auth_mgr.get_login_url()
         rk_button_img = rk_auth_mgr.get_login_button_url('blue', 'black', 300)
         return render_template('bananas/validate.html', rk_button_img = rk_button_img, rk_auth_uri = rk_auth_uri)
@@ -99,20 +96,22 @@ def healthgraph_login():
     code = request.args.get('code')
     if code is not None:
         rk_auth_mgr = healthgraph.AuthManager(app.config['HEALTHGRAPH_CLIENT_ID'], app.config['HEALTHGRAPH_CLIENT_SECRET'], 
-            '/'.join((app.config['BASEURL'], 'bananas/healthgraph/login',)))
+            '/'.join((app.config['BASEURL'], 'bananas/api/healthgraph/login',)))
         rk_access_token = rk_auth_mgr.get_access_token(code)
         session['rk_access_token'] = rk_access_token
         return redirect('bananas/api/healthgraph/authorize')
+    else:
+        return wrap_api_call({'error':'code is required'}), 400
 
-@bananas.route('/api/healthgraph/welcome', methods=['GET'])
-def healthgraph_welcome():
+@bananas.route('/api/healthgraph', methods=['GET'])
+def healthgraph_get():
     if 'user_id' not in session:
         return wrap_api_call({'redirect':'login'}), 403
     # try to access the rk_access_token from the database based on session['user_id'] - catch if session['user_id'] not found
     try:
         rk_access_token = User.query.get(session['user_id']).healthgraph_api_key
     except AttributeError:
-        return "Attribute Error: User ID doesn't exist?"
+        return wrap_api_call({'error':'User ID doesn\'t exist in database'}), 400
 
     if rk_access_token is not None:
         # try to access healthgraph data using rk_access_token from the database - catch if access token is wrong
@@ -122,49 +121,53 @@ def healthgraph_welcome():
             rk_user = healthgraph.User(session=healthgraph.Session(rk_access_token))
         except ValueError:
             db_user = User.query.get(session['user_id'])
-            db_user.healthgraph_api_key = None
+            db_user.healthgraph_api_key = Nonepost
             gamechange.db.session.commit()
             session.pop('rk_access_token')
-            return redirect('/bananas/api/healthgraph/authorize')
+            return wrap_api_call({'error':'HealthGraph not authorized','redirect':'/api/healthgraph/authorize'}), 403
         else:
             # get activity details since the last checked time
             stamp = mktime(db_user.last_checked.timetuple())
             modified_since = format_date_time(stamp)
             rk_act_iter = rk_user.get_fitness_activity_iter(modified_since=modified_since)
             rk_activities = [rk_act_iter.next() for _ in range(rk_act_iter.count())]
-            response = defaultdict(list)
             if rk_activities:
+                json_list = []
                 for i in range(rk_act_iter.count()):
                     if rk_activities[i].get('entry_mode') == "Web":
                         activity_id = str(rk_activities[i].get('uri')[1]).split('/')[2]
                         activity_type = rk_activities[i].get('type')
                         start_time = rk_activities[i].get('start_time')
-                        total_calories = rk_activities[i].get('total_calories')
+                        calories = rk_activities[i].get('total_calories')
+                        bananas_earned = int(round(calories/20))
 
                         # restructure in to dict for JSON response
-                        rk_activity = dict(activity_id = activity_id,
-                            type = activity_type, 
-                            start_time = start_time.isoformat(),
-                            total_calories = total_calories
+                        rk_activity = dict(id = activity_id,
+                            activity_type = activity_type,
+                            calories = calories,
+                            user = session['user_id'],
+                            bananas_earned = bananas_earned
                             )
-                        response["activities"].append(rk_activity)
-
+                        json_list.append(rk_activity)
                         # If the activity is not in the database then add it
                         if HealthgraphActivity.query.filter_by(id=activity_id).first() == None:		
                             activity = HealthgraphActivity(activity_id, 
                                 activity_type,
-                                total_calories,
-                                session['user_id'])
+                                calories,
+                                session['user_id'],
+                                bananas_earned)
                             db_user.last_checked = datetime.now()
                             gamechange.db.session.add(activity)
                             try:
                                 gamechange.db.session.commit()
                             except IntegrityError:
                                 return wrap_api_call({"error" : "activity id not unique"}), 400
-
-            return wrap_api_call(response)
+                return wrap_api_call(json_list)
+            else:
+                json_list = [i.serialize for i in HealthgraphActivity.query.filter_by(user=session['user_id']).all()]
+                return wrap_api_call(json_list)
     else:
-        return redirect('/bananas/api/healthgraph/authorize')
+        return wrap_api_call({'error':'HealthGraph not authorized', 'redirect':'/api/healthgraph/authorize'}), 403
 
 @bananas.route('/api/healthgraph/logout')
 def logout():

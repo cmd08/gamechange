@@ -45,7 +45,6 @@
 
 </head>
 
-{{raw}}
 <body ng-controller="user_ctrl">
 	<div id="land"></div>
 
@@ -70,15 +69,20 @@
 	    		<progress style="margin:5px;" percent="user.health" class="progress-success" animate="false"></progress>
     		</div>
     		<div style="float:right;" class="tri-holder">
-    			<div class="tri-down" ng-click="toggle_user_details()" ng-hide="user_detailed"></div>
-    			<div class="tri-up" ng-click="toggle_user_details()" ng-show="user_detailed"></div>
+    			<div class="tri-down" ng-click="show_user_detailed=true" ng-hide="show_user_detailed"></div>
+    			<div class="tri-up" ng-click="show_user_detailed=false" ng-show="show_user_detailed"></div>
     		</div>
-    		<div ng-show="user_detailed">
+    		<div ng-show="show_user_detailed">
     			<h3>Inventory</h3>
     			<ul class="unstyled">
     				<li ng-repeat="useritem in user.inventory">
-    					<p>{[{useritem.item.name}]}, {[{useritem.item.description}]}</p> 
-    					<!-- Add remove and use button -->
+    					<span ng-hide="useritem.item.type == 'shelter'">
+	    					<h4>{[{useritem.item.name}]}</h4>
+	    					<a href ng-click="use_item(useritem)">Use</a>
+	    					<p>Type: {[{useritem.item.type}]}</p>
+	    					<p>Description: {[{useritem.item.description}]}</p> 
+	    					<!-- Add remove and use button -->
+	    				</span>
     				</li>
     			</ul>
     			<button ng-click="logout()">Logout</button><button back-button>Back</buttom>
