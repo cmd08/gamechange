@@ -193,6 +193,7 @@ def logout():
 def api_index():
     return wrap_api_call()
 
+
 @bananas.route('/api/users', methods = ['GET'])
 def api_users():
     json_list = [i.serialize for i in User.query.all()]
