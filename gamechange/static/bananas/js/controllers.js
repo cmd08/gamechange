@@ -36,19 +36,19 @@ function banana_run_ctrl ($scope, $location, Restangular)
     }
   });
 
-  $scope.bank = function(activity) {
+  $scope.bank = function(activity_id) {
     console.log("BANK!")
-    Restangular.one('healthgraph', activity.id).customPOST('bank').then(function (response){
+    Restangular.one('healthgraph', activity_id).customPOST('bank').then(function (response){
       console.log(response.data);
-      Restangular.one('user').get().then(function(response){
-        $scope.user = response.data;
-        Restangular.all('healthgraph').getList().then(function (results) {
-          $scope.activities = results;
-          console.log($scope.activities);
-        });
-      });
+      for(var i=0;i<$scope.activities.length;i++){
+        if($scope.activities[i].id===response.data.id){
+          $scope.activities[i].banked=response.data.banked;
+          break;
+        }
+      }
     });
-  }; 
+  };
+   
 }
 
 function shop_products_ctrl($scope, Restangular)
