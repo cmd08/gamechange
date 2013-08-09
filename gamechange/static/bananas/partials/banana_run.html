@@ -1,20 +1,22 @@
 <div id="bananarun" class="bamboo-frame">
-	<div class="bamboo-frame-holder" ng-controller="banana_run_ctrl">
+	<div class="bamboo-frame-holder">
+		<div class="bamboo-activity-wrap" ng-controller="banana_run_ctrl">
 
-		<!-- <div>
- 			<h1>You need to authorise with Runkeeper</h1>
-			<a href="#/banana_run_auth">Here</a>
-		</div>  -->
+			<!-- <div>
+	 			<h1>You need to authorise with Runkeeper</h1>
+				<a href="#/banana_run_auth">Here</a>
+			</div>  -->
 
-		<ul>
-			<li ng-repeat="activity in activities">
-				<p>Type: {[{activity.activity_type}]}, Calories: {[{activity.calories}]}, Bananas Earned: {[{activity.bananas_earned}]}, Banked: {[{activity.banked}]}
-				<button ng-click="bank(activity)" ng-disabled="activity.banked">
-					<span ng-hide="activity.banked">Bank</span>
-					<span ng-show="activity.banked">Banked</span>
-				</button>
-				</p>
-			</li>
-		</ul>
+			<ul>
+				<li ng-repeat="activity in activities">
+					<p>Type: {[{activity.activity_type}]}, Calories: {[{activity.calories}]}, Bananas Earned: {[{activity.bananas_earned}]}
+					<button ng-click="bank(activity)" ng-disabled="activity.banked">
+						<span ng-hide="activity.banked">Bank</span>
+						<span ng-show="activity.banked">Banked</span>
+					</button>
+					</p>
+				</li>
+			</ul>
+		</div>
 	</div>
 </div>

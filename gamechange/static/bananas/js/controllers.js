@@ -37,12 +37,17 @@ function banana_run_ctrl ($scope, $location, Restangular)
   });
 
   $scope.bank = function(activity) {
-    console.log(activity)
+    console.log("BANK!")
     Restangular.one('healthgraph', activity.id).customPOST('bank').then(function (response){
-      console.log(response);
+      console.log(response.data);
+      Restangular.one('user').get().then(function(response){
+        $scope.user = response.data;
+        Restangular.all('healthgraph').getList().then(function (results) {
+          $scope.activities = results;
+          console.log($scope.activities);
+        });
+      });
     });
-    // console.log("BANK!");
-    // console.log();
   }; 
 }
 

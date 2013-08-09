@@ -11,7 +11,6 @@ from gamechange.models import User, ShopItem, UserShopItem, Shelter, db, Healthg
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 from wsgiref.handlers import format_date_time
-import pdb
 
 bananas = Blueprint('bananas', __name__, template_folder='templates')
 app = current_app
@@ -47,6 +46,7 @@ def fill():
     Chris = User('Chris', 'Chris', 'Darby', 'chris@gamechange.info')
     Joao = User('Joao', 'Joao', 'Some long name', 'joao@gamechange.info')
     Aksat.set_password('123')
+    Aksat.bananas = 100
     Ashley.set_password('123')
     Chris.set_password('123')
     Joao.set_password('123')
@@ -81,7 +81,6 @@ def healthgraph_authorize():
             # if the user is trying to login with an account which is authorized for another user
             session.pop('rk_access_token')
             return "Oh we cant store that in the database - the access token is not unique"
-        pdb.set_trace()
         session.pop('rk_access_token', None)
         return redirect('bananas/#/banana_run')
     
@@ -141,7 +140,6 @@ def healthgraph_get():
                         activity_type = rk_activities[i].get('type')
                         start_time = rk_activities[i].get('start_time')
                         calories = rk_activities[i].get('total_calories')
-                        # pdb.set_trace()
                         bananas_earned = int(round(calories/20))
 
                         # restructure in to dict for JSON response
@@ -164,29 +162,25 @@ def healthgraph_get():
                             gamechange.db.session.add(activity)
                             try:
                                 gamechange.db.session.commit()
-                                pdb.set_trace()
                             except IntegrityError:
                                 return wrap_api_call({"error" : "activity id not unique"}), 400
-                pdb.set_trace()
                 return wrap_api_call(json_list)
             else:
-                pdb.set_trace()
                 json_list = [i.serialize for i in HealthgraphActivity.query.filter_by(user=session['user_id']).all()]
                 return wrap_api_call(json_list)
     else:
         return wrap_api_call({'error':'HealthGraph not authorized', 'redirect':'/api/healthgraph/authorize'}), 403
+
 
 @bananas.route('/api/healthgraph/<activity_id>/bank', methods=['POST'])
 def healthgraph_post(activity_id):
     db_user = User.query.get(session['user_id'])
     activity = HealthgraphActivity.query.get(activity_id)
     db_user.bananas = db_user.bananas + activity.bananas_earned
-
-    # gamechange.db.session.add(db_user)
+    activity.banked = True
     gamechange.db.session.commit()
-    return wrap_api_call(db_user.bananas)
-    # return wrap_api_call({'error':'corrrrrrrrect'})
 
+    return wrap_api_call(activity.serialize)
 
 
 @bananas.route('/api/healthgraph/logout')
