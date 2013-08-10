@@ -19,6 +19,10 @@ controller('MyCtrl1', [function() {
 
 }]);
 
+function userinfo_ctrl ($scope, Restangular){
+  // $scope.user.bananas = response.data.user.bananas
+}
+
 function banana_run_ctrl ($scope, $location, Restangular)
 {
   Restangular.all('healthgraph').getList().then(function (results) {
@@ -34,7 +38,26 @@ function banana_run_ctrl ($scope, $location, Restangular)
       console.log("Need to redirect to authorise page");
       $location.path('/banana_run_auth');
     }
-  }); 
+  });
+  // $scope.$apply(function (){
+  $scope.bank = function(activity_id) {
+    console.log("BANK!")
+    Restangular.one('healthgraph', activity_id).customPOST('bank').then(function (response){
+      console.log(response.data);
+      for(var i=0;i<$scope.activities.length;i++){
+        if($scope.activities[i].id===response.data.id){
+          $scope.activities[i].banked=response.data.banked;
+          break;
+        }
+      }
+    });
+    Restangular.one('user').get().then(function(response){
+      console.log(response.data);
+      $scope.user.bananas = response.data.bananas;
+    });
+  };
+  // });
+   
 }
 
 function shop_products_ctrl($scope, Restangular)
@@ -49,7 +72,8 @@ function shop_products_ctrl($scope, Restangular)
     Restangular.one('shop', product.id).customPOST('buy').then(function(){
       Restangular.one('user').get().then(function(response){
         console.log(response.data);
-        $scope.user = response.data;  
+        $scope.user.bananas = response.data.bananas;
+        $scope.user.inventory = response.data.inventory;
       });
     });
 
