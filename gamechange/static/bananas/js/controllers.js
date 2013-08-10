@@ -53,7 +53,7 @@ function banana_run_ctrl ($scope, $location, Restangular)
     });
     Restangular.one('user').get().then(function(response){
       console.log(response.data);
-      $scope.$parent.$parent.user.bananas = response.data.bananas;  
+      $scope.user.bananas = response.data.bananas;
     });
   };
   // });
@@ -72,7 +72,8 @@ function shop_products_ctrl($scope, Restangular)
     Restangular.one('shop', product.id).customPOST('buy').then(function(){
       Restangular.one('user').get().then(function(response){
         console.log(response.data);
-        $scope.$parent.$parent.user.bananas = response.data.bananas;  
+        $scope.user.bananas = response.data.bananas;
+        $scope.user.inventory = response.data.inventory;
       });
     });
 
