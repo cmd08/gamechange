@@ -78,17 +78,17 @@ Welcome to the Gamechange developers repository - to get yourself setup simply f
 
 If Chris has given you access to the dev server, this is how you go about restarting the client.
 
-	a) ssh in to the server
-	
-	b) Stop the running server. Type ```pgrep gunicorn``` in to the shell - this will give you a pair of PIDs for each running server. The first pair will be the LIVE site. If there is more than one other pair, check with Chris before killing them! If there is 1 other pair, and dev.gamechange.info is live, those are the dev site. If this is the case, the 3rd PID in the list is the one you need to kill.
+a) ssh in to the server
 
-	c) ```kill the-third-PID-from-above``` i.e. ```kill 12345```
+b) Stop the running server. Type ```pgrep gunicorn``` in to the shell - this will give you a pair of PIDs for each running server. The first pair will be the LIVE site. If there is more than one other pair, check with Chris before killing them! If there is 1 other pair, and dev.gamechange.info is live, those are the dev site. If this is the case, the 3rd PID in the list is the one you need to kill.
 
-	d) ```cd ~/sites/gamechange-dev/gamechange```
+c) ```kill the-third-PID-from-above``` i.e. ```kill 12345```
 
-	e) ```git pull origin development```
+d) ```cd ~/sites/gamechange-dev/gamechange```
 
-	f) ```gunicorn -b 127.0.0.1:8000 gamechange:app -D```
+e) ```git pull origin development```
 
-	g) It might be nice to now do ```pgrep gunicorn``` to see what the new PIDs are, and possibly note them down somewhere!
+f) ```gunicorn -b 127.0.0.1:8000 gamechange:app -D```
+
+g) It might be nice to now do ```pgrep gunicorn``` to see what the new PIDs are, and possibly note them down somewhere!
 
