@@ -14,24 +14,67 @@ controller('MyCtrl1', [function() {
 }])
 .controller('MyCtrl4', [function() {
 
+}])
+.controller('MyCtrl5', [function() {
+
 }]);
+
+function userinfo_ctrl ($scope, Restangular){
+  // $scope.user.bananas = response.data.user.bananas
+}
+
+function banana_run_ctrl ($scope, $location, Restangular)
+{
+  Restangular.all('healthgraph').getList().then(function (results) {
+    $scope.activities = results;
+    console.log($scope.activities );
+  },
+  function(results) {
+    console.log('Healthgraph error');
+    // console.log(results);
+    // console.log(results.data.data);
+    if (results.data.data.redirect == "/api/healthgraph/authorize")
+    {
+      console.log("Need to redirect to authorise page");
+      $location.path('/banana_run_auth');
+    }
+  });
+  // $scope.$apply(function (){
+  $scope.bank = function(activity_id) {
+    console.log("BANK!")
+    Restangular.one('healthgraph', activity_id).customPOST('bank').then(function (response){
+      console.log(response.data);
+      for(var i=0;i<$scope.activities.length;i++){
+        if($scope.activities[i].id===response.data.id){
+          $scope.activities[i].banked=response.data.banked;
+          break;
+        }
+      }
+    });
+    Restangular.one('user').get().then(function(response){
+      console.log(response.data);
+      $scope.user.bananas = response.data.bananas;
+    });
+  };
+  // });
+   
+}
 
 function shop_products_ctrl($scope, Restangular)
 {
-
   Restangular.all('shop').getList().then(function (results) {
     $scope.shop = results.items;
     //console.log($scope.shop );
   });
 
   $scope.buy = function(product) {
-    console.log("BUY!")
+    console.log("BUY!");
     Restangular.one('shop', product.id).customPOST('buy').then(function(){
       Restangular.one('user').get().then(function(response){
-      console.log(response.data);
-
-      $scope.user.bananas = response.data.bananas;
-    });
+        console.log(response.data);
+        $scope.user.bananas = response.data.bananas;
+        $scope.user.inventory = response.data.inventory;
+      });
     });
 
 
@@ -113,21 +156,19 @@ function user_ctrl($scope, Restangular)
     })
   }
 
-  $scope.toggle_user_details = function () {
-    if ( ! $scope.user_detailed )
-    {
-      console.log("Showing Detailed User Data");
-      $scope.user_detailed = true;
-    }
-    else
-    {
-      console.log("Hiding Detailed User Data");
-      $scope.user_detailed = false;
-    }
+  $scope.use_item = function(item) {
+    console.log("Use item:");
+    console.log(item);
+
+    Restangular.one('user/inventory', item.inventory_id).customPOST('use').then(function(){
+      Restangular.one('user').get().then(function(response){
+        console.log(response.data);
+        $scope.user = response.data;  
+        $scope.user.health = Math.random() * 100;
+      });
+    });
   }
 
-
-  
 
   // $scope.spend_bananas = function( cost ) {
   //   if $scope.user.bananas > cost :
