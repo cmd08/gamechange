@@ -268,7 +268,7 @@ def api_user_login_post():
 @bananas.route('/api/user/logout', methods = ['POST'])
 def api_user_logout_post():
     if "user_id" in session:
-        session.pop("user_id")
+        session.clear()
         return wrap_api_call()
     else:
         abort(500)
