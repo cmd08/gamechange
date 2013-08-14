@@ -136,7 +136,7 @@ def healthgraph_get():
                 json_list = []
                 for i in range(rk_act_iter.count()):
                     if rk_activities[i].get('entry_mode') == "Web":
-                        activity_id = str(rk_activities[i].get('uri')[1]).split('/')[2]
+                        activity_id = int(str(rk_activities[i].get('uri')[1]).split('/')[2])
                         activity_type = rk_activities[i].get('type')
                         start_time = rk_activities[i].get('start_time')
                         calories = rk_activities[i].get('total_calories')
