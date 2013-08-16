@@ -121,6 +121,9 @@ class User(db.Model):
         self.bananas = self.bananas - item.cost
         self.inventory_items.append(UserShopItem(item))
 
+    def return_item_count(self,item):
+         return self.query.join(User.inventory_items).filter(User.id==self.id,UserShopItem.shop_item_id==item.id).count()
+
 
 class HealthgraphActivity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
