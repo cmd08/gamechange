@@ -209,7 +209,6 @@ def api_users():
 @bananas.route('/api/shop', methods = ['GET'])
 def api_shop_get():
     response = {'items' : [i.serialize for i in ShopItem.query.all()]}
-    pdb.set_trace()
     # {'name':'Coconut', 'cost':1, 'description': 'A coconut'},
     # {'name':'Shack', 'cost': 100, 'description': 'A slightly better house'}
     # ]}
