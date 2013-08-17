@@ -3,6 +3,8 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm.collections import attribute_mapped_collection
 from flask import jsonify
 from datetime import datetime
+from sqlalchemy import func
+import pdb
 
 db = SQLAlchemy()
 
@@ -121,8 +123,10 @@ class User(db.Model):
         self.bananas = self.bananas - item.cost
         self.inventory_items.append(UserShopItem(item))
 
-    def return_item_count(self,item):
-         return self.query.join(User.inventory_items).filter(User.id==self.id,UserShopItem.shop_item_id==item.id).count()
+    def return_item_count(self):
+        # pdb.set_trace()
+        return db.session.query(ShopItem.id,ShopItem.name,func.count(UserShopItem.shop_item_id)).join(UserShopItem.shop_item).group_by(ShopItem.id).all()
+        # return self.query.join(User.inventory_items).filter(User.id==self.id,UserShopItem.shop_item_id==item.id).count()
 
 
 class HealthgraphActivity(db.Model):

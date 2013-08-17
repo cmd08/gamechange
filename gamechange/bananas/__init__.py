@@ -11,6 +11,7 @@ from gamechange.models import User, ShopItem, UserShopItem, Shelter, db, Healthg
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 from wsgiref.handlers import format_date_time
+from sqlalchemy import func
 import pdb
 
 bananas = Blueprint('bananas', __name__, template_folder='templates')
@@ -186,7 +187,8 @@ def healthgraph_post(activity_id):
 
 @bananas.route('/api/itemcount')
 def itemcount():
-    response = [User.query.get(session['user_id']).return_item_count(i) for i in ShopItem.query.all()]
+    pdb.set_trace()
+    response = User.query.get(session['user_id']).return_item_count()
     return wrap_api_call(response)
 
 
