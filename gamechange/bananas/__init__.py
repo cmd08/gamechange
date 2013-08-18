@@ -188,7 +188,9 @@ def healthgraph_post(activity_id):
 @bananas.route('/api/itemcount')
 def itemcount():
     pdb.set_trace()
-    response = User.query.get(session['user_id']).return_item_count()
+    # response = User.query.get(session['user_id']).return_item_count(ShopItem.query[1])
+    # response = User.query.get(session['user_id']).return_item_count()
+    response = [User.query.get(session['user_id']).return_item_count(i) for i in ShopItem.query.all()]
     return wrap_api_call(response)
 
 
@@ -316,7 +318,8 @@ def api_user_inventory_use(item_id):
     if 'user_id' not in session:
         return wrap_api_call({'error': 'not logged in'}), 403
 
-    item = UserShopItem.query.get(item_id)
+    pdb.set_trace()
+    item = ShopItem.query(item_id=item_id).first()
 
     if item is None:
         return wrap_api_call({'error': 'this item does not exist anymore!'}), 403

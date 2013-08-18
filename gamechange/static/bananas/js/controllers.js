@@ -160,7 +160,7 @@ function user_ctrl($scope, Restangular)
     console.log("Use item:");
     console.log(item);
 
-    Restangular.one('user/inventory', item.inventory_id).customPOST('use').then(function(){
+    Restangular.one('user/inventory', item.item.id).customPOST('use').then(function(){
       Restangular.one('user').get().then(function(response){
         console.log(response.data);
         $scope.user = response.data;  

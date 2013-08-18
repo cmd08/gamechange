@@ -92,6 +92,7 @@ class User(db.Model):
         'last_checked'          : self.last_checked.isoformat(),
         #'health'        : self.health,
         'inventory'             : [i.serialize for i in self.inventory_items],
+        'item_count'            : [self.return_item_count(j) for j in ShopItem.query.all()]
       }
       if (self.healthgraph_api_key is not None):
             resp['healthgraph_api_key'] = self.healthgraph_api_key
@@ -123,10 +124,14 @@ class User(db.Model):
         self.bananas = self.bananas - item.cost
         self.inventory_items.append(UserShopItem(item))
 
-    def return_item_count(self):
+    def return_item_count(self,item):
         # pdb.set_trace()
-        return db.session.query(ShopItem.id,ShopItem.name,func.count(UserShopItem.shop_item_id)).join(UserShopItem.shop_item).group_by(ShopItem.id).all()
-        # return self.query.join(User.inventory_items).filter(User.id==self.id,UserShopItem.shop_item_id==item.id).count()
+        resp = {
+            'item'  : item.serialize,
+        }
+        resp['item']['count'] = self.query.join(User.inventory_items).filter(User.id==self.id,UserShopItem.shop_item_id==item.id).count()
+        # return db.session.query(ShopItem.id,ShopItem.name,func.count(UserShopItem.shop_item_id)).join(UserShopItem.shop_item).group_by(ShopItem.id).all()
+        return resp
 
 
 class HealthgraphActivity(db.Model):
