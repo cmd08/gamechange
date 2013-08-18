@@ -319,7 +319,7 @@ def api_user_inventory_use(item_id):
         return wrap_api_call({'error': 'not logged in'}), 403
 
     pdb.set_trace()
-    item = ShopItem.query(item_id=item_id).first()
+    item = ShopItem.query.filter(ShopItem.id=item_id).first()
 
     if item is None:
         return wrap_api_call({'error': 'this item does not exist anymore!'}), 403
