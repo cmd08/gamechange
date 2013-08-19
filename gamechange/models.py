@@ -4,7 +4,6 @@ from sqlalchemy.orm.collections import attribute_mapped_collection
 from flask import jsonify
 from datetime import datetime
 from sqlalchemy import func
-import pdb
 
 db = SQLAlchemy()
 
@@ -125,12 +124,10 @@ class User(db.Model):
         self.inventory_items.append(UserShopItem(item))
 
     def return_item_count(self,item):
-        # pdb.set_trace()
         resp = {
             'item'  : item.serialize,
         }
         resp['item']['count'] = self.query.join(User.inventory_items).filter(User.id==self.id,UserShopItem.shop_item_id==item.id).count()
-        # return db.session.query(ShopItem.id,ShopItem.name,func.count(UserShopItem.shop_item_id)).join(UserShopItem.shop_item).group_by(ShopItem.id).all()
         return resp
 
 

@@ -12,7 +12,6 @@ from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 from wsgiref.handlers import format_date_time
 from sqlalchemy import func
-import pdb
 
 bananas = Blueprint('bananas', __name__, template_folder='templates')
 app = current_app
@@ -185,15 +184,6 @@ def healthgraph_post(activity_id):
     return wrap_api_call(activity.serialize)
 
 
-@bananas.route('/api/itemcount')
-def itemcount():
-    pdb.set_trace()
-    # response = User.query.get(session['user_id']).return_item_count(ShopItem.query[1])
-    # response = User.query.get(session['user_id']).return_item_count()
-    response = [User.query.get(session['user_id']).return_item_count(i) for i in ShopItem.query.all()]
-    return wrap_api_call(response)
-
-
 @bananas.route('/api/healthgraph/logout')
 def logout():
     session.pop('rk_access_token', None)
@@ -318,8 +308,7 @@ def api_user_inventory_use(item_id):
     if 'user_id' not in session:
         return wrap_api_call({'error': 'not logged in'}), 403
 
-    pdb.set_trace()
-    item = ShopItem.query.filter(ShopItem.id=item_id).first()
+    item = UserShopItem.query.filter(UserShopItem.shop_item_id==item_id, UserShopItem.user_id==session['user_id']).first()
 
     if item is None:
         return wrap_api_call({'error': 'this item does not exist anymore!'}), 403

@@ -74,6 +74,7 @@ function shop_products_ctrl($scope, Restangular)
         console.log(response.data);
         $scope.user.bananas = response.data.bananas;
         $scope.user.inventory = response.data.inventory;
+        $scope.user.item_count = response.data.item_count;
       });
     });
 
@@ -165,6 +166,8 @@ function user_ctrl($scope, Restangular)
         console.log(response.data);
         $scope.user = response.data;  
         $scope.user.health = Math.random() * 100;
+        $scope.user.inventory = response.data.inventory;
+        $scope.user.item_count = response.data.item_count;
       });
     });
   }
