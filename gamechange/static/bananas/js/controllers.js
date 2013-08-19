@@ -110,6 +110,7 @@ function user_ctrl($scope, Restangular)
     console.log("User logged in");
     $scope.user = results;
     $scope.user.health = Math.random() * 100;
+    $scope.user.item_count = results.data.item_count;
   },
   function() {
     console.log("User Not Logged in, showing login page");
@@ -135,6 +136,7 @@ function user_ctrl($scope, Restangular)
         console.log("user logged in");
         $scope.user = results.data;
         $scope.user.health = Math.random() * 100;
+        $scope.user.item_count = results.data.item_count;
         //Need to pull health from API
 
         $scope.display_login = false;

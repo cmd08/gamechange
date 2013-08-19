@@ -292,7 +292,7 @@ def api_user_login_post():
         #Should check the user isn't banned here!
         session['user_id'] = user.id
     
-    response = {'username': user.username, 'bananas': user.bananas}
+    response = user.serialize
     return wrap_api_call(response)
 
 @bananas.route('/api/user/logout', methods = ['POST'])
