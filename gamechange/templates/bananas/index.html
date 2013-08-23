@@ -73,6 +73,10 @@
     			<div class="tri-up" ng-click="show_user_detailed=false" ng-show="show_user_detailed"></div>
     		</div>
     		<div ng-show="show_user_detailed">
+    			<div class="alert" ng-show="max_health">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					You already have full health.
+				</div>
     			<h3>Inventory</h3>
     			<ul class="unstyled">
     				<li ng-repeat="useritem in user.item_count" ng-hide="useritem.item.count <= 0">

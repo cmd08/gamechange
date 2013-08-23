@@ -55,6 +55,7 @@ class User(db.Model):
     healthgraph_activities = db.relationship('HealthgraphActivity', backref='User', lazy='dynamic')
     bananas = db.Column(db.Integer, default=0)
     inventory_items = db.relationship("UserShopItem")
+    health = db.Column(db.Integer, default = 100)
 
 
     def isValid(self):
@@ -89,7 +90,7 @@ class User(db.Model):
         'bananas'               : self.bananas,
         'username'              : self.username,
         'last_checked'          : self.last_checked.isoformat(),
-        #'health'        : self.health,
+        'health'                : self.health,
         'inventory'             : [i.serialize for i in self.inventory_items],
         'item_count'            : [self.return_item_count(j) for j in ShopItem.query.all()]
       }

@@ -316,6 +316,12 @@ def api_user_inventory_use(item_id):
     if item.user_id != session['user_id']:
         return wrap_api_call({'error': 'this item does not belong to the currently logged in user!'}), 403
 
+    db_user = User.query.get(session['user_id'])
+
+    if db_user.health >= 100:
+        return wrap_api_call({'error':'Your health is already at maximum'}), 403
+    
+    db_user.health = db_user.health + item.shop_item.health_points
     db.session.delete(item)
     db.session.commit()
 
