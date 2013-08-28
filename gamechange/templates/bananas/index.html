@@ -6,7 +6,7 @@
 
 	<script src="{{config['STATIC_ROOT_URL']}}js/jquery.js" type="text/javascript"></script>
 	<link rel="stylesheet" type="text/css" href="{{config['STATIC_ROOT_URL']}}css/bootstrap.css">
-	    
+	<script src="{{config['STATIC_ROOT_URL']}}js/bootstrap.js" type="text/javascript"></script>
 	{% if config['DEBUG'] %}
 	<link rel="stylesheet/less" type="text/css" href="{{config['STATIC_ROOT_URL']}}bananas/less/base.less" />
 	<script type="text/javascript">
@@ -73,9 +73,9 @@
     			<div class="tri-up" ng-click="show_user_detailed=false" ng-show="show_user_detailed"></div>
     		</div>
     		<div ng-show="show_user_detailed">
-    			<div class="alert" ng-show="max_health">
-					<button type="button" class="close" data-dismiss="alert">&times;</button>
-					You already have full health.
+				<div class="alert" ng-show="max_health">
+				 	<button type="button" class="close" data-dismiss="alert">&times;</button>
+					<strong>Warning!</strong> You already have full health!
 				</div>
     			<h3>Inventory</h3>
     			<ul class="unstyled">
