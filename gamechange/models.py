@@ -131,6 +131,14 @@ class User(db.Model):
         resp['item']['count'] = self.query.join(User.inventory_items).filter(User.id==self.id,UserShopItem.shop_item_id==item.id).count()
         return resp
 
+    def reduce_health(self,amount):
+        if ((self.health - amount) <= 0):
+            self.health = 0
+            db.session.commit()
+            raise ValueError('You are now dead!')
+
+        self.health = self.health - amount
+        db.session.commit()
 
 class HealthgraphActivity(db.Model):
     id = db.Column(db.Integer, primary_key=True)

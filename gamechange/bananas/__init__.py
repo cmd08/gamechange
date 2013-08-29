@@ -194,6 +194,16 @@ def logout():
 def api_index():
     return wrap_api_call()
 
+@bananas.route('/api/reduce_health')
+def api_reduce_health():
+    db_user = User.query.get(session["user_id"])
+    try:
+        db_user.reduce_health(1)
+    except ValueError:
+        return wrap_api_call({'error':'You are now dead!'}), 400
+
+    return wrap_api_call(db_user.serialize)
+
 
 @bananas.route('/api/users', methods = ['GET'])
 def api_users():
