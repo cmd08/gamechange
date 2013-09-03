@@ -134,10 +134,9 @@ class User(db.Model):
     def reduce_health(self,amount):
         if ((self.health - amount) <= 0):
             self.health = 0
-            db.session.commit()
-            raise ValueError('You are now dead!')
+        else:
+            self.health = self.health - amount
 
-        self.health = self.health - amount
         db.session.commit()
 
 class HealthgraphActivity(db.Model):
