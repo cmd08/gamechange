@@ -198,13 +198,13 @@ function popup_ctrl($scope)
   
 }
 
-// function AlertCtrl($scope){
-//   $scope.showAlert = true;
+function AlertCtrl($scope){
+  $scope.showAlert = true;
     
-//   $scope.close = function() {
-//     $scope.showAlert = false;
-//   }
-// }
+  $scope.close = function() {
+    $scope.showAlert = false;
+  }
+}
 
 $(function(){
     $("[data-hide]").on("click", function(){
