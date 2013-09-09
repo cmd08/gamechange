@@ -177,6 +177,7 @@ function user_ctrl($scope, Restangular)
         if (results.data.data.error == "Your health is already at maximum")
         {
           $scope.max_health = true;
+          $scope.show_alert = true;
         }
     });
   }
@@ -196,6 +197,14 @@ function popup_ctrl($scope)
 {
   
 }
+
+// function AlertCtrl($scope){
+//   $scope.showAlert = true;
+    
+//   $scope.close = function() {
+//     $scope.showAlert = false;
+//   }
+// }
 
 $(function(){
     $("[data-hide]").on("click", function(){
