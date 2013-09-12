@@ -1,0 +1,10 @@
+<div class="modal-header">
+    <h3>{{dialogOpts.header}}</h3>
+</div>
+<div class="modal-body">
+    <p>{{dialogOpts.body}}</p>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn" data-ng-click="dialogOpts.close()">{{dialogOpts.closeText}}</button>
+    <button class="btn btn-primary" data-ng-click="dialogOpts.callback();">{{dialogOpts.actionText}}</button>
+</div>

@@ -96,7 +96,7 @@ function shop_products_ctrl($scope, Restangular)
 
 }
 
-function user_ctrl($scope, Restangular)
+function user_ctrl($scope, Restangular, dialogService)
 {
   $scope.display_login = false; 
   //CODE OUTLINE
@@ -176,8 +176,33 @@ function user_ctrl($scope, Restangular)
         console.log(results.data.data.error);
         if (results.data.data.error == "Your health is already at maximum")
         {
+          // dialogService.showDialog();
+          // dialogService.showMessage('Record not Found!', 'The record you were looking for cannot be found.');
           $scope.max_health = true;
           $scope.show_alert = true;
+    //       var dialogOptions = {
+    //     closeText: 'Cancel',
+    //     actionText: 'Delete Timesheet',
+    //     header: 'Delete Timesheet?',
+    //     body: 'Are you sure you want to delete this timesheet?',
+    //     callback: function () {
+    //         recordsService.delete($scope.record.id)
+    //             .success(function (opStatus) {
+    //                 if (opStatus.status) {
+    //                     $location.path('/records');
+    //                 }
+    //                 else {
+    //                     errorService.createErrorAlert($scope, 
+    //                      'There was a problem deleting the timesheet: ' + error.message);
+    //                 }
+    //             })
+    //             .error(function (error) {
+    //                 errorService.createErrorAlert($scope, 'Error deleting record: ' + error.message);
+    //             });
+    //     }
+    // };
+
+        dialogService.showDialog({}, {});
         }
     });
   }
@@ -198,19 +223,95 @@ function popup_ctrl($scope)
   
 }
 
-function AlertCtrl($scope){
-  $scope.showAlert = true;
-    
-  $scope.close = function() {
-    $scope.showAlert = false;
-  }
+function DialogDemoCtrl($scope, $dialog) {
+
+    // Inlined template for demo
+    var t = '<div class="modal-header">' +
+            '<h3>Maximum Health Reached</h3>' +
+            '</div>' +
+            '<div class="modal-body">' +
+            '<p>You have already reached the maximum health</p>' +
+            '</div>' +
+            '<div class="modal-footer">' +
+            '<button ng-click="close()" class="btn btn-primary" >Close</button>' +
+            '</div>';
+
+    $scope.opts = {
+        backdrop: true,
+        keyboard: true,
+        backdropClick: true,
+        template: t, // OR: templateUrl: 'path/to/view.html',
+        controller: 'TestDialogController'
+    };
+
+    var d = $dialog.dialog($scope.opts);
+        d.open().then(function () {
+        });
+    // function () {
+    //     var d = $dialog.dialog($scope.opts);
+    //     d.open().then(function () {
+    //     });
+    // };
 }
+
+function TestDialogController($scope, dialog) {
+    $scope.close = function () {
+        dialog.close();
+    };
+}
+
+// function alert_modal_ctrl($scope, $dialog, $log) {
+
+
+//   $scope.open = function () {
+
+//     var msg = 'Hello World!';
+//     var t = '<div class="modal-header">' +
+//             '<h3>This is the title</h3>' +
+//             '</div>' +
+//             '<div class="modal-body">' +
+//             '<p>Enter a value to pass to <code>close</code> as the result: <input ng-model="result" /></p>' +
+//             '</div>' +
+//             '<div class="modal-footer">' +
+//             '<button ng-click="close(result)" class="btn btn-primary" >Close</button>' +
+//             '</div>';
+//     var options = {
+//       resolve: {
+//         msg: function () { return msg; },
+//         template: t
+//       }
+//     };
+
+//     var dialog = $dialog.dialog(options);
+    
+//     dialog.open('dialog.html', 'DialogCtrl');
+//     $log.info('Modal dismissed at: ' + new Date());
+//   }
+//   // console.log("open...")
+
+//     // modalInstance.result.then(function () {
+//     // }, function () {
+      
+//     // });
+// };
+
+// var DialogCtrl = function ($scope, $dialog, msg) {
+//   $scope.msg = msg;
+// };
 
 $(function(){
     $("[data-hide]").on("click", function(){
        // $("." + $(this).attr("data-hide")).hide();
         // -or-, see below
        $(this).closest("." + $(this).attr("data-hide")).hide();
+    });
+});
+
+$(function(){
+    $("[data-show]").on("load", function(){
+       $("." + $(this).attr("data-show")).show();
+        // -or-, see below
+       // $(this).closest("." + $(this).attr("data-show")).show();
     });
 });
  
