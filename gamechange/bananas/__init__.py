@@ -123,7 +123,7 @@ def healthgraph_get():
             rk_user = healthgraph.User(session=healthgraph.Session(rk_access_token))
         except ValueError:
             db_user = User.query.get(session['user_id'])
-            db_user.healthgraph_api_key = Nonepost
+            db_user.healthgraph_api_key = None
             gamechange.db.session.commit()
             session.pop('rk_access_token')
             return wrap_api_call({'error':'HealthGraph not authorized','redirect':'/api/healthgraph/authorize'}), 403
