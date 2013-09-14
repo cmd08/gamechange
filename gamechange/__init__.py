@@ -48,6 +48,11 @@ def init_db():
 
     db.session.add(me)
 
+    Aksat = User('Aksat','Aksat', 'Shah', 'gamechangedev@gmail.com')
+    Aksat.set_password('123')
+    Aksat.bananas = 100
+    db.session.add(Aksat)
+
     water = Supplies("Water", 1, '', '', 1, 0, 1)
     coconut = Supplies(name="Coconut", cost=2, description="Delicious, nutricious, and easy to keep", 
         image_url='', health_points=3, shelf_life=10, size=1)
@@ -56,7 +61,7 @@ def init_db():
     db.session.add(water)
     db.session.add(coconut)
     db.session.add(shelter)
-
+    
     db.session.commit()
     return "This is naughty and MUST not be in production! This also clears the session!"
 
