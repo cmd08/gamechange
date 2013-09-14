@@ -69,8 +69,11 @@ angular.module('myApp.services', [])
 		this.showMessage = function (title, message, buttons) {
 		    var defaultButtons = [{result:'ok', label: 'OK', cssClass: 'btn-primary'}];
 		    var msgBox = new $dialog.dialog({
-		        dialogFade: true,
-		        templateUrl: 'template/dialog/message.html',
+		    	backdropClick: false,
+		    	backdrop: true,
+		    	keyboard: true,
+		    	dialogFade: true,
+		        templateUrl: '/static/bananas/partials/msgbox.html',
 		        controller: 'MessageBoxController',
 		        resolve: {
                     model: function () {

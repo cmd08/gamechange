@@ -48,7 +48,7 @@
 <body ng-controller="user_ctrl">
 	<div id="land"></div>
 
-	<!-- <div class="cloud">	<span class="cloud-round"> </span> 	</div> -->
+	<div class="cloud">	<span class="cloud-round"> </span> 	</div>
 	
 	<div id="frame">	
 
@@ -73,40 +73,6 @@
     			<div class="tri-up" ng-click="show_user_detailed=false" ng-show="show_user_detailed"></div>
     		</div>
     		<div ng-show="show_user_detailed">
-<!--     			<div ng-controller="ModalDemoCtrl">
-				    <script type="text/ng-template" id="myModalContent.html">
-				        <div class="modal-header">
-				            <h3>Im a modal!</h3>
-				        </div>
-				        <div class="modal-body">
-				            <ul>
-				                <li ng-repeat="item in items">
-				                    <a ng-click="selected.item = item">{{ item }}</a>
-				                </li>
-				            </ul>
-
-				        </div>
-				        <div class="modal-footer">
-				            <button class="btn btn-primary" ng-click="ok()">OK</button>
-				            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-				        </div>
-				    </script>
-
-				    <button class="btn" ng-click="open()">Open me!</button>
-				    <div ng-show="selected">Selection from a modal: {{ selected }}</div>
-				</div> -->
- 		  		<!-- <div ng-show="max_health"> -->
- 		  			<!-- <div ng-controller="DialogDemoCtrl"> -->
- 		  			<!-- </div>			   -->
-			  	    <!-- <button class="btn" ng-click="openDialog()">Open me!</button> -->
-		  		<!-- </div> -->
-    			<!-- <alert ng-show="$parent.max_health">You already have full health!</alert> -->
-<!-- 				<div class="alert" ng-show="max_health">
-					<div ng-controller="AlertCtrl" ng-show="$parent.max_health" ng-hide="showAlert">
-					 	<button class="close" data-hide="alert">X</button>
-						<strong>Warning!</strong> You already have full health!
-					</div>
-				</div> -->
     			<h3>Inventory</h3>
     			<ul class="unstyled">
     				<li ng-repeat="useritem in user.item_count" ng-hide="useritem.item.count <= 0">
