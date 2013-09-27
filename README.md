@@ -41,9 +41,9 @@ Welcome to the Gamechange developers repository - to get yourself setup simply f
 
 	f) git clone git://github.com/kennethreitz/autoenv.git ~/.autoenv
 
-	g) echo 'source ~/.autoenv/activate.sh' >> ~/.bashrc
+	g) echo 'source ~/.autoenv/activate.sh' >> ~/.bashrc (or .zshrc if you use zsh)
 
-	h) Now make a file called gamechange.env in the ~/python/gamechange directory and add the following to the file:
+	h) Now make a file called .env in the ~/python/gamechange directory and add the following to the file:
 
 		source /home/YOURUSERNAMEHERE/python/gamechange/bin/activate
 		export FLASK_CONFIG=/home/YOURUSERNAMEHERE/python/gamechange/conf
