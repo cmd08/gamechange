@@ -11,6 +11,7 @@ from gamechange.models import User, ShopItem, UserShopItem, Shelter, db, Healthg
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 from wsgiref.handlers import format_date_time
+from sqlalchemy import func
 
 bananas = Blueprint('bananas', __name__, template_folder='templates')
 app = current_app
@@ -193,6 +194,16 @@ def logout():
 def api_index():
     return wrap_api_call()
 
+@bananas.route('/api/reduce_health')
+def api_reduce_health():
+    db_user = User.query.get(session["user_id"])
+    try:
+        db_user.reduce_health(1)
+    except ValueError:
+        return wrap_api_call({'error':'You are now dead!'}), 400
+
+    return wrap_api_call(db_user.serialize)
+
 
 @bananas.route('/api/users', methods = ['GET'])
 def api_users():
@@ -291,7 +302,7 @@ def api_user_login_post():
         #Should check the user isn't banned here!
         session['user_id'] = user.id
     
-    response = {'username': user.username, 'bananas': user.bananas}
+    response = user.serialize
     return wrap_api_call(response)
 
 @bananas.route('/api/user/logout', methods = ['POST'])
@@ -307,7 +318,7 @@ def api_user_inventory_use(item_id):
     if 'user_id' not in session:
         return wrap_api_call({'error': 'not logged in'}), 403
 
-    item = UserShopItem.query.get(item_id)
+    item = UserShopItem.query.filter(UserShopItem.shop_item_id==item_id, UserShopItem.user_id==session['user_id']).first()
 
     if item is None:
         return wrap_api_call({'error': 'this item does not exist anymore!'}), 403
@@ -315,6 +326,12 @@ def api_user_inventory_use(item_id):
     if item.user_id != session['user_id']:
         return wrap_api_call({'error': 'this item does not belong to the currently logged in user!'}), 403
 
+    db_user = User.query.get(session['user_id'])
+
+    if db_user.health >= 100:
+        return wrap_api_call({'error':'Your health is already at maximum'}), 403
+    
+    db_user.health = db_user.health + item.shop_item.health_points
     db.session.delete(item)
     db.session.commit()
 
