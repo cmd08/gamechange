@@ -74,6 +74,7 @@ function shop_products_ctrl($scope, Restangular)
         console.log(response.data);
         $scope.user.bananas = response.data.bananas;
         $scope.user.inventory = response.data.inventory;
+        $scope.user.item_count = response.data.item_count;
       });
     });
 
@@ -108,7 +109,8 @@ function user_ctrl($scope, Restangular)
   Restangular.all('user').getList().then(function (results) {
     console.log("User logged in");
     $scope.user = results;
-    $scope.user.health = Math.random() * 100;
+    $scope.user.health = results.data.health;
+    $scope.user.item_count = results.item_count;
   },
   function() {
     console.log("User Not Logged in, showing login page");
@@ -133,7 +135,8 @@ function user_ctrl($scope, Restangular)
       Restangular.all('user').customPOST('login', {}, {}, {username: $scope.user.username, password: $scope.user.password}).then(function (results) {
         console.log("user logged in");
         $scope.user = results.data;
-        $scope.user.health = Math.random() * 100;
+        $scope.user.health = results.data.health;
+        $scope.user.item_count = results.data.item_count;
         //Need to pull health from API
 
         $scope.display_login = false;
@@ -160,12 +163,21 @@ function user_ctrl($scope, Restangular)
     console.log("Use item:");
     console.log(item);
 
-    Restangular.one('user/inventory', item.inventory_id).customPOST('use').then(function(){
+    Restangular.one('user/inventory', item.item.id).customPOST('use').then(function(results){
       Restangular.one('user').get().then(function(response){
         console.log(response.data);
-        $scope.user = response.data;  
-        $scope.user.health = Math.random() * 100;
+        $scope.user = response.data; 
+        $scope.user.health = response.data.health;
+        $scope.user.inventory = response.data.inventory;
+        $scope.user.item_count = response.data.item_count;
       });
+    },
+    function (results) {
+        console.log(results.data.data.error);
+        if (results.data.data.error == "Your health is already at maximum")
+        {
+          $scope.max_health = true;
+        }
     });
   }
 
@@ -185,4 +197,11 @@ function popup_ctrl($scope)
   
 }
 
+$(function(){
+    $("[data-hide]").on("click", function(){
+       // $("." + $(this).attr("data-hide")).hide();
+        // -or-, see below
+       $(this).closest("." + $(this).attr("data-hide")).hide();
+    });
+});
  
