@@ -11,6 +11,7 @@ from gamechange.models import User, ShopItem, UserShopItem, Shelter, db, Healthg
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 from wsgiref.handlers import format_date_time
+from sqlalchemy import func
 
 bananas = Blueprint('bananas', __name__, template_folder='templates')
 app = current_app
@@ -291,7 +292,7 @@ def api_user_login_post():
         #Should check the user isn't banned here!
         session['user_id'] = user.id
     
-    response = {'username': user.username, 'bananas': user.bananas}
+    response = user.serialize
     return wrap_api_call(response)
 
 @bananas.route('/api/user/logout', methods = ['POST'])
@@ -307,7 +308,7 @@ def api_user_inventory_use(item_id):
     if 'user_id' not in session:
         return wrap_api_call({'error': 'not logged in'}), 403
 
-    item = UserShopItem.query.get(item_id)
+    item = UserShopItem.query.filter(UserShopItem.shop_item_id==item_id, UserShopItem.user_id==session['user_id']).first()
 
     if item is None:
         return wrap_api_call({'error': 'this item does not exist anymore!'}), 403

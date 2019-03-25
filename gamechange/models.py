@@ -3,6 +3,7 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm.collections import attribute_mapped_collection
 from flask import jsonify
 from datetime import datetime
+from sqlalchemy import func
 
 db = SQLAlchemy()
 
@@ -90,6 +91,7 @@ class User(db.Model):
         'last_checked'          : self.last_checked.isoformat(),
         #'health'        : self.health,
         'inventory'             : [i.serialize for i in self.inventory_items],
+        'item_count'            : [self.return_item_count(j) for j in ShopItem.query.all()]
       }
       if (self.healthgraph_api_key is not None):
             resp['healthgraph_api_key'] = self.healthgraph_api_key
@@ -120,6 +122,13 @@ class User(db.Model):
 
         self.bananas = self.bananas - item.cost
         self.inventory_items.append(UserShopItem(item))
+
+    def return_item_count(self,item):
+        resp = {
+            'item'  : item.serialize,
+        }
+        resp['item']['count'] = self.query.join(User.inventory_items).filter(User.id==self.id,UserShopItem.shop_item_id==item.id).count()
+        return resp
 
 
 class HealthgraphActivity(db.Model):
